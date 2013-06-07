@@ -57,6 +57,7 @@ void	_lockFlags::DisableAll()
 void	_logicFlags::Reset()
 {
 	state = LGS_nothing;
+	npcConversation = false;
 }
 
 // CLogic functions
@@ -290,6 +291,7 @@ void	CLogic::Nearby(const CEventMessage *EventMessage)
 		{
 			m_renderFlags.renderTextBox = true;
 			m_setTextBox = true;
+			m_logicFlags.npcConversation = true;
 			m_lockFlags.cameraMovement = true,m_lockFlags.movement = true,m_lockFlags.scroll = true;
 		}
 		else
@@ -327,7 +329,8 @@ bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
 	}
 	else if (m_logicFlags.state == LGS_inGame)
 	{
-
+		if (EventMessage->m_Event.Event == AE_ReleasedLeftClick)
+			CheckInGameClickRelease(EventMessage);
 	}
 	else if (m_logicFlags.state == LGS_mapEditor)
 	{
@@ -459,6 +462,17 @@ void	CLogic::CheckOptionsClick(const CEventMessage *EventMessage)
 			g_FPSLimit = false;
 		else
 			g_FPSLimit = true;
+	}
+}
+
+void	CLogic::CheckInGameClickRelease(const CEventMessage *EventMessage)
+{
+	if (m_logicFlags.npcConversation)
+	{
+		if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,84))
+		{
+			m_nextTextBox = true;
+		}
 	}
 }
 

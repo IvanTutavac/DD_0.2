@@ -78,6 +78,7 @@ struct _logicFlags
 {
 	logicGameState	state; // use LGS_
 
+	bool			npcConversation;
 	void			Reset();
 };
 
@@ -127,7 +128,7 @@ private:
 	bool			CheckIfNPCNearby();
 	bool			CheckDistance(int x1,int y1,int x2,int y2,int distanceX,int distanceY);
 
-
+	void			CheckInGameClickRelease(const CEventMessage *EventMessage);
 	bool			CheckMenuClick(const CEventMessage *EventMessage);
 	void			CheckOptionsClick(const CEventMessage *EventMessage);
 	void			CheckMapEditorClickRelease(const CEventMessage *EventMessage);

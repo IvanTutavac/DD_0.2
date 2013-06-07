@@ -57,7 +57,6 @@ bool	CSDLRender::Init()
 
 	m_clearHUDRect.x = 0, m_clearHUDRect.y = WINDOW_HEIGHT,m_clearHUDRect.w = WINDOW_WIDTH,m_clearHUDRect.h = HUD_HEIGHT;
 	m_clearTextBoxRect.x = 118,m_clearTextBoxRect.y = 238,m_clearTextBoxRect.w = 404,m_clearTextBoxRect.h = 84;
-	m_countChars = true;
 
 	return	true;
 }
@@ -216,13 +215,18 @@ void	CSDLRender::RenderTextBox(int &chars,bool &next)
 	fontColor.r = 98, fontColor.g = 0,fontColor.b = 49;
 	SDL_Surface *surface = NULL;
 
+	bool	countChars = false;
+
 	if (next)
 	{
 		if (chars > m_text.length())
 			return;
 		m_text = m_text.substr(chars);
-		m_countChars = true;
+		countChars = true;
 	}
+
+	if (chars == 0)
+		countChars = true;
 
 	char *tempText; 
 	std::vector<char> tempText1(m_text.size()+1);
@@ -243,7 +247,7 @@ void	CSDLRender::RenderTextBox(int &chars,bool &next)
 		if (temp == NULL)
 			break;
 
-		if (m_countChars)
+		if (countChars)
 			chars++;
 
 		surface	= TTF_RenderText_Solid(m_pHUDFont,temp,fontColor);
@@ -263,10 +267,8 @@ void	CSDLRender::RenderTextBox(int &chars,bool &next)
 		SDL_FreeSurface(surface);
 		surface = NULL;
 	}
+
 	next = false;
-	m_countChars = false;
-	//tempText = NULL;
-	//DD_DELETE_ARRAY(tempText);
 }
 
 void	CSDLRender::RenderButton(char *text,int x,int y,int r,int g,int b)
