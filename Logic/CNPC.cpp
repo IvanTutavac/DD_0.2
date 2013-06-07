@@ -17,15 +17,18 @@
     along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
+#include "..\debug.h"
 #include "CNPC.h"
 #include "CConversation.h"
-#include "..\debug.h"
 
 bool	CNPC::Init()
 {
 	CConversation	*Conversation =	DD_NEW CConversation;
 
-	Conversation->m_VText.push_back("prva druga treca cetvrta peta sesta sedma osma deveta deseta bla prva1 druga1 treca1 cetvrta1 peta1 sesta1 sedma1 osma1 deveta1 deseta1 bla ibla trla");
+	std::string someText = "prva druga treca cetvrta peta sesta sedma osma deveta deseta bla prva1 druga1 treca1 cetvrta1 peta1 sesta1 sedma1 osma1 deveta1 deseta1 bla ibla trla";
+
+	Conversation->m_VText.push_back(someText);
 
 	m_VConversation.push_back(Conversation);
 

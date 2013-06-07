@@ -38,7 +38,7 @@ private:
 	CLogic			*m_pLogic;	
 	CEventMessage	*m_pEventMessage;
 
-	IRender			*m_pRender;
+	IRender		*m_pRender; 
 
 	bool		Render(double deltaTime);
 	bool		Events();

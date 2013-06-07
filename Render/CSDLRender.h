@@ -44,6 +44,7 @@ private:
 	SDL_Rect		m_clearTextBoxRect;
 
 	std::string		m_text;
+	bool			m_countChars;
 
 	bool	CheckIfInWindow(int cameraX,int cameraY,int &x,int &y);
 

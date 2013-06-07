@@ -17,14 +17,15 @@
     along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
+#include "..\debug.h"
 #include "CEnemy.h"
 #include "CEntity.h"
 #include "..\Events\CEventMessage.h"
-#include "..\debug.h"
 
 bool	CEnemy::Init()
 {
-	m_pEvent	=	DD_NEW(CEventMessage);
+	m_pEvent	=	DD_NEW CEventMessage;
 
 	if (!this->InitEntity())
 		return	false;

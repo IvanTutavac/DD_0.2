@@ -42,6 +42,7 @@ std::ofstream logDat1;
 bool	CGame::Init()
 {
 	Log("Game Init started");
+
 	if (SDL_Init(SDL_INIT_VIDEO) == -1)
 		return	false;
 	Log("SDL Init...");
@@ -91,7 +92,6 @@ bool	CGame::Run()
 	m_gameLoop	=	true;
 	m_chars		=	0; 
 
-	// zbog testa, kasnije bi to state ili neki vrag trebao raditi
 	//m_pLogic->m_renderFlags.renderMap	=	true; // remove later
 	m_pLogic->m_renderFlags.state	= RS_renderMainMenu;
 	//m_pLogic->m_renderFlags.renderTextBox = true;

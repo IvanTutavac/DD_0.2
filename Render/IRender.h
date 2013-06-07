@@ -49,4 +49,6 @@ public:
 	virtual	void	SetTextBox(std::string text)=0;
 	virtual void	RenderHUD(int fps,int hp,int mp)=0;
 
+	virtual	~IRender(){}
+
 };

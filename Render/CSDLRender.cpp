@@ -57,6 +57,7 @@ bool	CSDLRender::Init()
 
 	m_clearHUDRect.x = 0, m_clearHUDRect.y = WINDOW_HEIGHT,m_clearHUDRect.w = WINDOW_WIDTH,m_clearHUDRect.h = HUD_HEIGHT;
 	m_clearTextBoxRect.x = 118,m_clearTextBoxRect.y = 238,m_clearTextBoxRect.w = 404,m_clearTextBoxRect.h = 84;
+	m_countChars = true;
 
 	return	true;
 }
@@ -76,7 +77,7 @@ void	CSDLRender::Clean()
 	DD_DELETE(m_pMenuSurface);
 	DD_DELETE(m_pNPCSurface);
 	DD_DELETE(m_pSpellSurface);
-
+	
 	TTF_CloseFont(m_pHUDFont);
 
 	TTF_Quit();
@@ -220,6 +221,7 @@ void	CSDLRender::RenderTextBox(int &chars,bool &next)
 		if (chars > m_text.length())
 			return;
 		m_text = m_text.substr(chars);
+		m_countChars = true;
 	}
 
 	char *tempText; 
@@ -241,7 +243,8 @@ void	CSDLRender::RenderTextBox(int &chars,bool &next)
 		if (temp == NULL)
 			break;
 
-		chars++;
+		if (m_countChars)
+			chars++;
 
 		surface	= TTF_RenderText_Solid(m_pHUDFont,temp,fontColor);
 
@@ -261,6 +264,7 @@ void	CSDLRender::RenderTextBox(int &chars,bool &next)
 		surface = NULL;
 	}
 	next = false;
+	m_countChars = false;
 	//tempText = NULL;
 	//DD_DELETE_ARRAY(tempText);
 }

@@ -41,6 +41,8 @@ int	main (int argc, char * argv[])
     tmpDebugFlag |= _CRTDBG_CHECK_ALWAYS_DF;
     _CrtSetDbgFlag(tmpDebugFlag);
 
+	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	// everything starts from here !!!!!!!!!!!
 
 	CGame	*Game	=	DD_NEW		CGame;

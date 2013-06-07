@@ -91,10 +91,10 @@ bool	CLogic::Init()
 
 void	CLogic::Clean()
 {
+	m_pMap->Clean();
 	DD_DELETE(m_pMap);
 
 	m_pPlayer->Clean();
-
 	DD_DELETE(m_pPlayer);
 
 	for (int i = 0; i < m_VEnemy.size(); i++)
