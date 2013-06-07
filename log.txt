@@ -1,0 +1,27 @@
+Started...
+Game Init started
+SDL Init...
+Logic init started
+Map init finished
+Spells loaded
+Entities...
+Player loaded
+Enemies loaded
+Npc loaded
+Entities loaded
+Logic init finished
+Window...
+TTF_Init ...
+Tiles loaded
+Enemy images loaded
+Player images loaded
+Menu images loaded
+NPC images loaded
+Spell images loaded
+Images loaded
+Font loaded
+Render init finished
+Event init finished
+Game Init finished...
+Game Run finished...
+Game Clean finshed...
