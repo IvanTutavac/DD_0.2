@@ -237,23 +237,23 @@ void	CSDLRender::RenderTextBox(int &chars,bool &next)
 	//strcpy_s(tempText,sizeof(m_text),m_text.c_str());
 
 	char *context = 0;
-	char *temp = strtok_s(tempText," ",&context);
+	char *word = strtok_s(tempText," ",&context);
 	int	x = 120, y = 240;
 
 	SDL_FillRect(m_pWindow,&m_clearTextBoxRect,SDL_MapRGB(m_pWindow->format,255,255,255));
 
 	while (true)
 	{
-		if (temp == NULL)
+		if (word == NULL)
 			break;
 
-		if (countChars)
-			chars++;
-
-		surface	= TTF_RenderText_Solid(m_pHUDFont,temp,fontColor);
+		surface	= TTF_RenderText_Solid(m_pHUDFont,word,fontColor);
 
 		if (x+surface->w >= 520 && y == 300)
 			break;
+
+		if (countChars)
+			chars += (std::char_traits<char>::length(word) +1);
 
 		if (x + surface->w >= 520)
 			x = 120,y+=20;
@@ -262,12 +262,13 @@ void	CSDLRender::RenderTextBox(int &chars,bool &next)
 
 		x+=surface->w+8;
 
-		temp = strtok_s(NULL," ",&context);
+		word = strtok_s(NULL," ",&context);
 
 		SDL_FreeSurface(surface);
 		surface = NULL;
 	}
-
+	
+	//chars++;
 	next = false;
 }
 
