@@ -90,7 +90,6 @@ bool	CGame::Clean()
 bool	CGame::Run()
 {
 	m_gameLoop	=	true;
-	m_chars		=	0; 
 
 	//m_pLogic->m_renderFlags.renderMap	=	true; // remove later
 	m_pLogic->m_renderFlags.state	= RS_renderMainMenu;
@@ -143,10 +142,10 @@ bool	CGame::Logic(double deltaTime)
 {
 	if (!m_pLogic->Run(m_pEventMessage,deltaTime))
 		return	false;
-	if (m_pLogic->m_setTextBox)
+	if (m_pLogic->m_textRenderInfo.setTextBox)
 	{
-		m_pRender->SetTextBox(m_pLogic->m_VNpc[0]->m_VConversation[0]->m_VText[0]);
-		m_pLogic->m_setTextBox = false;
+		m_pRender->SetTextBox(m_pLogic->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex]->m_VConversation[0]->m_VText[0]);
+		m_pLogic->m_textRenderInfo.setTextBox = false;
 	}
 	return	true;
 }
@@ -169,7 +168,7 @@ bool	CGame::Render(double deltaTime)
 		if (m_pLogic->m_renderFlags.renderTextBox)
 		{
 			// before calling RenderTextBox, m_pRender->SetTextBox(m_pLogic->m_VNpc[i]->m_VConversation[k]->m_VText[k]) needs to be called
-			m_pRender->RenderTextBox(m_chars,m_pLogic->m_nextTextBox);
+			m_pEventMessage->m_continueConversation = m_pRender->RenderTextBox(m_pLogic->m_textRenderInfo.chars,m_pLogic->m_textRenderInfo.nextTextBox);
 		}
 		RenderHUD(deltaTime);
 	}

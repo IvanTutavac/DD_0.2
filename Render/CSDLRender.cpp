@@ -209,7 +209,7 @@ void	CSDLRender::SetTextBox(std::string text)
 	m_text = text;
 }
 
-void	CSDLRender::RenderTextBox(int &chars,bool &next)
+bool	CSDLRender::RenderTextBox(int &chars,bool &next)
 {
 	SDL_Color	fontColor;
 	fontColor.r = 98, fontColor.g = 0,fontColor.b = 49;
@@ -220,7 +220,7 @@ void	CSDLRender::RenderTextBox(int &chars,bool &next)
 	if (next)
 	{
 		if (chars > m_text.length())
-			return;
+			return false;
 		m_text = m_text.substr(chars);
 		countChars = true;
 	}
@@ -252,8 +252,8 @@ void	CSDLRender::RenderTextBox(int &chars,bool &next)
 		if (x+surface->w >= 520 && y == 300)
 			break;
 
-		if (countChars)
-			chars += (std::char_traits<char>::length(word) +1);
+		if (countChars) // needs to be bellow the break check because we want to save the word that would otherwise be deleted 
+			chars += (std::char_traits<char>::length(word) +1); // +1 for space
 
 		if (x + surface->w >= 520)
 			x = 120,y+=20;
@@ -270,6 +270,8 @@ void	CSDLRender::RenderTextBox(int &chars,bool &next)
 	
 	//chars++;
 	next = false;
+
+	return	true;
 }
 
 void	CSDLRender::RenderButton(char *text,int x,int y,int r,int g,int b)

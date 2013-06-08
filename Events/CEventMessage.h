@@ -88,6 +88,8 @@ public:
 	UpDown			m_moveUpDown;
 	LeftRight		m_moveLeftRight;
 
+	bool			m_continueConversation;
+
 	CEventMessage();
 
 	void			Init();

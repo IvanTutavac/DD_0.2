@@ -70,7 +70,10 @@ public:
 	void	RenderText(char *text,int x,int y,int r,int g,int b);
 	void	RenderValue(int value,int x,int y,int r,int g,int b);
 	void	RenderButton(char *text,int x,int y,int r,int g,int b);
-	void	RenderTextBox(int &words,bool &next);
+	
+	// will return false if there's no more text to render, logic reads the result 
+	bool	RenderTextBox(int &words,bool &next);
+
 	void	SetTextBox(std::string text);
 	void	RenderHUD(int fps,int hp,int mp);
 

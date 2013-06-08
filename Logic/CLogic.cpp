@@ -84,8 +84,9 @@ bool	CLogic::Init()
 	m_UniqueSpellID		=	0;
 	m_IDLimit			=	999999;
 	m_drawTiles			=	false;
-	m_nextTextBox		=	false;
-	m_setTextBox		=	false;
+	m_textRenderInfo.nextTextBox	=	false;
+	m_textRenderInfo.setTextBox		=	false;
+	nn = 0,nnn=0;
 
 	return	true;
 }
@@ -150,6 +151,7 @@ bool	CLogic::LoadAllEntities()
 	m_VNpc.push_back(NPC);
 
 	Log("Npc loaded");
+
 	return	true;
 }
 
@@ -208,8 +210,8 @@ bool	CLogic::Run(CEventMessage	*EventMessage,double tempDeltaTime)
 	if (!CheckMouseClick(EventMessage))
 		return	false;
 	CheckPlayerInput(EventMessage);
+	Nearby(EventMessage); // maybe it's better to have the F button check here 
 	Movement(EventMessage);
-	Nearby(EventMessage);
 	Collision();
 	Action();
 	FinalCheck();
@@ -229,6 +231,15 @@ bool	CLogic::CheckState(CEventMessage	*EventMessage)
 {
 	if (EventMessage->m_Event.Event == AE_PressedEsc)
 		return	false;
+
+	if (!EventMessage->m_continueConversation && m_logicFlags.npcConversation)
+	{
+		m_logicFlags.npcConversation	=	false;
+		m_lockFlags.cameraMovement		=	false;
+		m_lockFlags.movement			=	false;
+		m_lockFlags.scroll				=	false;
+		nnn++;
+	}
 
 	return	true;
 }
@@ -283,16 +294,25 @@ void	CLogic::Movement(const CEventMessage *EventMessage)
 
 }
 
-void	CLogic::Nearby(const CEventMessage *EventMessage)
+void	CLogic::Nearby(CEventMessage *EventMessage)
 {
 	if (CheckIfNPCNearby())
 	{
-		if (EventMessage->m_Event.Event == AE_PressedF)
+		if (EventMessage->m_Event.Event == AE_PressedF && !m_logicFlags.npcConversation)
 		{
-			m_renderFlags.renderTextBox = true;
-			m_setTextBox = true;
-			m_logicFlags.npcConversation = true;
-			m_lockFlags.cameraMovement = true,m_lockFlags.movement = true,m_lockFlags.scroll = true;
+			if (nnn == 1)
+			{
+				nnn =1;
+			}
+			m_renderFlags.renderTextBox =	true;
+			m_textRenderInfo.setTextBox =	true;
+			m_textRenderInfo.chars		=	0;
+			m_logicFlags.npcConversation =	true;
+			m_lockFlags.cameraMovement	=	true;
+			m_lockFlags.movement		=	true;
+			m_lockFlags.scroll			=	true;
+			EventMessage->m_continueConversation = true;
+			nn++;
 		}
 		else
 		{
@@ -471,7 +491,7 @@ void	CLogic::CheckInGameClickRelease(const CEventMessage *EventMessage)
 	{
 		if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,84))
 		{
-			m_nextTextBox = true;
+			m_textRenderInfo.nextTextBox = true;
 		}
 	}
 }
@@ -789,7 +809,10 @@ bool	CLogic::CheckIfNPCNearby()
 	for (int i = 0; i < m_pMap->m_npcXY.size(); i++)
 	{
 		if (CheckDistance(m_pMap->m_playerX,m_pMap->m_playerY,m_pMap->m_npcXY[i].x,m_pMap->m_npcXY[i].y,40,40))
+		{
+			m_textRenderInfo.selectedNPCIndex = i;
 			return	true;
+		}
 	}
 	return	false;
 }

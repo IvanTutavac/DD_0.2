@@ -31,7 +31,6 @@ class CGame
 private:
 
 	bool			m_gameLoop;
-	int				m_chars;
 
 	CTimer			*m_pTimer;
 	CEvent			*m_pEvent;

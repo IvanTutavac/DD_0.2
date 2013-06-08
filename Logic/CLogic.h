@@ -82,11 +82,21 @@ struct _logicFlags
 	void			Reset();
 };
 
+struct _TextRenderInfo
+{
+	bool			nextTextBox;
+	bool			setTextBox;
+	int				selectedNPCIndex; // CheckIfNPCNearby sets the value
+	int				chars;
+};
+
 class CLogic
 {
 
 private:
 
+	int	nn;
+	int nnn;
 	std::vector<CEnemy*> m_VEnemy; 
 	std::vector<CEnemy*> m_VCloseEnemy;
 	std::vector<CQuest*> m_VQuests; // contains all quests
@@ -114,7 +124,7 @@ private:
 	bool			CheckMouseClick(const CEventMessage *EventMessage);
 	void			CheckPlayerInput(const CEventMessage *EventMessage);
 	void			Movement(const CEventMessage *EventMessage);
-	void			Nearby(const CEventMessage *EventMessage);
+	void			Nearby(CEventMessage *EventMessage);
 	void			Collision();
 	void			Action();
 	void			FinalCheck(); // clean up ...
@@ -160,8 +170,7 @@ private:
 
 public:
 
-	bool			m_nextTextBox;
-	bool			m_setTextBox;
+	_TextRenderInfo m_textRenderInfo;
 	_renderFlags	m_renderFlags;
 	CMap			*m_pMap;
 	CPlayer			*m_pPlayer;

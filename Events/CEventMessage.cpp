@@ -36,4 +36,5 @@ void	CEventMessage::Init()
 	m_MotionEvent.ID	=	0;
 	m_MotionEvent.x		=	0;
 	m_MotionEvent.y		=	0;
+	m_continueConversation = true;
 }
