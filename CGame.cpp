@@ -206,10 +206,8 @@ void	CGame::RenderHUD(double deltaTime)
 	m_pRender->RenderValue(m_pLogic->m_pMap->m_cameraY,590,520,98,0,49);
 	m_pRender->RenderValue(m_pLogic->m_pMap->m_playerX,530,500,98,0,49);
 	m_pRender->RenderValue(m_pLogic->m_pMap->m_playerY,530,520,98,0,49);
-	m_pRender->RenderValue(m_pEventMessage->m_Event.x,470,500,98,0,49);
-	m_pRender->RenderValue(m_pEventMessage->m_Event.y,470,520,98,0,49);
-	m_pRender->RenderValue(m_pEventMessage->m_MotionEvent.x,410,500,98,0,49);
-	m_pRender->RenderValue(m_pEventMessage->m_MotionEvent.y,410,520,98,0,49);
+	m_pRender->RenderValue(m_pEventMessage->m_MotionEvent.x,470,500,98,0,49);
+	m_pRender->RenderValue(m_pEventMessage->m_MotionEvent.y,470,520,98,0,49);
 }
 
 

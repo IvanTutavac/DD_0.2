@@ -221,6 +221,7 @@ bool	CSDLRender::RenderTextBox(int &chars,bool &next)
 	{
 		if (chars > m_text.length())
 			return false;
+
 		m_text = m_text.substr(chars);
 		countChars = true;
 	}
@@ -228,15 +229,13 @@ bool	CSDLRender::RenderTextBox(int &chars,bool &next)
 	if (chars == 0)
 		countChars = true;
 
-	char *tempText; 
+	char *tempText = NULL; 
 	std::vector<char> tempText1(m_text.size()+1);
 
 	std::copy(m_text.begin(),m_text.end(),tempText1.begin());
 	tempText = &tempText1[0];
-	//tempText = DD_NEW char[m_text.length()+1];
-	//strcpy_s(tempText,sizeof(m_text),m_text.c_str());
 
-	char *context = 0;
+	char *context = NULL;
 	char *word = strtok_s(tempText," ",&context);
 	int	x = 120, y = 240;
 
@@ -263,12 +262,15 @@ bool	CSDLRender::RenderTextBox(int &chars,bool &next)
 		x+=surface->w+8;
 
 		word = strtok_s(NULL," ",&context);
-
+		
 		SDL_FreeSurface(surface);
 		surface = NULL;
+
 	}
 	
-	//chars++;
+	SDL_FreeSurface(surface); // because of break
+	surface = NULL;
+
 	next = false;
 
 	return	true;

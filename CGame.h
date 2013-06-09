@@ -38,7 +38,7 @@ private:
 	CEventMessage	*m_pEventMessage;
 
 	IRender		*m_pRender; 
-
+	
 	bool		Render(double deltaTime);
 	bool		Events();
 	bool		Logic(double deltaTime);

@@ -65,6 +65,7 @@ void	_logicFlags::Reset()
 bool	CLogic::Init()
 {
 	Log("Logic init started");
+
 	m_pMap			=	DD_NEW CMap;
 
 	if (!m_pMap->Init())
