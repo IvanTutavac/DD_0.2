@@ -36,6 +36,7 @@ void	_renderFlags::Reset()
 {
 	renderGameExit		=	false;
 	renderTextBox		=	false;
+	renderFirstTextBox	=	false;
 	renderTalkMessage	=	false;
 	state				=	RS_nothing;
 }
@@ -87,7 +88,7 @@ bool	CLogic::Init()
 	m_drawTiles			=	false;
 	m_textRenderInfo.nextTextBox	=	false;
 	m_textRenderInfo.setTextBox		=	false;
-	nn = 0,nnn=0;
+	m_textRenderInfo.setFirstTextBox =	false;
 
 	return	true;
 }
@@ -239,7 +240,6 @@ bool	CLogic::CheckState(CEventMessage	*EventMessage)
 		m_lockFlags.cameraMovement		=	false;
 		m_lockFlags.movement			=	false;
 		m_lockFlags.scroll				=	false;
-		nnn++;
 	}
 
 	return	true;
@@ -301,19 +301,16 @@ void	CLogic::Nearby(CEventMessage *EventMessage)
 	{
 		if (EventMessage->m_Event.Event == AE_PressedF && !m_logicFlags.npcConversation)
 		{
-			if (nnn == 1)
-			{
-				nnn =1;
-			}
-			m_renderFlags.renderTextBox =	true;
-			m_textRenderInfo.setTextBox =	true;
+			m_renderFlags.renderFirstTextBox =	true;
+			m_textRenderInfo.setFirstTextBox =	true;
 			m_textRenderInfo.chars		=	0;
 			m_logicFlags.npcConversation =	true;
 			m_lockFlags.cameraMovement	=	true;
 			m_lockFlags.movement		=	true;
 			m_lockFlags.scroll			=	true;
-			EventMessage->m_continueConversation = true;
-			nn++;
+			//EventMessage->m_continueConversation = true;
+			m_textRenderInfo.selectedNPCIndex = m_nearNPCIndex;
+			m_VNpc[m_nearNPCIndex]->AvailableConversations();
 		}
 		else
 		{
@@ -490,9 +487,27 @@ void	CLogic::CheckInGameClickRelease(const CEventMessage *EventMessage)
 {
 	if (m_logicFlags.npcConversation)
 	{
-		if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,84))
+		if (m_renderFlags.renderTextBox && CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,84))
 		{
 			m_textRenderInfo.nextTextBox = true;
+		}
+		else if (m_renderFlags.renderFirstTextBox)
+		{
+			int height = m_VNpc[m_textRenderInfo.selectedNPCIndex]->m_NumConversations;
+			if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,height * 20))
+			{
+				m_renderFlags.renderFirstTextBox = false;
+				m_renderFlags.renderTextBox = true;
+				m_textRenderInfo.setTextBox = true;
+
+				for (int i = 0; i < height; i++)
+				{
+					if (EventMessage->m_Event.y >= 238+20*i && EventMessage->m_Event.y <= 238+20*(i+1))
+						m_textRenderInfo.selectedConversationIndex = i;
+				}
+ 
+				m_textRenderInfo.selectedTextIndex = 1; // for test
+			}
 		}
 	}
 }
@@ -811,7 +826,7 @@ bool	CLogic::CheckIfNPCNearby()
 	{
 		if (CheckDistance(m_pMap->m_playerX,m_pMap->m_playerY,m_pMap->m_npcXY[i].x,m_pMap->m_npcXY[i].y,40,40))
 		{
-			m_textRenderInfo.selectedNPCIndex = i;
+			m_nearNPCIndex = i;
 			return	true;
 		}
 	}

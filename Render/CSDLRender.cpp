@@ -209,13 +209,17 @@ void	CSDLRender::SetTextBox(std::string text)
 	m_text = text;
 }
 
-bool	CSDLRender::RenderTextBox(int &chars,bool &next)
+bool	CSDLRender::RenderTextBox(int &chars,bool &next,bool first)
 {
+	// if (first) we are showing conversations which can be selected, so after a nextLine is detected, we go to the nextLine
+	// if (next) we need to get the new m_text by removing the last text box words so that the next text box can be drawn
+
 	SDL_Color	fontColor;
 	fontColor.r = 98, fontColor.g = 0,fontColor.b = 49;
 	SDL_Surface *surface = NULL;
 
-	bool	countChars = false;
+	bool	countChars	=	false; // when we select a conversation, if true count characters so that after clicking we can get the text for the next text box
+	bool	draw		=	true; 
 
 	if (next)
 	{
@@ -226,7 +230,7 @@ bool	CSDLRender::RenderTextBox(int &chars,bool &next)
 		countChars = true;
 	}
 
-	if (chars == 0)
+	if (chars == 0 && !first)
 		countChars = true;
 
 	char *tempText = NULL; 
@@ -248,18 +252,30 @@ bool	CSDLRender::RenderTextBox(int &chars,bool &next)
 
 		surface	= TTF_RenderText_Solid(m_pHUDFont,word,fontColor);
 
-		if (x+surface->w >= 520 && y == 300)
+		if (x+surface->w >= 520 && y == 300 && !first)
 			break;
 
 		if (countChars) // needs to be bellow the break check because we want to save the word that would otherwise be deleted 
 			chars += (std::char_traits<char>::length(word) +1); // +1 for space
 
-		if (x + surface->w >= 520)
+		if (first)
+		{
+			if (!std::char_traits<char>::compare("nextLine",word,8))
+			{
+				draw = false; // don't draw nextLine and don't update x
+				x = 120, y+=20; 
+			}
+		}
+		else if (x + surface->w >= 520)
 			x = 120,y+=20;
 
-		RenderImage(x,y,surface,m_pWindow);
+		if (draw)
+		{
+			RenderImage(x,y,surface,m_pWindow);
+			x+=surface->w+8;
+		}
 
-		x+=surface->w+8;
+		draw = true;
 
 		word = strtok_s(NULL," ",&context);
 		

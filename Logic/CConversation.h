@@ -21,13 +21,28 @@
 #include <vector>
 #include <string>
 
+/*
+	CNPC[NPCIndex] ->
+		check m_hidden to see if we can show a conversation
+		CConversation[ConversationIndex]->
+			m_VText[TextIndex]
+			 -> 0 text for conversation selection -> if selected we can continue with this conversation
+			 -> 1 text is for lets say introduction
+			 -> 2 text is for yes option
+			 -> 3 text is for no option
+			 -> we can hide the conversation or put finished option
+*/
+
 class	CConversation
 {
 private:
 
-	std::vector<int>	m_VQuestID;
-
 public:
 
+	std::vector<int>			m_VQuestID;
 	std::vector<std::string>	m_VText;
+	
+	bool	m_hidden;
+
+	int		GetTextIndex();
 };

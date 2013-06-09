@@ -19,3 +19,11 @@
 
 #include "CConversation.h"
 
+int		CConversation::GetTextIndex()
+{
+	int	index = 0;
+
+
+
+	return	index;
+}

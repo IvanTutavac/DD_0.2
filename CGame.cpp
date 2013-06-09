@@ -142,9 +142,20 @@ bool	CGame::Logic(double deltaTime)
 {
 	if (!m_pLogic->Run(m_pEventMessage,deltaTime))
 		return	false;
-	if (m_pLogic->m_textRenderInfo.setTextBox)
+
+	if (m_pLogic->m_textRenderInfo.setFirstTextBox)
 	{
-		m_pRender->SetTextBox(m_pLogic->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex]->m_VConversation[0]->m_VText[0]);
+		m_pRender->SetTextBox(m_pLogic->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex]->m_availableConversations);
+		m_pLogic->m_textRenderInfo.setFirstTextBox = false;
+	}
+	else if (m_pLogic->m_textRenderInfo.setTextBox)
+	{
+		int i	=	m_pLogic->m_textRenderInfo.selectedNPCIndex;
+		int j	=	m_pLogic->m_textRenderInfo.selectedConversationIndex;
+		int	k	=	m_pLogic->m_textRenderInfo.selectedTextIndex;
+
+		m_pRender->SetTextBox(m_pLogic->m_VNpc[i]->m_VConversation[j]->m_VText[k]);
+
 		m_pLogic->m_textRenderInfo.setTextBox = false;
 	}
 	return	true;
@@ -165,10 +176,14 @@ bool	CGame::Render(double deltaTime)
 	else if (m_pLogic->m_renderFlags.state == RS_renderMap)
 	{
 		m_pRender->RenderMap(m_pLogic->m_pMap);
-		if (m_pLogic->m_renderFlags.renderTextBox)
+
+		if (m_pLogic->m_renderFlags.renderFirstTextBox)
 		{
-			// before calling RenderTextBox, m_pRender->SetTextBox(m_pLogic->m_VNpc[i]->m_VConversation[k]->m_VText[k]) needs to be called
-			m_pEventMessage->m_continueConversation = m_pRender->RenderTextBox(m_pLogic->m_textRenderInfo.chars,m_pLogic->m_textRenderInfo.nextTextBox);
+			m_pRender->RenderTextBox(m_pLogic->m_textRenderInfo.chars,m_pLogic->m_textRenderInfo.nextTextBox,true);
+		}
+		else if (m_pLogic->m_renderFlags.renderTextBox)
+		{
+			m_pEventMessage->m_continueConversation = m_pRender->RenderTextBox(m_pLogic->m_textRenderInfo.chars,m_pLogic->m_textRenderInfo.nextTextBox,false);
 		}
 		RenderHUD(deltaTime);
 	}

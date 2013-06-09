@@ -55,6 +55,7 @@ struct _renderFlags
 	RenderState		state;	// use RS_
 
 	bool			renderTextBox;
+	bool			renderFirstTextBox;
 	bool			renderGameExit;
 	bool			renderTalkMessage;
 
@@ -86,7 +87,10 @@ struct _TextRenderInfo
 {
 	bool			nextTextBox;
 	bool			setTextBox;
-	int				selectedNPCIndex; // CheckIfNPCNearby sets the value
+	bool			setFirstTextBox;
+	int				selectedNPCIndex; 
+	int				selectedConversationIndex;
+	int				selectedTextIndex;
 	int				chars;
 };
 
@@ -95,8 +99,6 @@ class CLogic
 
 private:
 
-	int	nn;
-	int nnn;
 	std::vector<CEnemy*> m_VEnemy; 
 	std::vector<CEnemy*> m_VCloseEnemy;
 	std::vector<CQuest*> m_VQuests; // contains all quests
@@ -108,6 +110,7 @@ private:
 
 	int				m_UniqueSpellID; // used to set unique _spell.ID
 	int				m_IDLimit;
+	int				m_nearNPCIndex; // CheckIfNPCNearby sets the value
 
 	bool			m_drawTiles;
 

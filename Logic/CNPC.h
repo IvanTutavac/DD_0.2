@@ -29,7 +29,12 @@ private:
 public:
 
 	std::vector<CConversation*>	m_VConversation;
+	std::string	m_availableConversations;
+	int			m_NumConversations; 
 
 	bool	Init();
 	void	Clean();
+
+	// clears previous data and sets m_availableConversations from each m_VConversation[i]->m_vText[0] that is not hidden
+	void	AvailableConversations(); 
 };

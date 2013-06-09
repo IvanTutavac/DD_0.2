@@ -72,7 +72,7 @@ public:
 	void	RenderButton(char *text,int x,int y,int r,int g,int b);
 	
 	// will return false if there's no more text to render, logic reads the result 
-	bool	RenderTextBox(int &words,bool &next);
+	bool	RenderTextBox(int &words,bool &next,bool first);
 
 	void	SetTextBox(std::string text);
 	void	RenderHUD(int fps,int hp,int mp);
