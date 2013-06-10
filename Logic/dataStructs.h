@@ -42,14 +42,4 @@ struct _spell
 	SpellType	type; // use ST_
 };
 
-enum TextState // trebalo bi unutar razgovora buduci da nakon
-{              // zavrsetka jednog razgovora mi mozemo s drugim NPCem pricati a to ce poremetiti indexe, tj. struktura se gubi
-	TS_nothing,
-	TS_introduction, // text started
-	TS_option,		 // yes no
-	TS_yes,
-	TS_no,
-	TS_wait,
-	TS_finished
-};
 

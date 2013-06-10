@@ -33,6 +33,18 @@
 			 -> we can hide the conversation or put finished option
 */
 
+enum TextState 
+{            
+	TS_nothing,
+	TS_introduction, // text started
+	TS_option,		 // yes no
+	TS_yes,
+	TS_no,
+	TS_wait,
+	TS_finished
+};
+
+
 class	CConversation
 {
 private:
@@ -40,11 +52,12 @@ private:
 public:
 
 	int							m_questID; // if != -1 this conversation is a quest
-
-	std::vector<int>			m_VQuestRequiredID; 
+	int							m_questRequiredID;  // if == 1, no quest required
 	std::vector<std::string>	m_VText;
+	TextState					m_state; // use TS_
 	
 	bool	m_hidden;
 
 	int		GetTextIndex();
+	void	UpdateState();
 };

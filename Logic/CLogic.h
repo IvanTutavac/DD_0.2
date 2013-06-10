@@ -83,18 +83,12 @@ struct _logicFlags
 	void			Reset();
 };
 
-struct _textLogic
-{
-	TextState	textState; // use TS_
-	int			NPCIndex;
-	int			ConversationIndex;
-};
-
 struct _TextRenderInfo
 {
 	bool			nextTextBox;
 	bool			setTextBox;
 	bool			setFirstTextBox;
+	bool			setLastTextBox;
 	int				selectedNPCIndex; 
 	int				selectedConversationIndex;
 	int				selectedTextIndex;
@@ -114,7 +108,6 @@ private:
 
 	_lockFlags		m_lockFlags;
 	_logicFlags		m_logicFlags;
-	_textLogic		m_textLogic;
 
 	int				m_UniqueSpellID; // used to set unique _spell.ID
 	int				m_IDLimit;

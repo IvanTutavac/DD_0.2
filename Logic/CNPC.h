@@ -19,7 +19,6 @@
 
 #pragma once
 #include <vector>
-#include "dataStructs.h"
 
 class CConversation;
 
@@ -30,6 +29,12 @@ private:
 public:
 
 	std::vector<CConversation*>	m_VConversation;
+
+	// trebas implementirati !
+	// takodjer i slucaj kad npc nema selection razgovor !
+	// organizirati kod u metode
+	std::vector<CConversation*> m_conversation; // one text, after there's no text available we use this one
+	
 	std::string	m_availableConversations;
 	int			m_NumConversations; 
 
@@ -40,11 +45,21 @@ public:
 	void	AvailableConversations(); 
 
 	// will update m_hidden 
-	void	UpdateConversations(int index);
+	void	UpdateConversationVisibility(int index);
 
 	// updates state 
-	void	FinishedConversation(TextState	&state);
+	void	UpdateConversation(int index);
+	
+	bool	ConversationFinished(int index);
+	bool	ConversationSelection(int index);
+	void	SetConversationStateYes(int index);
+	void	SetConversationStateNo(int index);
 
 	// returns -1 if it's not a quest, if it is a quest, it will return the questID
 	int		GetQuestID(int index);
+
+	int		GetConversationIndex(int i);
+
+	// value becomes textIndex
+	void	GetTextIndex(int &value,int index/*conversationIndex*/);
 };

@@ -23,7 +23,28 @@ int		CConversation::GetTextIndex()
 {
 	int	index = 0;
 
-
+	if (m_state == TS_introduction)
+		index = 1;
+	else if (m_state == TS_option)
+		index = 2;
+	else if (m_state == TS_yes)
+		index = 3;
+	else if (m_state == TS_no)
+		index = 4;
+	else if (m_state == TS_wait)
+		index = 5;
 
 	return	index;
+}
+
+void	CConversation::UpdateState()
+{
+	if (m_state == TS_introduction)
+		m_state = TS_option;
+	else if (m_state == TS_yes)
+		m_state = TS_wait;
+	else if (m_state == TS_no)
+		m_state = TS_introduction;
+	else if (m_state == TS_wait)
+		m_state = TS_finished;
 }

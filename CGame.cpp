@@ -146,6 +146,7 @@ bool	CGame::Logic(double deltaTime)
 	if (m_pLogic->m_textRenderInfo.setFirstTextBox)
 	{
 		m_pRender->SetTextBox(m_pLogic->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex]->m_availableConversations);
+
 		m_pLogic->m_textRenderInfo.setFirstTextBox = false;
 	}
 	else if (m_pLogic->m_textRenderInfo.setTextBox)

@@ -258,14 +258,14 @@ bool	CSDLRender::RenderTextBox(int &chars,bool &next,bool first)
 		if (countChars) // needs to be bellow the break check because we want to save the word that would otherwise be deleted 
 			chars += (std::char_traits<char>::length(word) +1); // +1 for space
 
-		if (first)
-		{
+		//if (first)
+		//{
 			if (!std::char_traits<char>::compare("nextLine",word,8))
 			{
 				draw = false; // don't draw nextLine and don't update x
 				x = 120, y+=20; 
 			}
-		}
+		//}
 		else if (x + surface->w >= 520)
 			x = 120,y+=20;
 

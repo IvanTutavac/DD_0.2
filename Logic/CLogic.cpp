@@ -1,20 +1,20 @@
 /*
-	(c) Copyright 2013 Ivan Tutavac
+(c) Copyright 2013 Ivan Tutavac
 
-	This file is part of DD 0.2
+This file is part of DD 0.2
 
-    DD 0.2 is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+DD 0.2 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    DD 0.2 is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+DD 0.2 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "../debug.h"
@@ -89,10 +89,8 @@ bool	CLogic::Init()
 	m_textRenderInfo.nextTextBox		=	false;
 	m_textRenderInfo.setTextBox			=	false;
 	m_textRenderInfo.setFirstTextBox	=	false;
-	m_textLogic.textState				=	TS_nothing;
-	m_textLogic.NPCIndex				=	0;
-	m_textLogic.ConversationIndex		=	0;
-	
+	m_textRenderInfo.setLastTextBox		=	false;
+
 	return	true;
 }
 
@@ -234,36 +232,41 @@ bool	CLogic::Run(CEventMessage	*EventMessage,double tempDeltaTime)
 
 bool	CLogic::CheckState(CEventMessage	*EventMessage)
 {
+	// fali zavrsna provjera ako je razgovor quest dal je zavrsen, dal smijemo wait prebaciti u finished
+
 	if (EventMessage->m_Event.Event == AE_PressedEsc)
 		return	false;
 
 	if (!EventMessage->m_continueConversation && m_logicFlags.npcConversation)
 	{
-		m_logicFlags.npcConversation	=	false;
-		m_renderFlags.renderTextBox		=	false;
-		m_textRenderInfo.nextTextBox	=	false;
-		m_lockFlags.cameraMovement		=	false;
-		m_lockFlags.movement			=	false;
-		m_lockFlags.scroll				=	false;
-		
-		m_VNpc[m_textLogic.NPCIndex]->FinishedConversation(m_textLogic.textState);
-	}
+		m_VNpc[m_textRenderInfo.selectedNPCIndex]->UpdateConversation(m_textRenderInfo.selectedConversationIndex);
 
-	if (m_textLogic.textState == TS_finished)
-	{
-		// for now we hide this conversation
-		m_VNpc[m_textLogic.NPCIndex]->UpdateConversations(m_textLogic.ConversationIndex);
-		
-		int questID = m_VNpc[m_textLogic.NPCIndex]->GetQuestID(m_textLogic.ConversationIndex);
-		
-		if (questID != -1)
+		if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationSelection(m_textRenderInfo.selectedConversationIndex))
 		{
-			// quest completed
-
+			m_textRenderInfo.setTextBox =	true;
+			m_textRenderInfo.chars		=	0;
+			m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+		}
+		else 
+		{
+			m_logicFlags.npcConversation	=	false;
+			m_renderFlags.renderTextBox		=	false;
+			m_textRenderInfo.nextTextBox	=	false;
+			m_lockFlags.cameraMovement		=	false;
+			m_lockFlags.movement			=	false;
+			m_lockFlags.scroll				=	false;
 		}
 
-		m_textLogic.textState = TS_nothing;
+		if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationFinished(m_textRenderInfo.selectedConversationIndex))
+		{
+			int questID = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetQuestID(m_textRenderInfo.selectedConversationIndex);
 
+			if (questID != -1)
+			{
+				// quest completed
+
+			}
+		}
 	}
 
 	return	true;
@@ -273,9 +276,9 @@ void	CLogic::UpdateObjects()
 {
 	// implementirati pretragu koja svrstava blizu neprijatelje u VCloseEnemy vektor, ako se udalje izbaci ih
 	// kako ne bi trebali stalno letjeti kroz listu
-	
+
 	m_pPlayer->UpdateSpellDuration(deltaTime);
-	
+
 	for (int i = 0; i < m_VCloseEnemy.size(); i++)
 	{
 		m_VCloseEnemy[i]->UpdateSpellDuration(deltaTime);
@@ -326,7 +329,6 @@ void	CLogic::Nearby(CEventMessage *EventMessage)
 		if (EventMessage->m_Event.Event == AE_PressedF && !m_logicFlags.npcConversation)
 		{
 			m_renderFlags.renderFirstTextBox		=	true;
-			m_textRenderInfo.setFirstTextBox		=	true;
 			m_textRenderInfo.chars					=	0;
 			m_logicFlags.npcConversation			=	true;
 			m_lockFlags.cameraMovement				=	true;
@@ -336,6 +338,13 @@ void	CLogic::Nearby(CEventMessage *EventMessage)
 			m_textRenderInfo.selectedNPCIndex		=	m_nearNPCIndex;
 
 			m_VNpc[m_nearNPCIndex]->AvailableConversations();
+
+			if (m_VNpc[m_nearNPCIndex]->m_availableConversations.size() < 1)
+			{
+				m_textRenderInfo.setLastTextBox		=	true;
+			}
+			else
+				m_textRenderInfo.setFirstTextBox	=	true;
 		}
 		else
 		{
@@ -363,7 +372,7 @@ bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
 	{
 		if (EventMessage->m_Event.Event == AE_ReleasedLeftClick)
 			if (!CheckMenuClick(EventMessage))
-			return	false;
+				return	false;
 	}
 	else if (m_logicFlags.state == LGS_mainOptions || m_logicFlags.state == LGS_options)
 	{
@@ -515,13 +524,34 @@ void	CLogic::CheckInGameClickRelease(const CEventMessage *EventMessage)
 		if (m_renderFlags.renderTextBox)
 		{
 			if(CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,84))
-				m_textRenderInfo.nextTextBox = true;
+			{
+				if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationSelection(m_textRenderInfo.selectedConversationIndex))
+				{
+					if (EventMessage->m_Event.y >= 260 && EventMessage->m_Event.y <= 280)
+					{
+						m_textRenderInfo.setTextBox =	true;
+						m_textRenderInfo.chars		=	0;
+						m_VNpc[m_textRenderInfo.selectedNPCIndex]->SetConversationStateYes(m_textRenderInfo.selectedConversationIndex);
+						m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+					}
+					else if (EventMessage->m_Event.y > 280 && EventMessage->m_Event.y <= 300)
+					{
+						m_textRenderInfo.setTextBox =	true;
+						m_textRenderInfo.chars		=	0;
+						m_VNpc[m_textRenderInfo.selectedNPCIndex]->SetConversationStateNo(m_textRenderInfo.selectedConversationIndex);
+						m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+					}
+				}
+				else 
+					m_textRenderInfo.nextTextBox = true;
+
+			}
 		}
 		else if (m_renderFlags.renderFirstTextBox)
 		{
 			int height = m_VNpc[m_textRenderInfo.selectedNPCIndex]->m_NumConversations;
 
-			if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,height * 20))
+			if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,240,404,height * 20))
 			{
 				m_renderFlags.renderFirstTextBox	=	false;
 				m_renderFlags.renderTextBox			=	true;
@@ -529,11 +559,14 @@ void	CLogic::CheckInGameClickRelease(const CEventMessage *EventMessage)
 
 				for (int i = 0; i < height; i++)
 				{
-					if (EventMessage->m_Event.y >= 238+20*i && EventMessage->m_Event.y <= 238+20*(i+1))
-						m_textRenderInfo.selectedConversationIndex = i;
+					if (EventMessage->m_Event.y >= 240+20*i && EventMessage->m_Event.y <= 240+20*(i+1))
+					{
+						m_textRenderInfo.selectedConversationIndex = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetConversationIndex(i);				
+					}
 				}
- 
-				m_textRenderInfo.selectedTextIndex = 1; // for testing
+
+				m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+				//m_textRenderInfo.selectedTextIndex = 1; // for testing
 			}
 		}
 	}
@@ -868,7 +901,7 @@ bool	CLogic::CheckDistance(int x1,int y1,int x2,int y2,int distanceX,int distanc
 {
 	if ((abs(x2-x1) < distanceX) && (abs(y2-y1) < distanceY))
 		return	true;
-	
+
 	return	false;
 }
 
@@ -879,7 +912,7 @@ void	CLogic::CheckTimedOutSpells()
 		m_pMap->m_spell[i].duration -= deltaTime;
 		if (m_pMap->m_spell[i].duration <= 0)
 		{
-			
+
 			m_pMap->m_spell.erase(m_pMap->m_spell.begin()+i);
 		}
 	}
