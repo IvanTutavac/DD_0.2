@@ -89,7 +89,7 @@ bool	CLogic::Init()
 	m_textRenderInfo.nextTextBox	=	false;
 	m_textRenderInfo.setTextBox		=	false;
 	m_textRenderInfo.setFirstTextBox =	false;
-
+	
 	return	true;
 }
 
@@ -237,6 +237,8 @@ bool	CLogic::CheckState(CEventMessage	*EventMessage)
 	if (!EventMessage->m_continueConversation && m_logicFlags.npcConversation)
 	{
 		m_logicFlags.npcConversation	=	false;
+		m_renderFlags.renderTextBox		=	false;
+		m_textRenderInfo.nextTextBox	=	false;
 		m_lockFlags.cameraMovement		=	false;
 		m_lockFlags.movement			=	false;
 		m_lockFlags.scroll				=	false;
@@ -308,7 +310,7 @@ void	CLogic::Nearby(CEventMessage *EventMessage)
 			m_lockFlags.cameraMovement	=	true;
 			m_lockFlags.movement		=	true;
 			m_lockFlags.scroll			=	true;
-			//EventMessage->m_continueConversation = true;
+			EventMessage->m_continueConversation = true;
 			m_textRenderInfo.selectedNPCIndex = m_nearNPCIndex;
 			m_VNpc[m_nearNPCIndex]->AvailableConversations();
 		}
@@ -487,9 +489,10 @@ void	CLogic::CheckInGameClickRelease(const CEventMessage *EventMessage)
 {
 	if (m_logicFlags.npcConversation)
 	{
-		if (m_renderFlags.renderTextBox && CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,84))
+		if (m_renderFlags.renderTextBox)
 		{
-			m_textRenderInfo.nextTextBox = true;
+			if(CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,84))
+				m_textRenderInfo.nextTextBox = true;
 		}
 		else if (m_renderFlags.renderFirstTextBox)
 		{

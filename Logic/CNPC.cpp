@@ -58,6 +58,23 @@ bool	CNPC::Init()
 
 	m_VConversation.push_back(Conversation1);
 
+	CConversation	*Conversation2	=	DD_NEW	CConversation;
+
+	std::string	text31	=	"Third option(test)";
+	std::string	text32	=	"Third selected";
+	std::string	text33	=	"Yea";
+	std::string	text34	=	"None";
+	std::string	text35	=	"So, you have to...";
+
+	Conversation2->m_VText.push_back(text31);
+	Conversation2->m_VText.push_back(text32);
+	Conversation2->m_VText.push_back(text33);
+	Conversation2->m_VText.push_back(text34);
+	Conversation2->m_VText.push_back(text35);
+	Conversation2->m_hidden = false;
+
+	m_VConversation.push_back(Conversation2);
+
 	return	true;
 }
 

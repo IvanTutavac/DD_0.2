@@ -98,7 +98,7 @@ class CLogic
 {
 
 private:
-
+	
 	std::vector<CEnemy*> m_VEnemy; 
 	std::vector<CEnemy*> m_VCloseEnemy;
 	std::vector<CQuest*> m_VQuests; // contains all quests
