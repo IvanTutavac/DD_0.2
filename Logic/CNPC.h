@@ -19,6 +19,7 @@
 
 #pragma once
 #include <vector>
+#include "dataStructs.h"
 
 class CConversation;
 
@@ -37,4 +38,13 @@ public:
 
 	// clears previous data and sets m_availableConversations from each m_VConversation[i]->m_vText[0] that is not hidden
 	void	AvailableConversations(); 
+
+	// will update m_hidden 
+	void	UpdateConversations(int index);
+
+	// updates state 
+	void	FinishedConversation(TextState	&state);
+
+	// returns -1 if it's not a quest, if it is a quest, it will return the questID
+	int		GetQuestID(int index);
 };

@@ -39,7 +39,9 @@ private:
 
 public:
 
-	std::vector<int>			m_VQuestID;
+	int							m_questID; // if != -1 this conversation is a quest
+
+	std::vector<int>			m_VQuestRequiredID; 
 	std::vector<std::string>	m_VText;
 	
 	bool	m_hidden;

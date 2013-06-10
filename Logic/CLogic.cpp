@@ -83,12 +83,15 @@ bool	CLogic::Init()
 
 	InitFlags();
 
-	m_UniqueSpellID		=	0;
-	m_IDLimit			=	999999;
-	m_drawTiles			=	false;
-	m_textRenderInfo.nextTextBox	=	false;
-	m_textRenderInfo.setTextBox		=	false;
-	m_textRenderInfo.setFirstTextBox =	false;
+	m_UniqueSpellID						=	0;
+	m_IDLimit							=	999999;
+	m_drawTiles							=	false;
+	m_textRenderInfo.nextTextBox		=	false;
+	m_textRenderInfo.setTextBox			=	false;
+	m_textRenderInfo.setFirstTextBox	=	false;
+	m_textLogic.textState				=	TS_nothing;
+	m_textLogic.NPCIndex				=	0;
+	m_textLogic.ConversationIndex		=	0;
 	
 	return	true;
 }
@@ -120,7 +123,7 @@ bool	CLogic::LoadAllEntities()
 	m_pPlayer = DD_NEW CPlayer;
 
 	m_pPlayer->m_VSpell.push_back(m_VAllSpells[0]);
-	m_pPlayer->m_spell.push_back(m_VAllSpells[0]); // treba sprijeciti da ima vise od pet elemenata
+	m_pPlayer->m_spell.push_back(m_VAllSpells[0]); // make a limit for 5 spells !
 
 	m_pPlayer->m_VSpell.push_back(m_VAllSpells[1]);
 	m_pPlayer->m_spell.push_back(m_VAllSpells[1]);
@@ -242,6 +245,25 @@ bool	CLogic::CheckState(CEventMessage	*EventMessage)
 		m_lockFlags.cameraMovement		=	false;
 		m_lockFlags.movement			=	false;
 		m_lockFlags.scroll				=	false;
+		
+		m_VNpc[m_textLogic.NPCIndex]->FinishedConversation(m_textLogic.textState);
+	}
+
+	if (m_textLogic.textState == TS_finished)
+	{
+		// for now we hide this conversation
+		m_VNpc[m_textLogic.NPCIndex]->UpdateConversations(m_textLogic.ConversationIndex);
+		
+		int questID = m_VNpc[m_textLogic.NPCIndex]->GetQuestID(m_textLogic.ConversationIndex);
+		
+		if (questID != -1)
+		{
+			// quest completed
+
+		}
+
+		m_textLogic.textState = TS_nothing;
+
 	}
 
 	return	true;
@@ -303,15 +325,16 @@ void	CLogic::Nearby(CEventMessage *EventMessage)
 	{
 		if (EventMessage->m_Event.Event == AE_PressedF && !m_logicFlags.npcConversation)
 		{
-			m_renderFlags.renderFirstTextBox =	true;
-			m_textRenderInfo.setFirstTextBox =	true;
-			m_textRenderInfo.chars		=	0;
-			m_logicFlags.npcConversation =	true;
-			m_lockFlags.cameraMovement	=	true;
-			m_lockFlags.movement		=	true;
-			m_lockFlags.scroll			=	true;
-			EventMessage->m_continueConversation = true;
-			m_textRenderInfo.selectedNPCIndex = m_nearNPCIndex;
+			m_renderFlags.renderFirstTextBox		=	true;
+			m_textRenderInfo.setFirstTextBox		=	true;
+			m_textRenderInfo.chars					=	0;
+			m_logicFlags.npcConversation			=	true;
+			m_lockFlags.cameraMovement				=	true;
+			m_lockFlags.movement					=	true;
+			m_lockFlags.scroll						=	true;
+			EventMessage->m_continueConversation	=	true;
+			m_textRenderInfo.selectedNPCIndex		=	m_nearNPCIndex;
+
 			m_VNpc[m_nearNPCIndex]->AvailableConversations();
 		}
 		else
@@ -497,11 +520,12 @@ void	CLogic::CheckInGameClickRelease(const CEventMessage *EventMessage)
 		else if (m_renderFlags.renderFirstTextBox)
 		{
 			int height = m_VNpc[m_textRenderInfo.selectedNPCIndex]->m_NumConversations;
+
 			if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,height * 20))
 			{
-				m_renderFlags.renderFirstTextBox = false;
-				m_renderFlags.renderTextBox = true;
-				m_textRenderInfo.setTextBox = true;
+				m_renderFlags.renderFirstTextBox	=	false;
+				m_renderFlags.renderTextBox			=	true;
+				m_textRenderInfo.setTextBox			=	true;
 
 				for (int i = 0; i < height; i++)
 				{
@@ -509,7 +533,7 @@ void	CLogic::CheckInGameClickRelease(const CEventMessage *EventMessage)
 						m_textRenderInfo.selectedConversationIndex = i;
 				}
  
-				m_textRenderInfo.selectedTextIndex = 1; // for test
+				m_textRenderInfo.selectedTextIndex = 1; // for testing
 			}
 		}
 	}
@@ -528,6 +552,7 @@ void	CLogic::CheckMapEditorClickRelease(const CEventMessage *EventMessage)
 		m_renderFlags.state		=	RS_renderAllTiles;
 		m_pMap->m_cameraX		=	320;
 		m_pMap->m_cameraY		=	240;
+
 		if (!m_pMap->m_allTilesMapState)
 			m_pMap->InitAllTilesMap();
 	}
@@ -603,17 +628,18 @@ void	CLogic::PlayerSpellCast(const CEventMessage *EventMessage)
 void	CLogic::SetupSpellMap(int id,int x,int y,int duration,int speed)
 {
 	_location1		newSpell;
-	newSpell.x		=	x;
-	newSpell.y		=	y;
-	newSpell.imgID	=	id;
-	newSpell.speed  =	speed;
-	newSpell.state	=	LS_nothing;
-	newSpell.duration = duration;
+	newSpell.x			=	x;
+	newSpell.y			=	y;
+	newSpell.imgID		=	id;
+	newSpell.speed		=	speed;
+	newSpell.state		=	LS_nothing;
+	newSpell.duration	= duration;
 
 	m_pMap->m_spell.push_back(newSpell); 
 
 	m_pMap->m_spell.back().ID = m_UniqueSpellID;
 	m_UniqueSpellID++;
+
 	if (m_UniqueSpellID++ > m_IDLimit)
 		m_UniqueSpellID = 0;
 }
@@ -646,6 +672,7 @@ bool	CLogic::CheckCollision(int x1,int y1,int x2,int y2,int size)
 {
 	if (x1+size > x2 && x1 < x2+size && y1+size > y2 && y1 < y2+size)
 		return	true;
+
 	return	false;
 }
 
@@ -653,6 +680,7 @@ bool	CLogic::CheckPointCollision(int x1,int y1,int x2,int y2,int sizeX,int sizeY
 {
 	if (x1 > x2 && x1 < x2 + sizeX && y1 > y2 && y1 < y2 + sizeY)
 		return	true;
+
 	return	false;
 }
 
@@ -840,6 +868,7 @@ bool	CLogic::CheckDistance(int x1,int y1,int x2,int y2,int distanceX,int distanc
 {
 	if ((abs(x2-x1) < distanceX) && (abs(y2-y1) < distanceY))
 		return	true;
+	
 	return	false;
 }
 

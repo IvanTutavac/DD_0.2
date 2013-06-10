@@ -83,6 +83,13 @@ struct _logicFlags
 	void			Reset();
 };
 
+struct _textLogic
+{
+	TextState	textState; // use TS_
+	int			NPCIndex;
+	int			ConversationIndex;
+};
+
 struct _TextRenderInfo
 {
 	bool			nextTextBox;
@@ -107,6 +114,7 @@ private:
 
 	_lockFlags		m_lockFlags;
 	_logicFlags		m_logicFlags;
+	_textLogic		m_textLogic;
 
 	int				m_UniqueSpellID; // used to set unique _spell.ID
 	int				m_IDLimit;
@@ -131,7 +139,6 @@ private:
 	void			Collision();
 	void			Action();
 	void			FinalCheck(); // clean up ...
-
 
 	bool			CheckCollision(int x1,int y1,int x2,int y2,int size);
 	// check point collision with an object that has x2,y2,sizeX and sizeY

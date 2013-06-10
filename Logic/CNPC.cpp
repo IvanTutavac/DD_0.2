@@ -102,3 +102,38 @@ void	CNPC::AvailableConversations()
 		}
 	}
 }
+
+void	CNPC::FinishedConversation(TextState &state)
+{
+	if (state == TS_introduction)
+		state = TS_option;
+	else if (state == TS_yes)
+		state = TS_wait;
+	else if (state == TS_no)
+		state = TS_introduction;
+	else if (state == TS_wait)
+		state = TS_finished;
+}
+
+int		CNPC::GetQuestID(int index)
+{
+	if (m_VConversation[index]->m_questID != -1)
+		return	m_VConversation[index]->m_questID;
+	
+	return	-1;
+}
+
+void	CNPC::UpdateConversations(int index)
+{
+	for (int i = 0; i < m_VConversation.size(); i++)
+	{
+		if (m_VConversation[i]->m_hidden)
+		{
+			if (m_VConversation[i]->m_VQuestRequiredID[i] == m_VConversation[index]->m_questID)
+			{
+				m_VConversation[i]->m_hidden = false;
+			}
+		}
+	}
+	m_VConversation[index]->m_hidden = true;
+}
