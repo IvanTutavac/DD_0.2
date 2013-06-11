@@ -22,6 +22,7 @@
 #include "CNPC.h"
 #include "CConversation.h"
 
+
 bool	CNPC::Init()
 {
 	CConversation	*Conversation	=	DD_NEW	CConversation;
@@ -90,8 +91,39 @@ bool	CNPC::Init()
 
 	m_VConversation.push_back(Conversation2);
 
+	m_conversation = "Default razgovor";
+
 	return	true;
 }
+
+bool	CNPC::Init(std::string text)
+{
+	m_conversation = text;
+
+	return	true;
+}
+
+/*bool	CNPC::Init(std::vector<std::string> VText,int questID,int questRequiredID,bool hidden,TextState state)
+{
+	if (VText.size < 1)
+		return	false;
+
+	CConversation	*Conversation = DD_NEW CConversation;
+
+	for (int i = 0; i < VText.size(); i++)
+	{
+		Conversation->m_VText.push_back(VText[i]);
+	}
+
+	Conversation->m_hidden	=	hidden;
+	Conversation->m_state	=	state;
+	Conversation->m_questID =	questID;
+	Conversation->m_questRequiredID	=	questRequiredID;
+
+	m_VConversation.push_back(Conversation);
+
+	return	true;
+}*/
 
 void	CNPC::Clean()
 {

@@ -18,7 +18,7 @@
 */
 
 #pragma	once
-//#include <windows.h>
+#include <windows.h>
 //#include <SDKDDKVer.h>
 #include <atlconv.h>
 //#include <winnt.h>

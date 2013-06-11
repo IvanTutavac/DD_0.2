@@ -149,6 +149,12 @@ bool	CGame::Logic(double deltaTime)
 
 		m_pLogic->m_textRenderInfo.setFirstTextBox = false;
 	}
+	else if (m_pLogic->m_textRenderInfo.setCommonTextBox)
+	{
+		m_pRender->SetTextBox(m_pLogic->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex]->m_conversation);
+
+		m_pLogic->m_textRenderInfo.setCommonTextBox = false;
+	}
 	else if (m_pLogic->m_textRenderInfo.setTextBox)
 	{
 		int i	=	m_pLogic->m_textRenderInfo.selectedNPCIndex;
@@ -178,11 +184,11 @@ bool	CGame::Render(double deltaTime)
 	{
 		m_pRender->RenderMap(m_pLogic->m_pMap);
 
-		if (m_pLogic->m_renderFlags.renderFirstTextBox)
+		if (m_pLogic->m_renderFlags.textBoxState == RTBS_renderFirstTextBox)
 		{
 			m_pRender->RenderTextBox(m_pLogic->m_textRenderInfo.chars,m_pLogic->m_textRenderInfo.nextTextBox,true);
 		}
-		else if (m_pLogic->m_renderFlags.renderTextBox)
+		else if (m_pLogic->m_renderFlags.textBoxState	== RTBS_renderTextBox)
 		{
 			m_pEventMessage->m_continueConversation = m_pRender->RenderTextBox(m_pLogic->m_textRenderInfo.chars,m_pLogic->m_textRenderInfo.nextTextBox,false);
 		}

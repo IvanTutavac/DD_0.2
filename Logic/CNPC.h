@@ -19,6 +19,7 @@
 
 #pragma once
 #include <vector>
+#include "dataStructs.h"
 
 class CConversation;
 
@@ -30,15 +31,14 @@ public:
 
 	std::vector<CConversation*>	m_VConversation;
 
-	// trebas implementirati !
-	// takodjer i slucaj kad npc nema selection razgovor !
-	// organizirati kod u metode
-	std::vector<CConversation*> m_conversation; // one text, after there's no text available we use this one
-	
+	std::string m_conversation; // one text, after there's no text available we use this one
+
 	std::string	m_availableConversations;
 	int			m_NumConversations; 
 
 	bool	Init();
+	bool	Init(std::string text);
+	//bool	Init(std::vector<std::string> VText,int questID,int questRequiredID,bool hidden,TextState state);
 	void	Clean();
 
 	// clears previous data and sets m_availableConversations from each m_VConversation[i]->m_vText[0] that is not hidden

@@ -50,12 +50,18 @@ enum RenderState
 	RS_renderOptions
 };
 
+enum RenderTextBoxState
+{
+	RTBS_nothing,
+	RTBS_renderTextBox,
+	RTBS_renderFirstTextBox
+};
+
 struct _renderFlags
 {
 	RenderState		state;	// use RS_
+	RenderTextBoxState textBoxState; // use RTBS_
 
-	bool			renderTextBox;
-	bool			renderFirstTextBox;
 	bool			renderGameExit;
 	bool			renderTalkMessage;
 
@@ -75,11 +81,18 @@ enum logicGameState
 	LGS_allTiles
 };
 
+enum NPCConversation
+{
+	NPCC_nothing,
+	NPCC_commonTalk,
+	NPCC_questTalk
+};
+
 struct _logicFlags
 {
 	logicGameState	state; // use LGS_
+	NPCConversation	npcConversation; // use NPCC_
 
-	bool			npcConversation;
 	void			Reset();
 };
 
@@ -88,7 +101,7 @@ struct _TextRenderInfo
 	bool			nextTextBox;
 	bool			setTextBox;
 	bool			setFirstTextBox;
-	bool			setLastTextBox;
+	bool			setCommonTextBox;
 	int				selectedNPCIndex; 
 	int				selectedConversationIndex;
 	int				selectedTextIndex;
@@ -142,6 +155,9 @@ private:
 	bool			CheckDistance(int x1,int y1,int x2,int y2,int distanceX,int distanceY);
 
 	void			CheckInGameClickRelease(const CEventMessage *EventMessage);
+	void			CheckTextBoxClick(const CEventMessage *EventMessage);
+	void			CheckConversationSelectionClick(const CEventMessage *EventMessage);
+	void			CheckTextSelectionClick(const CEventMessage *EventMessage);
 	bool			CheckMenuClick(const CEventMessage *EventMessage);
 	void			CheckOptionsClick(const CEventMessage *EventMessage);
 	void			CheckMapEditorClickRelease(const CEventMessage *EventMessage);

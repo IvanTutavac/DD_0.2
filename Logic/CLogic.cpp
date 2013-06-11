@@ -35,9 +35,8 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 void	_renderFlags::Reset()
 {
 	renderGameExit		=	false;
-	renderTextBox		=	false;
-	renderFirstTextBox	=	false;
 	renderTalkMessage	=	false;
+	textBoxState		=	RTBS_nothing;
 	state				=	RS_nothing;
 }
 
@@ -58,7 +57,7 @@ void	_lockFlags::DisableAll()
 void	_logicFlags::Reset()
 {
 	state = LGS_nothing;
-	npcConversation = false;
+	npcConversation = NPCC_nothing;
 }
 
 // CLogic functions
@@ -89,7 +88,7 @@ bool	CLogic::Init()
 	m_textRenderInfo.nextTextBox		=	false;
 	m_textRenderInfo.setTextBox			=	false;
 	m_textRenderInfo.setFirstTextBox	=	false;
-	m_textRenderInfo.setLastTextBox		=	false;
+	m_textRenderInfo.setCommonTextBox	=	false;
 
 	return	true;
 }
@@ -152,6 +151,13 @@ bool	CLogic::LoadAllEntities()
 		return	false;
 
 	m_VNpc.push_back(NPC);
+
+	CNPC	*NPC1 = DD_NEW CNPC;
+
+	if (!NPC1->Init("Just testing..."))
+		return	true;
+
+	m_VNpc.push_back(NPC1);
 
 	Log("Npc loaded");
 
@@ -239,33 +245,48 @@ bool	CLogic::CheckState(CEventMessage	*EventMessage)
 
 	if (!EventMessage->m_continueConversation && m_logicFlags.npcConversation)
 	{
-		m_VNpc[m_textRenderInfo.selectedNPCIndex]->UpdateConversation(m_textRenderInfo.selectedConversationIndex);
+		if (m_logicFlags.npcConversation == NPCC_questTalk)
+		{
+			// update Conversation status
+			m_VNpc[m_textRenderInfo.selectedNPCIndex]->UpdateConversation(m_textRenderInfo.selectedConversationIndex);
 
-		if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationSelection(m_textRenderInfo.selectedConversationIndex))
-		{
-			m_textRenderInfo.setTextBox =	true;
-			m_textRenderInfo.chars		=	0;
-			m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+			// we check for conversation selection 
+			if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationSelection(m_textRenderInfo.selectedConversationIndex))
+			{
+				m_textRenderInfo.setTextBox =	true;
+				m_textRenderInfo.chars		=	0;
+				m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+			}
+			else
+			{
+				m_logicFlags.npcConversation	=	NPCC_nothing;
+				m_renderFlags.textBoxState		=	RTBS_nothing;
+				m_textRenderInfo.nextTextBox	=	false;
+				m_lockFlags.cameraMovement		=	false;
+				m_lockFlags.movement			=	false;
+				m_lockFlags.scroll				=	false;
+			}
+
+
+			if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationFinished(m_textRenderInfo.selectedConversationIndex))
+			{
+				int questID = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetQuestID(m_textRenderInfo.selectedConversationIndex);
+
+				if (questID != -1)
+				{
+					// quest completed
+
+				}
+			}
 		}
-		else 
+		else if (m_logicFlags.npcConversation == NPCC_commonTalk)
 		{
-			m_logicFlags.npcConversation	=	false;
-			m_renderFlags.renderTextBox		=	false;
+			m_logicFlags.npcConversation	=	NPCC_nothing;
+			m_renderFlags.textBoxState		=	RTBS_nothing;
 			m_textRenderInfo.nextTextBox	=	false;
 			m_lockFlags.cameraMovement		=	false;
 			m_lockFlags.movement			=	false;
 			m_lockFlags.scroll				=	false;
-		}
-
-		if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationFinished(m_textRenderInfo.selectedConversationIndex))
-		{
-			int questID = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetQuestID(m_textRenderInfo.selectedConversationIndex);
-
-			if (questID != -1)
-			{
-				// quest completed
-
-			}
 		}
 	}
 
@@ -328,23 +349,31 @@ void	CLogic::Nearby(CEventMessage *EventMessage)
 	{
 		if (EventMessage->m_Event.Event == AE_PressedF && !m_logicFlags.npcConversation)
 		{
-			m_renderFlags.renderFirstTextBox		=	true;
 			m_textRenderInfo.chars					=	0;
-			m_logicFlags.npcConversation			=	true;
 			m_lockFlags.cameraMovement				=	true;
 			m_lockFlags.movement					=	true;
 			m_lockFlags.scroll						=	true;
 			EventMessage->m_continueConversation	=	true;
 			m_textRenderInfo.selectedNPCIndex		=	m_nearNPCIndex;
 
+			// starting conversation, get available conversations
 			m_VNpc[m_nearNPCIndex]->AvailableConversations();
 
+			// if no (quest) conversation available 
 			if (m_VNpc[m_nearNPCIndex]->m_availableConversations.size() < 1)
 			{
-				m_textRenderInfo.setLastTextBox		=	true;
+				m_logicFlags.npcConversation		=	NPCC_commonTalk;
+				m_textRenderInfo.setCommonTextBox	=	true;
+
+				// provjeriti koji su uvjeti vezani uz renderTextBox dal odgovara ovom slucaju common texta
+				m_renderFlags.textBoxState			=	RTBS_renderTextBox; 
 			}
 			else
+			{
+				m_logicFlags.npcConversation		=	NPCC_questTalk;
 				m_textRenderInfo.setFirstTextBox	=	true;
+				m_renderFlags.textBoxState			=	RTBS_renderFirstTextBox;
+			}
 		}
 		else
 		{
@@ -521,53 +550,77 @@ void	CLogic::CheckInGameClickRelease(const CEventMessage *EventMessage)
 {
 	if (m_logicFlags.npcConversation)
 	{
-		if (m_renderFlags.renderTextBox)
-		{
-			if(CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,84))
-			{
-				if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationSelection(m_textRenderInfo.selectedConversationIndex))
-				{
-					if (EventMessage->m_Event.y >= 260 && EventMessage->m_Event.y <= 280)
-					{
-						m_textRenderInfo.setTextBox =	true;
-						m_textRenderInfo.chars		=	0;
-						m_VNpc[m_textRenderInfo.selectedNPCIndex]->SetConversationStateYes(m_textRenderInfo.selectedConversationIndex);
-						m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
-					}
-					else if (EventMessage->m_Event.y > 280 && EventMessage->m_Event.y <= 300)
-					{
-						m_textRenderInfo.setTextBox =	true;
-						m_textRenderInfo.chars		=	0;
-						m_VNpc[m_textRenderInfo.selectedNPCIndex]->SetConversationStateNo(m_textRenderInfo.selectedConversationIndex);
-						m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
-					}
-				}
-				else 
-					m_textRenderInfo.nextTextBox = true;
+		CheckTextBoxClick(EventMessage);
+	}
+}
 
+void	CLogic::CheckTextBoxClick(const CEventMessage *EventMessage)
+{
+	if (m_renderFlags.textBoxState == RTBS_renderTextBox) 
+	{
+		CheckTextSelectionClick(EventMessage);
+	}
+	else if (m_renderFlags.textBoxState == RTBS_renderFirstTextBox)
+	{
+		CheckConversationSelectionClick(EventMessage);
+	}
+}
+
+void	CLogic::CheckConversationSelectionClick(const CEventMessage *EventMessage)
+{
+	int height = m_VNpc[m_textRenderInfo.selectedNPCIndex]->m_NumConversations;
+
+	if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,240,404,height * 20))
+	{
+		m_renderFlags.textBoxState			=	RTBS_renderTextBox;
+		//m_renderFlags.renderFirstTextBox	=	false;
+		//m_renderFlags.renderTextBox		=	true;
+		m_textRenderInfo.setTextBox			=	true;
+
+		for (int i = 0; i < height; i++)
+		{
+			if (EventMessage->m_Event.y >= 240+20*i && EventMessage->m_Event.y <= 240+20*(i+1))
+			{
+				// conversation index
+				m_textRenderInfo.selectedConversationIndex = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetConversationIndex(i);				
 			}
 		}
-		else if (m_renderFlags.renderFirstTextBox)
+
+		// text index
+		m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+	}
+}
+
+void	CLogic::CheckTextSelectionClick(const CEventMessage	*EventMessage)
+{
+	if(CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,84))
+	{
+		if (m_logicFlags.npcConversation == NPCC_questTalk)
 		{
-			int height = m_VNpc[m_textRenderInfo.selectedNPCIndex]->m_NumConversations;
-
-			if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,240,404,height * 20))
+			// yes no selection
+			if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationSelection(m_textRenderInfo.selectedConversationIndex))
 			{
-				m_renderFlags.renderFirstTextBox	=	false;
-				m_renderFlags.renderTextBox			=	true;
-				m_textRenderInfo.setTextBox			=	true;
-
-				for (int i = 0; i < height; i++)
+				if (EventMessage->m_Event.y >= 260 && EventMessage->m_Event.y <= 280) // yes option
 				{
-					if (EventMessage->m_Event.y >= 240+20*i && EventMessage->m_Event.y <= 240+20*(i+1))
-					{
-						m_textRenderInfo.selectedConversationIndex = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetConversationIndex(i);				
-					}
+					m_textRenderInfo.setTextBox =	true;
+					m_textRenderInfo.chars		=	0;
+					m_VNpc[m_textRenderInfo.selectedNPCIndex]->SetConversationStateYes(m_textRenderInfo.selectedConversationIndex);
+					m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
 				}
-
-				m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
-				//m_textRenderInfo.selectedTextIndex = 1; // for testing
+				else if (EventMessage->m_Event.y > 280 && EventMessage->m_Event.y <= 300) // no option
+				{
+					m_textRenderInfo.setTextBox =	true;
+					m_textRenderInfo.chars		=	0;
+					m_VNpc[m_textRenderInfo.selectedNPCIndex]->SetConversationStateNo(m_textRenderInfo.selectedConversationIndex);
+					m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+				}
 			}
+			else  // next textBox
+				m_textRenderInfo.nextTextBox = true;
+		}
+		else if (m_logicFlags.npcConversation == NPCC_commonTalk)
+		{
+			m_textRenderInfo.nextTextBox = true;
 		}
 	}
 }

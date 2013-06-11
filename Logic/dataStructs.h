@@ -42,4 +42,15 @@ struct _spell
 	SpellType	type; // use ST_
 };
 
+enum TextState 
+{            
+	TS_nothing,
+	TS_introduction, // text started
+	TS_option,		 // yes no
+	TS_yes,
+	TS_no,
+	TS_wait,
+	TS_finished
+};
+
 

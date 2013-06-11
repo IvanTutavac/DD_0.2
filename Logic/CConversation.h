@@ -20,6 +20,7 @@
 #pragma	once
 #include <vector>
 #include <string>
+#include "dataStructs.h"
 
 /*
 	CNPC[NPCIndex] ->
@@ -32,18 +33,6 @@
 			 -> 3 text is for no option
 			 -> we can hide the conversation or put finished option
 */
-
-enum TextState 
-{            
-	TS_nothing,
-	TS_introduction, // text started
-	TS_option,		 // yes no
-	TS_yes,
-	TS_no,
-	TS_wait,
-	TS_finished
-};
-
 
 class	CConversation
 {
