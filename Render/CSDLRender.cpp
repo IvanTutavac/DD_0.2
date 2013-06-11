@@ -173,7 +173,8 @@ void	CSDLRender::RenderMap(CMap *MapPointer)
 		x = MapPointer->m_enemyXY[i].x;
 		y = MapPointer->m_enemyXY[i].y;
 		if (CheckIfInWindow(MapPointer->m_cameraX,MapPointer->m_cameraY,x,y))
-			RenderImage(x,y,m_pEnemySurface->m_imageSurface[i],m_pWindow);
+			RenderImage(x,y,m_pEnemySurface->m_imageSurface[MapPointer->m_npcXY[i].imgID],m_pWindow);
+			/* You can not use ->m_imageSurface[i] for image that needs to be drawn, because there can be more than one*/
 	}
 
 	for (int i = 0; i < MapPointer->m_npcXY.size(); i++)
@@ -181,7 +182,7 @@ void	CSDLRender::RenderMap(CMap *MapPointer)
 		x = MapPointer->m_npcXY[i].x;
 		y = MapPointer->m_npcXY[i].y;
 		if (CheckIfInWindow(MapPointer->m_cameraX,MapPointer->m_cameraY,x,y))
-			RenderImage(x,y,m_pNPCSurface->m_imageSurface[i],m_pWindow);
+			RenderImage(x,y,m_pNPCSurface->m_imageSurface[MapPointer->m_npcXY[i].imgID],m_pWindow);
 	}
 
 	for (int i = 0; i < MapPointer->m_spell.size(); i++)
@@ -190,8 +191,6 @@ void	CSDLRender::RenderMap(CMap *MapPointer)
 		y = MapPointer->m_spell[i].y;
 		if (CheckIfInWindow(MapPointer->m_cameraX,MapPointer->m_cameraY,x,y))
 			RenderImage(x,y,m_pSpellSurface->m_imageSurface[MapPointer->m_spell[i].imgID],m_pWindow);
-		/* With spells, you can not use ->m_imageSurface[i] for image that needs to be drawn, because there can be more than one same spell
-		this must also be solved with enemies and npc because there can be same enemies on the map and i can not be used as an index ! */
 	}
 }
 
@@ -213,6 +212,7 @@ bool	CSDLRender::RenderTextBox(int &chars,bool &next,bool first)
 {
 	// if (first) we are showing conversations which can be selected, so after a nextLine is detected, we go to the nextLine
 	// if (next) we need to get the new m_text by removing the last text box words so that the next text box can be drawn
+	// nextLine can be used as a \n
 
 	SDL_Color	fontColor;
 	fontColor.r = 98, fontColor.g = 0,fontColor.b = 49;
@@ -258,14 +258,12 @@ bool	CSDLRender::RenderTextBox(int &chars,bool &next,bool first)
 		if (countChars) // needs to be bellow the break check because we want to save the word that would otherwise be deleted 
 			chars += (std::char_traits<char>::length(word) +1); // +1 for space
 
-		//if (first)
-		//{
-			if (!std::char_traits<char>::compare("nextLine",word,8))
-			{
-				draw = false; // don't draw nextLine and don't update x
-				x = 120, y+=20; 
-			}
-		//}
+		if (!std::char_traits<char>::compare("nextLine",word,8)) 
+		{
+			draw = false; // don't draw nextLine and don't update x
+			x = 120, y+=20; 
+		}
+		
 		else if (x + surface->w >= 520)
 			x = 120,y+=20;
 

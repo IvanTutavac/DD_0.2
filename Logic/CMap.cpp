@@ -34,8 +34,17 @@ bool	CMap::Init()
 
 	_location	temp;
 	temp.x = 96,temp.y = 96;
+	temp.ID = 0;
+	temp.imgID = 0;
 
 	m_npcXY.push_back(temp);
+
+	_location temp1;
+	temp1.x = 14*32,temp1.y = 7*32;
+	temp1.ID = 1;
+	temp1.imgID = 0;
+
+	m_npcXY.push_back(temp1);
 
 	if (!LoadMap("data/Map1.dat"))
 		return	false;

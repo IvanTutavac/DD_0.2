@@ -245,49 +245,7 @@ bool	CLogic::CheckState(CEventMessage	*EventMessage)
 
 	if (!EventMessage->m_continueConversation && m_logicFlags.npcConversation)
 	{
-		if (m_logicFlags.npcConversation == NPCC_questTalk)
-		{
-			// update Conversation status
-			m_VNpc[m_textRenderInfo.selectedNPCIndex]->UpdateConversation(m_textRenderInfo.selectedConversationIndex);
-
-			// we check for conversation selection 
-			if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationSelection(m_textRenderInfo.selectedConversationIndex))
-			{
-				m_textRenderInfo.setTextBox =	true;
-				m_textRenderInfo.chars		=	0;
-				m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
-			}
-			else
-			{
-				m_logicFlags.npcConversation	=	NPCC_nothing;
-				m_renderFlags.textBoxState		=	RTBS_nothing;
-				m_textRenderInfo.nextTextBox	=	false;
-				m_lockFlags.cameraMovement		=	false;
-				m_lockFlags.movement			=	false;
-				m_lockFlags.scroll				=	false;
-			}
-
-
-			if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationFinished(m_textRenderInfo.selectedConversationIndex))
-			{
-				int questID = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetQuestID(m_textRenderInfo.selectedConversationIndex);
-
-				if (questID != -1)
-				{
-					// quest completed
-
-				}
-			}
-		}
-		else if (m_logicFlags.npcConversation == NPCC_commonTalk)
-		{
-			m_logicFlags.npcConversation	=	NPCC_nothing;
-			m_renderFlags.textBoxState		=	RTBS_nothing;
-			m_textRenderInfo.nextTextBox	=	false;
-			m_lockFlags.cameraMovement		=	false;
-			m_lockFlags.movement			=	false;
-			m_lockFlags.scroll				=	false;
-		}
+		UpdateConversationState();
 	}
 
 	return	true;
@@ -459,6 +417,54 @@ void	CLogic::FinalCheck()
 }
 // end of main logic functions
 
+void	CLogic::UpdateConversationState()
+{
+	if (m_logicFlags.npcConversation == NPCC_questTalk)
+	{
+		// update Conversation status
+		m_VNpc[m_textRenderInfo.selectedNPCIndex]->UpdateConversation(m_textRenderInfo.selectedConversationIndex);
+
+		// we check for conversation selection 
+		if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationSelection(m_textRenderInfo.selectedConversationIndex))
+		{
+			m_textRenderInfo.setTextBox =	true;
+			m_textRenderInfo.chars		=	0;
+			m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+		}
+		else // yes or no clicked so we finish the conversation
+		{
+			m_logicFlags.npcConversation	=	NPCC_nothing;
+			m_renderFlags.textBoxState		=	RTBS_nothing;
+			m_textRenderInfo.nextTextBox	=	false;
+			m_lockFlags.cameraMovement		=	false;
+			m_lockFlags.movement			=	false;
+			m_lockFlags.scroll				=	false;
+		}
+
+		// if quest conversation has finished
+		if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationFinished(m_textRenderInfo.selectedConversationIndex))
+		{
+			int questID = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetQuestID(m_textRenderInfo.selectedConversationIndex);
+
+			if (questID != -1)
+			{
+				// quest completed
+
+			}
+		}
+	}
+	// end a normal conversation
+	else if (m_logicFlags.npcConversation == NPCC_commonTalk)
+	{
+		m_logicFlags.npcConversation	=	NPCC_nothing;
+		m_renderFlags.textBoxState		=	RTBS_nothing;
+		m_textRenderInfo.nextTextBox	=	false;
+		m_lockFlags.cameraMovement		=	false;
+		m_lockFlags.movement			=	false;
+		m_lockFlags.scroll				=	false;
+	}
+}
+
 bool	CLogic::InitMapEditor()
 {
 	m_pMap->m_cameraX = 320;
@@ -627,12 +633,12 @@ void	CLogic::CheckTextSelectionClick(const CEventMessage	*EventMessage)
 
 void	CLogic::CheckMapEditorClickRelease(const CEventMessage *EventMessage)
 {
-	if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,20,WINDOW_HEIGHT,192,64))
+	if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,20,WINDOW_HEIGHT,192,64)) // return button
 	{
 		m_logicFlags.state		=	LGS_mainMenu;
 		m_renderFlags.state		=	RS_renderMainMenu;
 	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,210,WINDOW_HEIGHT,192,64))
+	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,210,WINDOW_HEIGHT,192,64)) // all tiles button
 	{
 		m_logicFlags.state		=	LGS_allTiles;
 		m_renderFlags.state		=	RS_renderAllTiles;
@@ -642,11 +648,11 @@ void	CLogic::CheckMapEditorClickRelease(const CEventMessage *EventMessage)
 		if (!m_pMap->m_allTilesMapState)
 			m_pMap->InitAllTilesMap();
 	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,400,WINDOW_HEIGHT,192,64))
+	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,400,WINDOW_HEIGHT,192,64)) // save button
 	{
 		m_pMap->SaveMapEditorMap();
 	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,0,0,WINDOW_WIDTH,WINDOW_HEIGHT))
+	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,0,0,WINDOW_WIDTH,WINDOW_HEIGHT)) // tile setting
 	{
 		int k = (int)((EventMessage->m_Event.y + m_pMap->m_cameraY-WINDOW_HEIGHT/2)/32);
 		int l = (int)((EventMessage->m_Event.x + m_pMap->m_cameraX-WINDOW_WIDTH/2)/32);
@@ -658,6 +664,7 @@ void	CLogic::CheckMapEditorClickRelease(const CEventMessage *EventMessage)
 void	CLogic::CheckMapEditorClickPress(const CEventMessage *EventMessage)
 {
 	// if it's pressed but not released we check motion event, because pressed event has x and y of where the click happened
+	// so, while we're having left mouse click pressed, set the map tile
 	if (CheckPointCollision(EventMessage->m_MotionEvent.x,EventMessage->m_MotionEvent.y,0,0,WINDOW_WIDTH,WINDOW_HEIGHT))
 	{
 		int k = (int)((EventMessage->m_MotionEvent.y + m_pMap->m_cameraY-WINDOW_HEIGHT/2)/32);
@@ -682,7 +689,7 @@ void	CLogic::CheckAllTilesClick(const CEventMessage *EventMessage)
 		int k = EventMessage->m_Event.x / 32;
 		int l = EventMessage->m_Event.y / 32;
 
-		m_pMap->m_selectedTile	=	m_pMap->m_allTilesMap[k][l];
+		m_pMap->m_selectedTile	=	m_pMap->m_allTilesMap[l][k];
 	}
 }
 

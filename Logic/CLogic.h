@@ -146,6 +146,8 @@ private:
 	void			Action();
 	void			FinalCheck(); // clean up ...
 
+	void			UpdateConversationState();
+
 	bool			CheckCollision(int x1,int y1,int x2,int y2,int size);
 	// check point collision with an object that has x2,y2,sizeX and sizeY
 	bool			CheckPointCollision(int x1,int y1,int x2,int y2,int sizeX,int sizeY);
