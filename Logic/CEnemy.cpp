@@ -39,3 +39,22 @@ void	CEnemy::Clean()
 	DD_DELETE(m_pEvent);
 }
 
+void	CEnemy::SetTypeID(int value)
+{
+	m_typeID = value;
+}
+
+int		CEnemy::GetTypeID()
+{
+	return	m_typeID;
+}
+
+void	CEnemy::SetID(int value)
+{
+	m_ID = value;
+}
+
+int		CEnemy::GetID()
+{
+	return	m_ID;
+}

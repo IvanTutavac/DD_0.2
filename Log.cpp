@@ -28,9 +28,31 @@ void	Log(std::string text)
 	logDat.close();
 }
 
+void	Log(std::string fileName,std::string text)
+{
+	if (fileName.rfind(".txt") == std::string::npos)
+		fileName+=".txt";	
+
+	std::ofstream logDat;
+	logDat.open(fileName.c_str(),std::ios::app);
+	logDat<<text<<std::endl;
+	logDat.clear();
+	logDat.close();
+}
+
 void	CleanLogFile()
 {
 	std::ofstream	logDat("log.txt");
+	logDat.clear();
+	logDat.close();
+}
+
+void	CleanLogFile(std::string fileName)
+{
+	if (fileName.rfind(".txt") == std::string::npos)
+		fileName+=".txt";	
+
+	std::ofstream logDat(fileName.c_str());
 	logDat.clear();
 	logDat.close();
 }

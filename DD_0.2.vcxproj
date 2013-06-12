@@ -92,6 +92,8 @@
     <ClCompile Include="Logic\CMap.cpp" />
     <ClCompile Include="Logic\CNPC.cpp" />
     <ClCompile Include="Logic\CPlayer.cpp" />
+    <ClCompile Include="Logic\Quest\CQuest.cpp" />
+    <ClCompile Include="Logic\Quest\CQuestManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Render\CImageSurface.cpp" />
     <ClCompile Include="Render\CSDLRender.cpp" />
@@ -112,8 +114,9 @@
     <ClInclude Include="Logic\CMap.h" />
     <ClInclude Include="Logic\CNPC.h" />
     <ClInclude Include="Logic\CPlayer.h" />
-    <ClInclude Include="Logic\CQuest.h" />
+    <ClInclude Include="Logic\Quest\CQuest.h" />
     <ClInclude Include="Logic\dataStructs.h" />
+    <ClInclude Include="Logic\Quest\CQuestManager.h" />
     <ClInclude Include="Render\CImageSurface.h" />
     <ClInclude Include="Render\CSDLRender.h" />
     <ClInclude Include="Render\IRender.h" />

@@ -22,6 +22,7 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 //#include "../Events/CEvent.h"
 #include "../Events/CEventMessage.h"
 #include "CLogic.h"
+#include "Quest\CQuestManager.h"
 #include "CMap.h"
 #include "CPlayer.h"
 #include "CEnemy.h"
@@ -67,10 +68,15 @@ bool	CLogic::Init()
 	Log("Logic init started");
 
 	m_pMap			=	DD_NEW CMap;
+	m_pQuest		=	DD_NEW CQuestManager;
 
 	if (!m_pMap->Init())
 		return	false;
 	Log("Map init finished");
+
+	if (!m_pQuest->Init())
+		return	false;
+	Log("Quests loaded");
 
 	if (!LoadAllSpells())
 		return	false;
@@ -97,6 +103,9 @@ void	CLogic::Clean()
 {
 	m_pMap->Clean();
 	DD_DELETE(m_pMap);
+
+	m_pQuest->Clean();
+	DD_DELETE(m_pQuest);
 
 	m_pPlayer->Clean();
 	DD_DELETE(m_pPlayer);
@@ -141,6 +150,8 @@ bool	CLogic::LoadAllEntities()
 
 	dummy->SetHP(50);
 	dummy->SetMP(20);
+	dummy->SetTypeID(0);
+	dummy->SetID(0);
 
 	m_VEnemy.push_back(dummy);
 	Log("Enemies loaded");

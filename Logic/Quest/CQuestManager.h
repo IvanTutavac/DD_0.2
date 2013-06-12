@@ -17,11 +17,25 @@
     along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-#include <fstream>
-#include <string>
+#include <vector>
 
-void	Log(std::string	text);
-void	Log(std::string fileName,std::string text);
-void	CleanLogFile();
-void	CleanLogFile(std::string fileName);
+class CQuest;
+
+class CQuestManager
+{
+private:
+
+	std::vector<CQuest*> m_VQuests; // contains all quests
+
+	int		m_index; // selected quest;
+
+	bool	LoadData();
+
+public:
+
+	void	FindIndex();
+	int		GetIndex();
+
+	bool	Init();
+	void	Clean();
+};

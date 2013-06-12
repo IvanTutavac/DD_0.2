@@ -23,7 +23,45 @@ class	CQuest
 {
 private:
 
+	int		m_typeID;
+	int		m_requiredID;
+	int		m_numRequired;
+	int		m_goldReward;
+	int		m_itemReward; // itemID
+	int		m_numItemReward;
 
+	bool	m_completed;
+	bool	m_active;
 
 public:
+
+	CQuest();
+
+	bool	Init();
+	void	Clean();
+
+	void	SetTypeID(int value);
+	int		GetTypeID();
+
+	void	SetRequiredID(int value);
+	int		GetRequiredID();
+
+	void	SetNumRequired(int value);
+	int		GetNumRequired();
+
+	void	SetGoldReward(int value);
+	int		GetGoldReward();
+
+	void	SetItemReward(int value);
+	int		GetItemReward();
+
+	void	SetNumItemReward(int value);
+	int		GetNumItemReward();
+
+	void	SetCompleted(bool value);
+	bool	IsCompleted();
+
+	void	SetActive(bool value);
+	bool	IsActive();
+
 };

@@ -17,11 +17,50 @@
     along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-#include <fstream>
-#include <string>
+#include "CQuestManager.h"
+#include "CQuest.h"
+#include "..\..\Log.h"
+#include "..\..\debug.h"
 
-void	Log(std::string	text);
-void	Log(std::string fileName,std::string text);
-void	CleanLogFile();
-void	CleanLogFile(std::string fileName);
+bool	CQuestManager::Init()
+{
+	CleanLogFile("QuestLog");
+
+	if (!LoadData())
+	{
+		Log("QuestLog","LoadData() failed");
+		return	false;
+	}
+
+	Log("QuestLog","Data loaded");
+
+
+	Log("QuestLog","Quests loaded");
+	return	true;
+}
+
+void	CQuestManager::Clean()
+{
+	for (int i = 0; i < m_VQuests.size(); i++)
+	{
+		m_VQuests[i]->Clean();
+		DD_DELETE(m_VQuests[i]);
+	}
+	Log("QuestLog","Quests deleted");
+}
+
+bool	CQuestManager::LoadData()
+{
+
+	return	true;
+}
+
+void	CQuestManager::FindIndex()
+{
+
+}
+
+int		CQuestManager::GetIndex()
+{
+	return	m_index;
+}

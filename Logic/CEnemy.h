@@ -27,6 +27,9 @@ class CEnemy : public CEntity
 
 private:
 
+	int				m_typeID; 
+	int				m_ID;
+
 public:
 
 	CEventMessage	*m_pEvent;
@@ -34,4 +37,10 @@ public:
 	bool			Init();
 	void			Clean();
 
+
+	void	SetTypeID(int value);
+	int		GetTypeID();
+
+	void	SetID(int value);
+	int		GetID();
 };

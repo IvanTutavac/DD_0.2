@@ -25,7 +25,7 @@ class CMap;
 class CEntity;
 class CEnemy;
 class CPlayer;
-class CQuest;
+class CQuestManager;
 class CNPC;
 //class CTimer;
 
@@ -115,7 +115,8 @@ private:
 	
 	std::vector<CEnemy*> m_VEnemy; 
 	std::vector<CEnemy*> m_VCloseEnemy;
-	std::vector<CQuest*> m_VQuests; // contains all quests
+	//std::vector<CQuest*> m_VQuests; // contains all quests
+	CQuestManager	*m_pQuest;
 
 	std::vector<_spell> m_VAllSpells; // contains all spells
 

@@ -60,6 +60,12 @@
     <ClCompile Include="Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\Quest\CQuest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\Quest\CQuestManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Events\CEvent.h">
@@ -113,13 +119,16 @@
     <ClInclude Include="Logic\CNPC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\CQuest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Logic\CConversation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Quest\CQuest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\Quest\CQuestManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
