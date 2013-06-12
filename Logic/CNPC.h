@@ -38,9 +38,9 @@ public:
 
 	bool	Init();
 	bool	Init(std::string text);
-	//bool	Init(std::vector<std::string> VText,int questID,int questRequiredID,bool hidden,TextState state);
+	bool	Init(std::vector<std::string> VText,int questID,int questRequiredID,TextState state,bool hidden);
 	void	Clean();
-
+	
 	// clears previous data and sets m_availableConversations from each m_VConversation[i]->m_vText[0] that is not hidden
 	void	AvailableConversations(); 
 
@@ -52,6 +52,7 @@ public:
 	
 	bool	ConversationFinished(int index);
 	bool	ConversationSelection(int index);
+	bool	ConversationWait(int index);
 	void	SetConversationStateYes(int index);
 	void	SetConversationStateNo(int index);
 

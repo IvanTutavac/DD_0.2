@@ -252,7 +252,7 @@ bool	CSDLRender::RenderTextBox(int &chars,bool &next,bool first)
 
 		surface	= TTF_RenderText_Solid(m_pHUDFont,word,fontColor);
 
-		if (x+surface->w >= 520 && y == 300 && !first)
+		if (x+surface->w >= 520 && y == 300)// && !first) 
 			break;
 
 		if (countChars) // needs to be bellow the break check because we want to save the word that would otherwise be deleted 

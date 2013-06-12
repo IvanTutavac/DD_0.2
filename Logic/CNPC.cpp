@@ -103,9 +103,9 @@ bool	CNPC::Init(std::string text)
 	return	true;
 }
 
-/*bool	CNPC::Init(std::vector<std::string> VText,int questID,int questRequiredID,bool hidden,TextState state)
+bool	CNPC::Init(std::vector<std::string> VText,int questID,int questRequiredID,TextState state,bool hidden = false)
 {
-	if (VText.size < 1)
+	if (VText.size() < 1)
 		return	false;
 
 	CConversation	*Conversation = DD_NEW CConversation;
@@ -123,7 +123,7 @@ bool	CNPC::Init(std::string text)
 	m_VConversation.push_back(Conversation);
 
 	return	true;
-}*/
+}
 
 void	CNPC::Clean()
 {
@@ -196,6 +196,14 @@ bool	CNPC::ConversationFinished(int index)
 bool	CNPC::ConversationSelection(int index)
 {
 	if (m_VConversation[index]->m_state == TS_option)
+		return	true;
+
+	return	false;
+}
+
+bool	CNPC::ConversationWait(int index)
+{
+	if (m_VConversation[index]->m_state == TS_wait)
 		return	true;
 
 	return	false;

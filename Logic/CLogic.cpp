@@ -421,6 +421,14 @@ void	CLogic::UpdateConversationState()
 {
 	if (m_logicFlags.npcConversation == NPCC_questTalk)
 	{
+		// if wait state, to continue we need to check if the quest has been completed 
+		if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationWait(m_textRenderInfo.selectedConversationIndex))
+		{
+			// fali if
+			// if quest has not been completed
+			EndConversation();
+			return;
+		}
 		// update Conversation status
 		m_VNpc[m_textRenderInfo.selectedNPCIndex]->UpdateConversation(m_textRenderInfo.selectedConversationIndex);
 
@@ -433,12 +441,7 @@ void	CLogic::UpdateConversationState()
 		}
 		else // yes or no clicked so we finish the conversation
 		{
-			m_logicFlags.npcConversation	=	NPCC_nothing;
-			m_renderFlags.textBoxState		=	RTBS_nothing;
-			m_textRenderInfo.nextTextBox	=	false;
-			m_lockFlags.cameraMovement		=	false;
-			m_lockFlags.movement			=	false;
-			m_lockFlags.scroll				=	false;
+			EndConversation();
 		}
 
 		// if quest conversation has finished
@@ -456,13 +459,18 @@ void	CLogic::UpdateConversationState()
 	// end a normal conversation
 	else if (m_logicFlags.npcConversation == NPCC_commonTalk)
 	{
-		m_logicFlags.npcConversation	=	NPCC_nothing;
-		m_renderFlags.textBoxState		=	RTBS_nothing;
-		m_textRenderInfo.nextTextBox	=	false;
-		m_lockFlags.cameraMovement		=	false;
-		m_lockFlags.movement			=	false;
-		m_lockFlags.scroll				=	false;
+		EndConversation();
 	}
+}
+
+void	CLogic::EndConversation()
+{
+	m_logicFlags.npcConversation	=	NPCC_nothing;
+	m_renderFlags.textBoxState		=	RTBS_nothing;
+	m_textRenderInfo.nextTextBox	=	false;
+	m_lockFlags.cameraMovement		=	false;
+	m_lockFlags.movement			=	false;
+	m_lockFlags.scroll				=	false;
 }
 
 bool	CLogic::InitMapEditor()
@@ -664,7 +672,7 @@ void	CLogic::CheckMapEditorClickRelease(const CEventMessage *EventMessage)
 void	CLogic::CheckMapEditorClickPress(const CEventMessage *EventMessage)
 {
 	// if it's pressed but not released we check motion event, because pressed event has x and y of where the click happened
-	// so, while we're having left mouse click pressed, set the map tile
+	// so, while we're holding left mouse click pressed, set the map tile
 	if (CheckPointCollision(EventMessage->m_MotionEvent.x,EventMessage->m_MotionEvent.y,0,0,WINDOW_WIDTH,WINDOW_HEIGHT))
 	{
 		int k = (int)((EventMessage->m_MotionEvent.y + m_pMap->m_cameraY-WINDOW_HEIGHT/2)/32);
