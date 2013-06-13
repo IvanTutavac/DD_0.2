@@ -160,6 +160,8 @@ bool	CLogic::LoadAllEntities()
 	if (!NPC->Init())
 		return	false;
 
+	NPC->SetQuestID(0,0); // testing...
+
 	m_VNpc.push_back(NPC);
 
 	CNPC	*NPC1 = DD_NEW CNPC;
@@ -377,8 +379,6 @@ void	CLogic::Nearby(CEventMessage *EventMessage)
 			{
 				m_logicFlags.npcConversation		=	NPCC_commonTalk;
 				m_textRenderInfo.setCommonTextBox	=	true;
-
-				// provjeriti koji su uvjeti vezani uz renderTextBox dal odgovara ovom slucaju common texta
 				m_renderFlags.textBoxState			=	RTBS_renderTextBox; 
 			}
 			else
@@ -469,6 +469,9 @@ void	CLogic::Action()
 void	CLogic::FinalCheck()
 {
 	CheckTimedOutSpells();
+
+	// nesto bi trebalo loviti vracenu vrijednost i ako je false, vratiti korisnika u izbornik
+	CheckIfAlive();
 }
 // end of main logic functions
 
@@ -477,12 +480,25 @@ void	CLogic::UpdateConversationState()
 	if (m_logicFlags.npcConversation == NPCC_questTalk)
 	{
 		// if wait state, to continue we need to check if the quest has been completed 
+		// if not, we won't update conversation status 
 		if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationWait(m_textRenderInfo.selectedConversationIndex))
 		{
-			// fali if
-			// if quest has not been completed
-			EndConversation();
-			return;
+			int questID = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetQuestID(m_textRenderInfo.selectedConversationIndex);
+
+			// valjda ???
+			if (!m_pQuest->CheckQuestCompleted(questID)) // quest has not been completed 
+			{
+				EndConversation();
+				return;
+			}
+			else  
+			{
+				//completed = false because of CheckQuestCompleted 
+				EndConversation();
+				m_VNpc[m_textRenderInfo.selectedNPCIndex]->UpdateConversation(m_textRenderInfo.selectedConversationIndex);
+				m_pQuest->SetActiveQuest(questID,false);
+				return;
+			}
 		}
 		// update Conversation status
 		m_VNpc[m_textRenderInfo.selectedNPCIndex]->UpdateConversation(m_textRenderInfo.selectedConversationIndex);
@@ -497,8 +513,9 @@ void	CLogic::UpdateConversationState()
 		else // yes or no clicked so we finish the conversation
 		{
 			EndConversation();
+			return; // check later
 		}
-
+		/*
 		// if quest conversation has finished
 		if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationFinished(m_textRenderInfo.selectedConversationIndex))
 		{
@@ -509,12 +526,13 @@ void	CLogic::UpdateConversationState()
 				// quest completed
 
 			}
-		}
+		}*/
 	}
 	// end a normal conversation
 	else if (m_logicFlags.npcConversation == NPCC_commonTalk)
 	{
 		EndConversation();
+		return;
 	}
 }
 
@@ -642,8 +660,6 @@ void	CLogic::CheckConversationSelectionClick(const CEventMessage *EventMessage)
 	if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,240,404,height * 20))
 	{
 		m_renderFlags.textBoxState			=	RTBS_renderTextBox;
-		//m_renderFlags.renderFirstTextBox	=	false;
-		//m_renderFlags.renderTextBox		=	true;
 		m_textRenderInfo.setTextBox			=	true;
 
 		for (int i = 0; i < height; i++)
@@ -675,6 +691,15 @@ void	CLogic::CheckTextSelectionClick(const CEventMessage	*EventMessage)
 					m_textRenderInfo.chars		=	0;
 					m_VNpc[m_textRenderInfo.selectedNPCIndex]->SetConversationStateYes(m_textRenderInfo.selectedConversationIndex);
 					m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+
+					// set the quest to active
+					int questID = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetQuestID(m_textRenderInfo.selectedConversationIndex);
+					if (questID != -1)
+					{
+						m_pQuest->FindIndex(questID);
+						m_pQuest->SetActiveQuest(true);
+					}
+
 				}
 				else if (EventMessage->m_Event.y > 280 && EventMessage->m_Event.y <= 300) // no option
 				{
@@ -1039,4 +1064,32 @@ void	CLogic::CheckTimedOutSpells()
 			m_pMap->m_spell.erase(m_pMap->m_spell.begin()+i);
 		}
 	}
+}
+
+bool	CLogic::CheckIfAlive()
+{
+	if (m_pPlayer->GetHP() < 1)
+		return	false;
+
+	for (int i = m_VCloseEnemy.size()-1; i >= 0; i--)
+	{
+		if (m_VCloseEnemy[i]->GetHP() < 1)
+		{
+			m_pQuest->UpdateQuest(m_VCloseEnemy[i]->GetTypeID());
+
+			// maybe m_VCloseEnemy should contain index with which we can access m_closeEnemyXY
+			for (int j = m_pMap->m_closeEnemyXY.size(); j >= 0; j--)
+			{
+				if (m_pMap->m_closeEnemyXY[j].ID == m_VCloseEnemy[i]->GetID())
+				{
+					m_pMap->m_closeEnemyXY.erase(m_pMap->m_closeEnemyXY.begin()+j);
+				}
+			}
+		
+			m_VCloseEnemy[i]->Clean();
+			m_VCloseEnemy.erase(m_VCloseEnemy.begin()+i);
+		}
+	}
+
+	return	true;
 }

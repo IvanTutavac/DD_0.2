@@ -190,7 +190,10 @@ private:
 
 
 	// check all spell timers, see if they exceeded their duration, if yes delete the spell from CMap and delete the spellTimer
-	void			CheckTimedOutSpells();
+	void			CheckTimedOutSpells(); 
+
+	// will return	false if player died, and check which monster died
+	bool			CheckIfAlive();
 
 public:
 

@@ -119,12 +119,105 @@ bool	CQuestManager::LoadData()
 	return	true;
 }
 
-void	CQuestManager::FindIndex()
+void	CQuestManager::UpdateQuest(int ID)
 {
+	for (int i = 0; i < m_VQuests.size(); i++)
+	{
+		if (m_VQuests[i]->GetRequiredID() == ID) // enemy found
+		{
+			int num = m_VQuests[i]->GetNumRequired();
 
+			if (num < 1)
+			{
+				num = 0;
+			}
+			else
+			{
+				m_VQuests[i]->SetNumRequired(num-1);
+			}
+		}
+	}
+}
+
+void	CQuestManager::FindIndex(int ID)
+{
+	m_index = GetIndex(ID);
 }
 
 int		CQuestManager::GetIndex()
 {
 	return	m_index;
+}
+
+void	CQuestManager::SetActiveQuest(bool value)
+{
+	m_VQuests[m_index]->SetActive(value);
+}
+
+void	CQuestManager::SetActiveQuest(int ID,bool value)
+{
+	m_VQuests[GetIndex(ID)]->SetActive(value);
+}
+
+bool	CQuestManager::IsActive()
+{
+	return	m_VQuests[m_index]->IsActive();
+}
+
+bool	CQuestManager::IsActive(int ID)
+{
+	return	m_VQuests[GetIndex(ID)]->IsActive();
+}
+
+int		CQuestManager::GetIndex(int ID)
+{
+	for (int i = 0; i < m_VQuests.size(); i++)
+	{
+		if (m_VQuests[i]->GetTypeID() == ID)
+			return	i;
+	}
+	return	-1;
+}
+
+void	CQuestManager::SetCompletedQuest(bool value)
+{
+	m_VQuests[m_index]->SetCompleted(value);
+}
+
+void	CQuestManager::SetCompletedQuest(int ID,bool value)
+{
+	m_VQuests[GetIndex(ID)]->SetCompleted(value);
+}
+
+bool	CQuestManager::IsCompleted(int ID)
+{
+	return	m_VQuests[GetIndex(ID)]->IsCompleted();
+}
+
+bool	CQuestManager::IsCompleted()
+{
+	return	m_VQuests[m_index]->IsCompleted();
+}
+
+bool	CQuestManager::CheckQuestCompleted(int ID)
+{
+	int index = GetIndex(ID);
+	if (m_VQuests[index]->GetNumRequired() < 1)
+	{
+		m_VQuests[index]->SetCompleted(true);
+
+		return	true;
+	}
+	return	false;
+}
+
+bool	CQuestManager::CheckQuestCompleted()
+{
+	if (m_VQuests[m_index]->GetNumRequired() < 1)
+	{
+		m_VQuests[m_index]->SetCompleted(true);
+
+		return	true;
+	}
+	return	false;
 }

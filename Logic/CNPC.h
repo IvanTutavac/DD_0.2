@@ -57,7 +57,8 @@ public:
 	void	SetConversationStateNo(int index);
 
 	// returns -1 if it's not a quest, if it is a quest, it will return the questID
-	int		GetQuestID(int index);
+	int		GetQuestID(int index/*conversationIndex*/);
+	void	SetQuestID(int index/*ConversationIndex*/,int value);
 
 	int		GetConversationIndex(int i);
 

@@ -170,6 +170,11 @@ int		CNPC::GetQuestID(int index)
 	return	-1;
 }
 
+void	CNPC::SetQuestID(int index,int value)
+{
+	m_VConversation[index]->m_questID = value;
+}
+
 void	CNPC::UpdateConversationVisibility(int index)
 {
 	for (int i = 0; i < m_VConversation.size(); i++)

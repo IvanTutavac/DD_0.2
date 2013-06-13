@@ -33,9 +33,29 @@ private:
 
 public:
 
-	void	FindIndex();
-	int		GetIndex();
-
 	bool	Init();
 	void	Clean();
+
+	// call it after an enemy has died, it will check if the enemy killed was required for a quest and reduce the numRequired
+	void	UpdateQuest(int ID/*enemyID*/);
+
+	// search all quests and set m_index 
+	void	FindIndex(int ID);
+	int		GetIndex(int ID);
+	int		GetIndex();
+
+	void	SetActiveQuest(bool value);
+	void	SetActiveQuest(int ID,bool value);
+	bool	IsActive(int ID);
+	bool	IsActive();
+
+	// if numRequired < 1 set it to completed and return true
+	bool	CheckQuestCompleted(int ID);
+	bool	CheckQuestCompleted();
+	void	SetCompletedQuest(bool value);
+	void	SetCompletedQuest(int ID,bool value);
+	bool	IsCompleted(int ID);
+	bool	IsCompleted();
+
+
 };
