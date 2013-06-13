@@ -29,9 +29,19 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 #include "CNPC.h"
 #include "..\CTimer.h"
 #include "..\configuration.h"
+//#include <fstream>
 //#include "SDL.h"
 
 //SDL_GrabMode g_grabMode;
+
+#pragma pack(1)
+struct _enemy
+{
+	int	hp,mp;
+	int typeID;
+	char name[20];
+};
+#pragma pack()
 
 void	_renderFlags::Reset()
 {
@@ -110,10 +120,10 @@ void	CLogic::Clean()
 	m_pPlayer->Clean();
 	DD_DELETE(m_pPlayer);
 
-	for (int i = 0; i < m_VEnemy.size(); i++)
+	for (int i = 0; i < m_VEnemyList.size(); i++)
 	{
-		m_VEnemy[i]->Clean();
-		DD_DELETE(m_VEnemy[i]);
+		m_VEnemyList[i]->Clean();
+		DD_DELETE(m_VEnemyList[i]);
 	}
 
 	for (int i = 0; i < m_VNpc.size(); i++)
@@ -141,19 +151,8 @@ bool	CLogic::LoadAllEntities()
 		return	false;
 	Log("Player loaded");
 
-	// dummy enemy
-
-	CEnemy	*dummy = DD_NEW CEnemy;
-
-	if (!dummy->Init())
+	if (!LoadEnemies())
 		return	false;
-
-	dummy->SetHP(50);
-	dummy->SetMP(20);
-	dummy->SetTypeID(0);
-	dummy->SetID(0);
-
-	m_VEnemy.push_back(dummy);
 	Log("Enemies loaded");
 
 	CNPC	*NPC = DD_NEW CNPC;
@@ -172,6 +171,51 @@ bool	CLogic::LoadAllEntities()
 
 	Log("Npc loaded");
 
+	return	true;
+}
+
+bool	CLogic::LoadEnemies()
+{
+	// enemy list... 
+	// map should contain enemy locations, and logic should contain enemies copied from enemyList by typeID, they should get ID++;
+
+	_enemy	enemy;
+	std::fstream dat;
+
+	dat.open("data/enemy.dat",std::ios::in | std::ios::binary);
+
+	if (!dat.is_open())
+	{
+		dat.clear();
+		dat.close();
+		return	false;
+	}
+	while (true)
+	{
+		dat.read((char*)&enemy,sizeof(enemy));
+
+		if (dat.eof())
+			break;
+
+		CEnemy	*temp	=	DD_NEW CEnemy;
+
+		if (!temp->Init())
+		{
+			dat.clear();
+			dat.close();
+			return	false;
+		}
+
+		temp->SetName(enemy.name);
+		temp->SetHP(enemy.hp);
+		temp->SetMP(enemy.mp);
+		temp->SetTypeID(enemy.typeID);
+		temp->SetID(-1);
+		m_VEnemyList.push_back(temp);
+	}
+
+	dat.clear();
+	dat.close();
 	return	true;
 }
 

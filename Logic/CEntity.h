@@ -30,6 +30,7 @@ private:
 
 	int	m_hp;
 	int	m_mp;
+	char m_name[20];
 
 protected:
 
@@ -44,6 +45,9 @@ public:
 	// enemy will probably not use this vector, spells should be directly sent to m_spell
 	
 	std::vector<_spell>	m_spell; // spells prepared for casting, event for the spell can be used as an index 
+
+	void	SetName(char *value);
+	char*	GetName();
 
 	int		GetHP();
 	void	SetHP(int value);

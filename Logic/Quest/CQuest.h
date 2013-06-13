@@ -23,8 +23,10 @@ class	CQuest
 {
 private:
 
+	char	m_name[20];
 	int		m_typeID;
-	int		m_requiredID;
+	int		m_requiredQuestID;
+	int		m_requiredID; // monster ID
 	int		m_numRequired;
 	int		m_goldReward;
 	int		m_itemReward; // itemID
@@ -40,8 +42,14 @@ public:
 	bool	Init();
 	void	Clean();
 
+	void	SetName(char *value);
+	char*   GetName();
+
 	void	SetTypeID(int value);
 	int		GetTypeID();
+
+	void	SetRequiredQuestID(int value);
+	int		GetRequiredQuestID();
 
 	void	SetRequiredID(int value);
 	int		GetRequiredID();

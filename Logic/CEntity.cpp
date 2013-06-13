@@ -32,6 +32,18 @@ void	CEntity::CleanEntity()
 
 }
 
+void	CEntity::SetName(char *value)
+{
+	int	size = std::char_traits<char>::length(value);
+	std::char_traits<char>::copy(m_name,value,size);
+	m_name[size]='\0';
+}
+
+char*	CEntity::GetName()
+{
+	return	m_name;
+}
+
 int		CEntity::GetHP()
 {
 	return	m_hp;

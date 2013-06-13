@@ -18,6 +18,7 @@
 */
 
 #include "CQuest.h"
+#include <string>
 
 CQuest::CQuest()
 {
@@ -42,6 +43,18 @@ void	CQuest::Clean()
 
 }
 
+void	CQuest::SetName(char *value)
+{
+	int	size = std::char_traits<char>::length(value);
+	std::char_traits<char>::copy(m_name,value,size);
+	m_name[size]='\0';
+}
+
+char*	CQuest::GetName()
+{
+	return	m_name;
+}
+
 void	CQuest::SetTypeID(int value)
 {
 	m_typeID = value;
@@ -50,6 +63,16 @@ void	CQuest::SetTypeID(int value)
 int		CQuest::GetTypeID()
 {
 	return	m_typeID;
+}
+
+void	CQuest::SetRequiredQuestID(int value)
+{
+	m_requiredQuestID = value;
+}
+
+int		CQuest::GetRequiredQuestID()
+{
+	return	m_requiredQuestID;
 }
 
 void	CQuest::SetRequiredID(int value)

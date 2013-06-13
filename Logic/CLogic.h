@@ -113,8 +113,8 @@ class CLogic
 
 private:
 	
-	std::vector<CEnemy*> m_VEnemy; 
-	std::vector<CEnemy*> m_VCloseEnemy;
+	std::vector<CEnemy*> m_VEnemyList; // enemies which can be available 
+	std::vector<CEnemy*> m_VCloseEnemy; 
 	//std::vector<CQuest*> m_VQuests; // contains all quests
 	CQuestManager	*m_pQuest;
 
@@ -133,6 +133,7 @@ private:
 
 	bool			LoadAllEntities();
 	bool			LoadAllSpells();
+	bool			LoadEnemies();
 	void			InitFlags();
 
 	bool			CheckState(CEventMessage	*EventMessage);
