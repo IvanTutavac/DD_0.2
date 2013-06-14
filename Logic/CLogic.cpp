@@ -120,13 +120,13 @@ void	CLogic::Clean()
 	m_pPlayer->Clean();
 	DD_DELETE(m_pPlayer);
 
-	for (int i = 0; i < m_VEnemyList.size(); i++)
+	for (size_t i = 0; i < m_VEnemyList.size(); i++)
 	{
 		m_VEnemyList[i]->Clean();
 		DD_DELETE(m_VEnemyList[i]);
 	}
 
-	for (int i = 0; i < m_VNpc.size(); i++)
+	for (size_t i = 0; i < m_VNpc.size(); i++)
 	{
 		m_VNpc[i]->Clean();
 		DD_DELETE(m_VNpc[i]);
@@ -273,8 +273,10 @@ bool	CLogic::Run(CEventMessage	*EventMessage,double tempDeltaTime)
 
 	UpdateObjects();
 	Pathfinding();
+
 	if (!CheckMouseClick(EventMessage))
 		return	false;
+
 	CheckPlayerInput(EventMessage);
 	Nearby(EventMessage); // maybe it's better to have the F button check here 
 	Movement(EventMessage);
@@ -315,7 +317,7 @@ void	CLogic::UpdateObjects()
 
 	m_pPlayer->UpdateSpellDuration(deltaTime);
 
-	for (int i = 0; i < m_VCloseEnemy.size(); i++)
+	for (size_t i = 0; i < m_VCloseEnemy.size(); i++)
 	{
 		m_VCloseEnemy[i]->UpdateSpellDuration(deltaTime);
 	}
@@ -348,14 +350,8 @@ void	CLogic::Movement(const CEventMessage *EventMessage)
 	MoveEntity(EventMessage,m_pMap->m_playerX,m_pMap->m_playerY,m_pMap->m_playerSpeed);
 
 	SpellMovement(EventMessage);
-	//MoveSpells(EventMessage);
 
-	return; // movement not valid for other entities for now
-	for (int i = 0; i < m_pMap->m_enemyXY.size(); i++)
-	{
-		//MoveEntity();
-	}
-
+	// movement not valid for enemy
 }
 
 void	CLogic::Nearby(CEventMessage *EventMessage)
@@ -800,13 +796,13 @@ void	CLogic::PlayerSpellCast(const CEventMessage *EventMessage)
 
 			if (m_pPlayer->m_spell[k].moving)
 			{
-				SetupSpellMap(l,m_pMap->m_playerX,m_pMap->m_playerY,m_pPlayer->m_spell[k].duration,m_pPlayer->m_spell[k].speed);
+				SetupSpellMap(l,m_pMap->m_playerX,m_pMap->m_playerY,m_pPlayer->m_spell[k].duration,(int)m_pPlayer->m_spell[k].speed);
 			}
 		}
 	}
 }
 
-void	CLogic::SetupSpellMap(int id,int x,int y,int duration,int speed)
+void	CLogic::SetupSpellMap(int id,float x,float y,double duration,int speed)
 {
 	_location1		newSpell;
 	newSpell.x			=	x;
@@ -827,9 +823,9 @@ void	CLogic::SetupSpellMap(int id,int x,int y,int duration,int speed)
 
 void	CLogic::PlayerEnemyCollision()
 {
-	for (int i = 0; i < m_pMap->m_enemyXY.size(); i++)
+	for (size_t i = 0; i < m_pMap->m_enemyXY.size(); i++)
 	{
-		if (CheckCollision(m_pMap->m_playerX,m_pMap->m_playerY,m_pMap->m_enemyXY[i].x,m_pMap->m_enemyXY[i].y,TILE_SIZE))
+		if (CheckCollision((int)m_pMap->m_playerX,(int)m_pMap->m_playerY,(int)m_pMap->m_enemyXY[i].x,(int)m_pMap->m_enemyXY[i].y,TILE_SIZE))
 		{
 			m_pMap->m_playerX = m_pMap->m_tempPlayerX;
 			m_pMap->m_playerY = m_pMap->m_tempPlayerY;
@@ -839,9 +835,9 @@ void	CLogic::PlayerEnemyCollision()
 
 void	CLogic::PlayerNPCCollision()
 {
-	for (int i = 0; i < m_pMap->m_npcXY.size(); i++)
+	for (size_t i = 0; i < m_pMap->m_npcXY.size(); i++)
 	{
-		if (CheckCollision(m_pMap->m_playerX,m_pMap->m_playerY,m_pMap->m_npcXY[i].x,m_pMap->m_npcXY[i].y,TILE_SIZE))
+		if (CheckCollision((int)m_pMap->m_playerX,(int)m_pMap->m_playerY,(int)m_pMap->m_npcXY[i].x,(int)m_pMap->m_npcXY[i].y,TILE_SIZE))
 		{
 			m_pMap->m_playerX = m_pMap->m_tempPlayerX;
 			m_pMap->m_playerY = m_pMap->m_tempPlayerY;
@@ -867,7 +863,11 @@ bool	CLogic::CheckPointCollision(int x1,int y1,int x2,int y2,int sizeX,int sizeY
 
 void	CLogic::SpellMovement(const CEventMessage *EventMessage)
 {
+	if (m_pMap->m_spell.size() < 1)
+		return;
+
 	float x = 0, y = 0, d = 0;
+
 	for (int i = m_pMap->m_spell.size()-1; i >= 0; i--)
 	{
 		if (m_pMap->m_spell[i].state == LS_nothing)
@@ -885,8 +885,8 @@ void	CLogic::SpellMovement(const CEventMessage *EventMessage)
 			m_pMap->m_spell[i].state = LS_moving;
 		}
 
-		m_pMap->m_spell[i].x += m_pMap->m_spell[i].tempX * deltaTime * m_pMap->m_spell[i].speed;
-		m_pMap->m_spell[i].y += m_pMap->m_spell[i].tempY * deltaTime * m_pMap->m_spell[i].speed;
+		m_pMap->m_spell[i].x += (float)(m_pMap->m_spell[i].tempX * deltaTime * m_pMap->m_spell[i].speed);
+		m_pMap->m_spell[i].y += (float)(m_pMap->m_spell[i].tempY * deltaTime * m_pMap->m_spell[i].speed);
 
 		if (m_pMap->m_spell[i].x < 0 || m_pMap->m_spell[i].x > MAP_WIDTH-TILE_SIZE || m_pMap->m_spell[i].y < 0 || m_pMap->m_spell[i].y > MAP_HEIGHT-TILE_SIZE)
 		{ 
@@ -900,45 +900,45 @@ void	CLogic::SpellMovement(const CEventMessage *EventMessage)
 void	CLogic::CameraMovement(const CEventMessage *EventMessage)
 {
 	float v = 600;
-	float speed	= v*0.70710678118;
+	float speed	= v*0.70710678118f;
 
 	if (EventMessage->m_MotionEvent.x >= WINDOW_WIDTH-1 && m_pMap->m_cameraX < MAP_WIDTH - WINDOW_WIDTH/2)
 	{
 		if (EventMessage->m_MotionEvent.y <= 0 && m_pMap->m_cameraY > WINDOW_HEIGHT/2)
 		{
-			m_pMap->m_cameraY -= speed * deltaTime;
-			m_pMap->m_cameraX += speed * deltaTime;
+			m_pMap->m_cameraY -= (float)(speed * deltaTime);
+			m_pMap->m_cameraX += (float)(speed * deltaTime);
 		}
 		else if (EventMessage->m_MotionEvent.y >= WINDOW_HEIGHT-1+HUD_HEIGHT && m_pMap->m_cameraY < MAP_HEIGHT - WINDOW_HEIGHT/2)
 		{
-			m_pMap->m_cameraY += speed * deltaTime;
-			m_pMap->m_cameraX += speed * deltaTime;
+			m_pMap->m_cameraY += (float)(speed * deltaTime);
+			m_pMap->m_cameraX += (float)(speed * deltaTime);
 		}
 		else
-			m_pMap->m_cameraX += v * deltaTime;
+			m_pMap->m_cameraX += (float)(v * deltaTime);
 	}
 	else if (EventMessage->m_MotionEvent.x <= 0 && m_pMap->m_cameraX > WINDOW_WIDTH/2)
 	{
 		if (EventMessage->m_MotionEvent.y <= 0 && m_pMap->m_cameraY > WINDOW_HEIGHT/2)
 		{
-			m_pMap->m_cameraY -= speed * deltaTime;
-			m_pMap->m_cameraX -= speed * deltaTime;
+			m_pMap->m_cameraY -= (float)(speed * deltaTime);
+			m_pMap->m_cameraX -= (float)(speed * deltaTime);
 		}
 		else if (EventMessage->m_MotionEvent.y >= WINDOW_HEIGHT-1+HUD_HEIGHT && m_pMap->m_cameraY < MAP_HEIGHT - WINDOW_HEIGHT/2)
 		{
-			m_pMap->m_cameraY += speed * deltaTime;
-			m_pMap->m_cameraX -= speed * deltaTime;
+			m_pMap->m_cameraY += (float)(speed * deltaTime);
+			m_pMap->m_cameraX -= (float)(speed * deltaTime);
 		}
 		else
-			m_pMap->m_cameraX -= v * deltaTime;
+			m_pMap->m_cameraX -= (float)(v * deltaTime);
 	}
 	else if (EventMessage->m_MotionEvent.y >= WINDOW_HEIGHT-1+HUD_HEIGHT && m_pMap->m_cameraY < MAP_HEIGHT - WINDOW_HEIGHT/2)
 	{
-		m_pMap->m_cameraY += v * deltaTime;
+		m_pMap->m_cameraY += (float)(v * deltaTime);
 	}
 	else if (EventMessage->m_MotionEvent.y <= 0 && m_pMap->m_cameraY > WINDOW_HEIGHT/2)
 	{
-		m_pMap->m_cameraY -= v * deltaTime;
+		m_pMap->m_cameraY -= (float)(v * deltaTime);
 	}
 
 	if (m_pMap->m_cameraX > MAP_WIDTH - WINDOW_WIDTH/2)
@@ -953,7 +953,7 @@ void	CLogic::CameraMovement(const CEventMessage *EventMessage)
 
 }
 
-void	CLogic::MoveEntity(const CEventMessage *EventMessage,float &x,float &y,int speed)
+void	CLogic::MoveEntity(const CEventMessage *EventMessage,float &x,float &y,float speed)
 {
 	//m_pMap->m_tempPlayerX = m_pMap->m_playerX; // will be used to reset movement if needed
 	//m_pMap->m_tempPlayerY = m_pMap->m_playerY;
@@ -962,13 +962,13 @@ void	CLogic::MoveEntity(const CEventMessage *EventMessage,float &x,float &y,int 
 	{
 		if (EventMessage->m_moveUpDown == UD_up)
 		{
-			MoveUp(y,speed*0.70710678118);
-			MoveRight(x,speed*0.70710678118);
+			MoveUp(y,speed*0.70710678118f);
+			MoveRight(x,speed*0.70710678118f);
 		}
 		else if (EventMessage->m_moveUpDown == UD_down)
 		{
-			MoveDown(y,speed*0.70710678118);
-			MoveRight(x,speed*0.70710678118);
+			MoveDown(y,speed*0.70710678118f);
+			MoveRight(x,speed*0.70710678118f);
 		}
 		else
 			MoveRight(x,speed);
@@ -977,13 +977,13 @@ void	CLogic::MoveEntity(const CEventMessage *EventMessage,float &x,float &y,int 
 	{
 		if (EventMessage->m_moveUpDown == UD_up)
 		{
-			MoveUp(y,speed*0.70710678118);
-			MoveLeft(x,speed*0.70710678118);
+			MoveUp(y,speed*0.70710678118f);
+			MoveLeft(x,speed*0.70710678118f);
 		}
 		else if (EventMessage->m_moveUpDown == UD_down)
 		{
-			MoveDown(y,speed*0.70710678118);
-			MoveLeft(x,speed*0.70710678118);
+			MoveDown(y,speed*0.70710678118f);
+			MoveLeft(x,speed*0.70710678118f);
 		}
 		else
 			MoveLeft(x,speed);
@@ -996,7 +996,7 @@ void	CLogic::MoveEntity(const CEventMessage *EventMessage,float &x,float &y,int 
 
 void	CLogic::MoveRight(float &x,float speed,bool flag)
 {
-	float	temp	=	speed * deltaTime;
+	float	temp	=	(float)(speed * deltaTime);
 	x += temp;
 	if (x > MAP_WIDTH - TILE_SIZE && flag)
 	{
@@ -1006,7 +1006,7 @@ void	CLogic::MoveRight(float &x,float speed,bool flag)
 
 void	CLogic::MoveLeft(float &x,float speed,bool flag)
 {
-	float	temp	=	speed * deltaTime;
+	float	temp	=	(float)(speed * deltaTime);
 	x -= temp;
 	if (x < 0 && flag)
 	{
@@ -1015,7 +1015,7 @@ void	CLogic::MoveLeft(float &x,float speed,bool flag)
 }
 void	CLogic::MoveUp(float &y,float speed,bool flag)
 {
-	float	temp	=	speed * deltaTime;
+	float	temp	=	(float)(speed * deltaTime);
 	y -= temp;
 	if (y < 0 && flag)
 	{
@@ -1024,7 +1024,7 @@ void	CLogic::MoveUp(float &y,float speed,bool flag)
 }
 void	CLogic::MoveDown(float &y,float speed,bool flag)
 {
-	float	temp	=	speed * deltaTime;
+	float	temp	=	(float)(speed * deltaTime);
 	y += temp;
 	if (y > MAP_HEIGHT - TILE_SIZE && flag)
 	{
@@ -1034,9 +1034,9 @@ void	CLogic::MoveDown(float &y,float speed,bool flag)
 
 bool	CLogic::CheckIfNPCNearby()
 {
-	for (int i = 0; i < m_pMap->m_npcXY.size(); i++)
+	for (size_t i = 0; i < m_pMap->m_npcXY.size(); i++)
 	{
-		if (CheckDistance(m_pMap->m_playerX,m_pMap->m_playerY,m_pMap->m_npcXY[i].x,m_pMap->m_npcXY[i].y,40,40))
+		if (CheckDistance((int)m_pMap->m_playerX,(int)m_pMap->m_playerY,(int)m_pMap->m_npcXY[i].x,(int)m_pMap->m_npcXY[i].y,40,40))
 		{
 			m_nearNPCIndex = i;
 			return	true;
@@ -1055,6 +1055,9 @@ bool	CLogic::CheckDistance(int x1,int y1,int x2,int y2,int distanceX,int distanc
 
 void	CLogic::CheckTimedOutSpells()
 {
+	if (m_pMap->m_spell.size() < 1)
+		return;
+
 	for (int i = m_pMap->m_spell.size()-1; i >= 0; i--)
 	{
 		m_pMap->m_spell[i].duration -= deltaTime;
@@ -1071,6 +1074,9 @@ bool	CLogic::CheckIfAlive()
 	if (m_pPlayer->GetHP() < 1)
 		return	false;
 
+	if (m_VCloseEnemy.size() < 1)
+		return true;
+
 	for (int i = m_VCloseEnemy.size()-1; i >= 0; i--)
 	{
 		if (m_VCloseEnemy[i]->GetHP() < 1)
@@ -1078,7 +1084,7 @@ bool	CLogic::CheckIfAlive()
 			m_pQuest->UpdateQuest(m_VCloseEnemy[i]->GetTypeID());
 
 			// maybe m_VCloseEnemy should contain index with which we can access m_closeEnemyXY
-			for (int j = m_pMap->m_closeEnemyXY.size(); j >= 0; j--)
+			for (size_t j = m_pMap->m_closeEnemyXY.size(); j >= 0; j--)
 			{
 				if (m_pMap->m_closeEnemyXY[j].ID == m_VCloseEnemy[i]->GetID())
 				{

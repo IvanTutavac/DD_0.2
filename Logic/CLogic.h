@@ -105,7 +105,7 @@ struct _TextRenderInfo
 	int				selectedNPCIndex; 
 	int				selectedConversationIndex;
 	int				selectedTextIndex;
-	int				chars;
+	unsigned int	chars;
 };
 
 class CLogic
@@ -176,12 +176,12 @@ private:
 	void			PlayerSpellCast(const CEventMessage *EventMessage);
 
 	// create spell data needed for movement ( render and timer data )
-	void			SetupSpellMap(int id/*_spell.ID*/,int x,int y,int duration /*_spell.duration*/,int speed /*_spell.speed*/);
+	void			SetupSpellMap(int id/*_spell.ID*/,float x,float y,double duration /*_spell.duration*/,int speed /*_spell.speed*/);
 
 
 	void			CameraMovement(const CEventMessage *EventMessage);
 	void			SpellMovement(const CEventMessage *EventMessage);
-	void			MoveEntity(const CEventMessage *EventMessage,float &x,float &y,int speed);
+	void			MoveEntity(const CEventMessage *EventMessage,float &x,float &y,float speed);
 	void			MoveLeft(float &x,float speed,bool flag = true);
 	void			MoveRight(float &x,float speed,bool flag = true);
 	void			MoveUp(float &y,float speed,bool flag = true);

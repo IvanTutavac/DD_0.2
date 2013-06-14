@@ -58,7 +58,7 @@ bool	CQuestManager::Init()
 
 void	CQuestManager::Clean()
 {
-	for (int i = 0; i < m_VQuests.size(); i++)
+	for (size_t i = 0; i < m_VQuests.size(); i++)
 	{
 		m_VQuests[i]->Clean();
 		DD_DELETE(m_VQuests[i]);
@@ -121,7 +121,7 @@ bool	CQuestManager::LoadData()
 
 void	CQuestManager::UpdateQuest(int ID)
 {
-	for (int i = 0; i < m_VQuests.size(); i++)
+	for (size_t i = 0; i < m_VQuests.size(); i++)
 	{
 		if (m_VQuests[i]->GetRequiredID() == ID) // enemy found
 		{
@@ -171,7 +171,7 @@ bool	CQuestManager::IsActive(int ID)
 
 int		CQuestManager::GetIndex(int ID)
 {
-	for (int i = 0; i < m_VQuests.size(); i++)
+	for (size_t i = 0; i < m_VQuests.size(); i++)
 	{
 		if (m_VQuests[i]->GetTypeID() == ID)
 			return	i;
@@ -202,6 +202,7 @@ bool	CQuestManager::IsCompleted()
 bool	CQuestManager::CheckQuestCompleted(int ID)
 {
 	int index = GetIndex(ID);
+
 	if (m_VQuests[index]->GetNumRequired() < 1)
 	{
 		m_VQuests[index]->SetCompleted(true);

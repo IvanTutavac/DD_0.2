@@ -110,7 +110,7 @@ bool	CNPC::Init(std::vector<std::string> VText,int questID,int questRequiredID,T
 
 	CConversation	*Conversation = DD_NEW CConversation;
 
-	for (int i = 0; i < VText.size(); i++)
+	for (size_t i = 0; i < VText.size(); i++)
 	{
 		Conversation->m_VText.push_back(VText[i]);
 	}
@@ -127,7 +127,7 @@ bool	CNPC::Init(std::vector<std::string> VText,int questID,int questRequiredID,T
 
 void	CNPC::Clean()
 {
-	for (int i = 0; i < m_VConversation.size(); i++)
+	for (size_t i = 0; i < m_VConversation.size(); i++)
 	{
 		DD_DELETE(m_VConversation[i]);
 	}
@@ -139,7 +139,7 @@ void	CNPC::AvailableConversations()
 	m_availableConversations.clear();
 	m_NumConversations = 0;
 
-	for (int i = 0; i < m_VConversation.size(); i++)
+	for (size_t i = 0; i < m_VConversation.size(); i++)
 	{
 		if (!m_VConversation[i]->m_hidden)
 		{
@@ -177,7 +177,7 @@ void	CNPC::SetQuestID(int index,int value)
 
 void	CNPC::UpdateConversationVisibility(int index)
 {
-	for (int i = 0; i < m_VConversation.size(); i++)
+	for (size_t i = 0; i < m_VConversation.size(); i++)
 	{
 		if (m_VConversation[i]->m_hidden && m_VConversation[i]->m_questRequiredID != -1)
 		{
@@ -227,7 +227,7 @@ void	CNPC::SetConversationStateNo(int index)
 int		CNPC::GetConversationIndex(int index)
 {
 	int k = -1;
-	for (int i = 0; i < m_VConversation.size(); i++)
+	for (size_t i = 0; i < m_VConversation.size(); i++)
 	{
 		if (!m_VConversation[i]->m_hidden)
 		{

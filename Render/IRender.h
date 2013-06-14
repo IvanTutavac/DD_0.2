@@ -45,7 +45,7 @@ public:
 	virtual void	RenderText(char *text,int x,int y,int r,int  g,int b)=0;
 	virtual void	RenderValue(int value,int x,int y,int r,int g,int b)=0;
 	virtual void	RenderButton(char *text,int x,int y,int r,int g,int b)=0;
-	virtual bool	RenderTextBox(int &words,bool &next,bool first)=0;
+	virtual bool	RenderTextBox(unsigned int &words,bool &next,bool first)=0;
 	virtual	void	SetTextBox(std::string text)=0;
 	virtual void	RenderHUD(int fps,int hp,int mp)=0;
 

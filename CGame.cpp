@@ -216,7 +216,7 @@ bool	CGame::Render(double deltaTime)
 void	CGame::RenderHUD(double deltaTime)
 {
 	m_pRender->ClearHUD();
-	m_pRender->RenderHUD(deltaTime,m_pLogic->m_pPlayer->GetHP(),m_pLogic->m_pPlayer->GetMP()); // 1000000/deltaTime
+	m_pRender->RenderHUD((int)deltaTime,m_pLogic->m_pPlayer->GetHP(),m_pLogic->m_pPlayer->GetMP()); // 1000000/deltaTime
 
 	if (m_pLogic->m_renderFlags.renderTalkMessage)
 	{
@@ -224,10 +224,10 @@ void	CGame::RenderHUD(double deltaTime)
 	}
 
 	// for testing
-	m_pRender->RenderValue(m_pLogic->m_pMap->m_cameraX,590,500,98,0,49);
-	m_pRender->RenderValue(m_pLogic->m_pMap->m_cameraY,590,520,98,0,49);
-	m_pRender->RenderValue(m_pLogic->m_pMap->m_playerX,530,500,98,0,49);
-	m_pRender->RenderValue(m_pLogic->m_pMap->m_playerY,530,520,98,0,49);
+	m_pRender->RenderValue((int)m_pLogic->m_pMap->m_cameraX,590,500,98,0,49);
+	m_pRender->RenderValue((int)m_pLogic->m_pMap->m_cameraY,590,520,98,0,49);
+	m_pRender->RenderValue((int)m_pLogic->m_pMap->m_playerX,530,500,98,0,49);
+	m_pRender->RenderValue((int)m_pLogic->m_pMap->m_playerY,530,520,98,0,49);
 	m_pRender->RenderValue(m_pEventMessage->m_MotionEvent.x,470,500,98,0,49);
 	m_pRender->RenderValue(m_pEventMessage->m_MotionEvent.y,470,520,98,0,49);
 }

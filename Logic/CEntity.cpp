@@ -88,7 +88,7 @@ void	CEntity::SpellHit(int spell)
 
 bool	CEntity::CheckSpellCD(int ID)
 {
-	for (int i = 0; i < m_VSpell.size(); i++)
+	for (size_t i = 0; i < m_VSpell.size(); i++)
 	{
 		if (m_VSpell[i].ID == ID)
 		{
@@ -111,7 +111,7 @@ bool	CEntity::CheckSpellCD(int ID)
 
 void	CEntity::UpdateSpellDuration(double deltaTime)
 {
-	for (int i = 0; i < m_VSpell.size(); i++)
+	for (size_t i = 0; i < m_VSpell.size(); i++)
 	{
 		if (m_VSpell[i].casted)
 		{

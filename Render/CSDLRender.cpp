@@ -100,8 +100,8 @@ void	CSDLRender::UpdateWindow()
 
 void	CSDLRender::RenderAllTiles(CMap *MapPointer)
 {
-	int	cameraX		=	MapPointer->m_cameraX/32;
-	int	cameraY		=	MapPointer->m_cameraY/32;
+	int	cameraX		=	(int)MapPointer->m_cameraX/32;
+	int	cameraY		=	(int)MapPointer->m_cameraY/32;
 
 	int	k =	0, l = 0;
 
@@ -121,8 +121,8 @@ void	CSDLRender::RenderAllTiles(CMap *MapPointer)
 
 void	CSDLRender::RenderMapEditor(CMap *MapPointer)
 {
-	int cameraX = MapPointer->m_cameraX/32;
-	int cameraY = MapPointer->m_cameraY/32;
+	int cameraX = (int)MapPointer->m_cameraX/32;
+	int cameraY = (int)MapPointer->m_cameraY/32;
 
 	int k = 0, l = 0;
 
@@ -144,8 +144,8 @@ void	CSDLRender::RenderMapEditor(CMap *MapPointer)
 
 void	CSDLRender::RenderMap(CMap *MapPointer)
 {
-	int	cameraX = MapPointer->m_cameraX / 32; // window middle
-	int	cameraY = MapPointer->m_cameraY / 32;
+	int	cameraX = (int)MapPointer->m_cameraX / 32; // window middle
+	int	cameraY = (int)MapPointer->m_cameraY / 32;
 
 	int k = 0, l = 0; // where will the image be drawn if multiplied by 32
 	// [cameraY + i][cameraX + j]  which tile needs to be drawn
@@ -162,34 +162,34 @@ void	CSDLRender::RenderMap(CMap *MapPointer)
 	}
 
 	// m_playerX and m_playerY are map locations, we need window locations
-	int x = MapPointer->m_playerX - MapPointer->m_cameraX + WINDOW_WIDTH/2;
-	int y = MapPointer->m_playerY - MapPointer->m_cameraY + WINDOW_HEIGHT/2;
+	int x = (int)(MapPointer->m_playerX - MapPointer->m_cameraX + WINDOW_WIDTH/2);
+	int y = (int)(MapPointer->m_playerY - MapPointer->m_cameraY + WINDOW_HEIGHT/2);
 
 	if (x >= 0 && y >= 0 && x <= WINDOW_WIDTH - TILE_SIZE && y <= WINDOW_HEIGHT - TILE_SIZE) // do not let player be rendered onto bottom screen
 		RenderImage(x,y,m_pPlayerSurface->m_imageSurface[0],m_pWindow); // render player
 
-	for (int i = 0; i < MapPointer->m_enemyXY.size(); i++)
+	for (size_t i = 0; i < MapPointer->m_enemyXY.size(); i++)
 	{
-		x = MapPointer->m_enemyXY[i].x;
-		y = MapPointer->m_enemyXY[i].y;
-		if (CheckIfInWindow(MapPointer->m_cameraX,MapPointer->m_cameraY,x,y))
+		x = (int)MapPointer->m_enemyXY[i].x;
+		y = (int)MapPointer->m_enemyXY[i].y;
+		if (CheckIfInWindow((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
 			RenderImage(x,y,m_pEnemySurface->m_imageSurface[MapPointer->m_npcXY[i].imgID],m_pWindow);
 			/* You can not use ->m_imageSurface[i] for image that needs to be drawn, because there can be more than one*/
 	}
 
-	for (int i = 0; i < MapPointer->m_npcXY.size(); i++)
+	for (size_t i = 0; i < MapPointer->m_npcXY.size(); i++)
 	{
-		x = MapPointer->m_npcXY[i].x;
-		y = MapPointer->m_npcXY[i].y;
-		if (CheckIfInWindow(MapPointer->m_cameraX,MapPointer->m_cameraY,x,y))
+		x = (int)MapPointer->m_npcXY[i].x;
+		y = (int)MapPointer->m_npcXY[i].y;
+		if (CheckIfInWindow((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
 			RenderImage(x,y,m_pNPCSurface->m_imageSurface[MapPointer->m_npcXY[i].imgID],m_pWindow);
 	}
 
-	for (int i = 0; i < MapPointer->m_spell.size(); i++)
+	for (size_t i = 0; i < MapPointer->m_spell.size(); i++)
 	{
-		x = MapPointer->m_spell[i].x;
-		y = MapPointer->m_spell[i].y;
-		if (CheckIfInWindow(MapPointer->m_cameraX,MapPointer->m_cameraY,x,y))
+		x = (int)MapPointer->m_spell[i].x;
+		y = (int)MapPointer->m_spell[i].y;
+		if (CheckIfInWindow((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
 			RenderImage(x,y,m_pSpellSurface->m_imageSurface[MapPointer->m_spell[i].imgID],m_pWindow);
 	}
 }
@@ -208,7 +208,7 @@ void	CSDLRender::SetTextBox(std::string text)
 	m_text = text;
 }
 
-bool	CSDLRender::RenderTextBox(int &chars,bool &next,bool first)
+bool	CSDLRender::RenderTextBox(unsigned int &chars,bool &next,bool first)
 {
 	// if (first) we are showing conversations which can be selected, so after a nextLine is detected, we go to the nextLine
 	// if (next) we need to get the new m_text by removing the last text box words so that the next text box can be drawn
