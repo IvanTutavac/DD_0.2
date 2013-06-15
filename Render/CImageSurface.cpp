@@ -117,7 +117,11 @@ int	CTileImageSurface::LoadAll()
 
 int	CEnemyImageSurface::LoadAll()
 {
-	N = 0;
+	N = 4000;
+	m_imageSurface.push_back(LoadPNGImage("img/4000.png",true));
+	if (Return() != 1)
+		return	N;
+
 	return	1;
 }
 

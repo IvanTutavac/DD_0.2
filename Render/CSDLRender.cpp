@@ -168,12 +168,12 @@ void	CSDLRender::RenderMap(CMap *MapPointer)
 	if (x >= 0 && y >= 0 && x <= WINDOW_WIDTH - TILE_SIZE && y <= WINDOW_HEIGHT - TILE_SIZE) // do not let player be rendered onto bottom screen
 		RenderImage(x,y,m_pPlayerSurface->m_imageSurface[0],m_pWindow); // render player
 
-	for (size_t i = 0; i < MapPointer->m_enemyXY.size(); i++)
+	for (size_t i = 0; i < MapPointer->m_closeEnemyXY.size(); i++)
 	{
-		x = (int)MapPointer->m_enemyXY[i].x;
-		y = (int)MapPointer->m_enemyXY[i].y;
+		x = (int)MapPointer->m_closeEnemyXY[i].x;
+		y = (int)MapPointer->m_closeEnemyXY[i].y;
 		if (CheckIfInWindow((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
-			RenderImage(x,y,m_pEnemySurface->m_imageSurface[MapPointer->m_npcXY[i].imgID],m_pWindow);
+			RenderImage(x,y,m_pEnemySurface->m_imageSurface[MapPointer->m_closeEnemyXY[i].imgID],m_pWindow);
 			/* You can not use ->m_imageSurface[i] for image that needs to be drawn, because there can be more than one*/
 	}
 

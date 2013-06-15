@@ -114,7 +114,8 @@ class CLogic
 private:
 	
 	std::vector<CEnemy*> m_VEnemyList; // enemies which can be available 
-	std::vector<CEnemy*> m_VCloseEnemy; 
+	std::vector<CEnemy*> m_VEnemy; // enemies on map
+	std::vector<CEnemy*> m_VCloseEnemy; // enemies near you
 	//std::vector<CQuest*> m_VQuests; // contains all quests
 	CQuestManager	*m_pQuest;
 
@@ -124,6 +125,7 @@ private:
 	_logicFlags		m_logicFlags;
 
 	int				m_UniqueSpellID; // used to set unique _spell.ID
+	int				m_UniqueEnemyID;
 	int				m_IDLimit;
 	int				m_nearNPCIndex; // CheckIfNPCNearby sets the value
 
@@ -135,6 +137,7 @@ private:
 	bool			LoadAllSpells();
 	bool			LoadEnemies();
 	void			InitFlags();
+	bool			SetMapEnemy();
 
 	bool			CheckState(CEventMessage	*EventMessage);
 	
@@ -152,10 +155,10 @@ private:
 	void			EndConversation();
 
 	bool			CheckCollision(int x1,int y1,int x2,int y2,int size);
-	// check point collision with an object that has x2,y2,sizeX and sizeY
 	bool			CheckPointCollision(int x1,int y1,int x2,int y2,int sizeX,int sizeY);
 	void			PlayerEnemyCollision();
 	void			PlayerNPCCollision();
+	void			SpellCollision();
 	bool			CheckIfNPCNearby();
 	bool			CheckDistance(int x1,int y1,int x2,int y2,int distanceX,int distanceY);
 

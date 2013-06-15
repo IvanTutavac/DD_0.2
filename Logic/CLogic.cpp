@@ -77,6 +77,9 @@ bool	CLogic::Init()
 {
 	Log("Logic init started");
 
+	m_UniqueSpellID		=	0;
+	m_UniqueEnemyID		=	0;
+
 	m_pMap			=	DD_NEW CMap;
 	m_pQuest		=	DD_NEW CQuestManager;
 
@@ -98,7 +101,6 @@ bool	CLogic::Init()
 
 	InitFlags();
 
-	m_UniqueSpellID						=	0;
 	m_IDLimit							=	999999;
 	m_drawTiles							=	false;
 	m_textRenderInfo.nextTextBox		=	false;
@@ -124,6 +126,18 @@ void	CLogic::Clean()
 	{
 		m_VEnemyList[i]->Clean();
 		DD_DELETE(m_VEnemyList[i]);
+	}
+
+	for (size_t i = 0; i < m_VEnemy.size(); i++)
+	{
+		m_VEnemy[i]->Clean();
+		DD_DELETE(m_VEnemy[i]);
+	}
+
+	for (size_t i = 0; i < m_VCloseEnemy.size(); i++)
+	{
+		m_VCloseEnemy[i]->Clean();
+		DD_DELETE(m_VCloseEnemy[i]);
 	}
 
 	for (size_t i = 0; i < m_VNpc.size(); i++)
@@ -154,6 +168,8 @@ bool	CLogic::LoadAllEntities()
 	if (!LoadEnemies())
 		return	false;
 	Log("Enemies loaded");
+
+	SetMapEnemy(); 
 
 	CNPC	*NPC = DD_NEW CNPC;
 
@@ -221,13 +237,41 @@ bool	CLogic::LoadEnemies()
 	return	true;
 }
 
+bool	CLogic::SetMapEnemy()
+{
+	// fali provjera dal je uniqueEnemyID > m_IDLimit
+	// trebalo bi citati iz datoteka koji neprijatelj je na kojoj lokaciji mape
+	// map editor bi to trebao raditi
+	CEnemy *Enemy = DD_NEW CEnemy;
+
+	if (!Enemy->Init())
+		return false;
+
+	Enemy->SetHP(m_VEnemyList[0]->GetHP());
+	Enemy->SetMP(m_VEnemyList[0]->GetMP());
+	Enemy->SetName(m_VEnemyList[0]->GetName());
+	Enemy->SetTypeID(m_VEnemyList[0]->GetTypeID());
+	Enemy->SetID(m_UniqueEnemyID++);
+
+	m_VCloseEnemy.push_back(Enemy);
+
+	_location	temp;
+	temp.ID = m_VCloseEnemy.back()->GetID();
+	temp.imgID = m_VCloseEnemy.back()->GetTypeID();
+	temp.x = 32*2,temp.y = 32*7;
+
+	m_pMap->m_closeEnemyXY.push_back(temp);
+
+	return	true;
+}
+
 bool	CLogic::LoadAllSpells()
 {
 	_spell	dummySpell;
 	dummySpell.cost = 10;
 	dummySpell.type = ST_hpRemoval;
 	dummySpell.duration = 3;
-	dummySpell.value = 30;
+	dummySpell.value = 25;
 	dummySpell.moving = true;
 	dummySpell.casted = false;
 	dummySpell.ID = 0;
@@ -241,7 +285,7 @@ bool	CLogic::LoadAllSpells()
 	dummySpell.cost	=	0;
 	dummySpell.type = ST_hpRemoval;
 	dummySpell.duration = 2;
-	dummySpell.value = 30;
+	dummySpell.value = 25;
 	dummySpell.moving = true;
 	dummySpell.casted = false;
 	dummySpell.ID = 1;
@@ -297,8 +341,6 @@ bool	CLogic::Run(CEventMessage	*EventMessage,double tempDeltaTime)
 
 bool	CLogic::CheckState(CEventMessage	*EventMessage)
 {
-	// fali zavrsna provjera ako je razgovor quest dal je zavrsen, dal smijemo wait prebaciti u finished
-
 	if (EventMessage->m_Event.Event == AE_PressedEsc)
 		return	false;
 
@@ -398,6 +440,7 @@ void	CLogic::Nearby(CEventMessage *EventMessage)
 void	CLogic::Collision()
 {
 	PlayerEnemyCollision();
+	SpellCollision();
 	PlayerNPCCollision();
 }
 
@@ -817,15 +860,67 @@ void	CLogic::SetupSpellMap(int id,float x,float y,double duration,int speed)
 	m_pMap->m_spell.back().ID = m_UniqueSpellID;
 	m_UniqueSpellID++;
 
-	if (m_UniqueSpellID++ > m_IDLimit)
+	if (++m_UniqueSpellID > m_IDLimit)
 		m_UniqueSpellID = 0;
+}
+
+void	CLogic::SpellCollision()
+{
+	if (m_pMap->m_spell.empty())
+		return;
+
+	bool	erase = false;
+	bool	search = true;
+	for (int i = m_pMap->m_spell.size()-1; i >= 0; i--)
+	{
+		search = true;
+
+		if (CheckCollision((int)m_pMap->m_playerX,(int)m_pMap->m_playerY,(int)m_pMap->m_spell[i].x,(int)m_pMap->m_spell[i].y,TILE_SIZE))
+		{
+			// spell kad se tek casta jeste u koliziji s playerom
+			// trebalo bi pamtiti ID tko je bacio spell, il enum koji govori dal je neprijatelj il player
+			//erase = true;
+		}
+		
+		for (size_t	j = 0; j < m_pMap->m_closeEnemyXY.size(); j++)
+		{
+			if (!search)
+				break;
+
+			if (CheckCollision((int)m_pMap->m_closeEnemyXY[j].x,(int)m_pMap->m_closeEnemyXY[j].y,(int)m_pMap->m_spell[i].x,(int)m_pMap->m_spell[i].y,TILE_SIZE))
+			{
+				for (size_t k = 0; k < m_VCloseEnemy.size(); k++)
+				{
+					if (m_VCloseEnemy[k]->GetID() == m_pMap->m_closeEnemyXY[j].ID)
+					{
+						for (size_t l = 0; l < m_VAllSpells.size(); l++)
+						{
+							if (m_VAllSpells[l].ID == m_pMap->m_spell[i].imgID)
+							{
+								m_VCloseEnemy[k]->ReduceHP(m_VAllSpells[l].value);
+								search = false;
+								erase = true;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (erase)
+		{
+			m_pMap->m_spell.erase(m_pMap->m_spell.begin()+i);
+			erase = false;
+		}
+	}
 }
 
 void	CLogic::PlayerEnemyCollision()
 {
-	for (size_t i = 0; i < m_pMap->m_enemyXY.size(); i++)
+	for (size_t i = 0; i < m_pMap->m_closeEnemyXY.size(); i++)
 	{
-		if (CheckCollision((int)m_pMap->m_playerX,(int)m_pMap->m_playerY,(int)m_pMap->m_enemyXY[i].x,(int)m_pMap->m_enemyXY[i].y,TILE_SIZE))
+		if (CheckCollision((int)m_pMap->m_playerX,(int)m_pMap->m_playerY,(int)m_pMap->m_closeEnemyXY[i].x,(int)m_pMap->m_closeEnemyXY[i].y,TILE_SIZE))
 		{
 			m_pMap->m_playerX = m_pMap->m_tempPlayerX;
 			m_pMap->m_playerY = m_pMap->m_tempPlayerY;
@@ -891,7 +986,6 @@ void	CLogic::SpellMovement(const CEventMessage *EventMessage)
 		if (m_pMap->m_spell[i].x < 0 || m_pMap->m_spell[i].x > MAP_WIDTH-TILE_SIZE || m_pMap->m_spell[i].y < 0 || m_pMap->m_spell[i].y > MAP_HEIGHT-TILE_SIZE)
 		{ 
 			// spell outside of map
-			//DD_DELETE(m_pMap->m_spell[i].timer);
 			m_pMap->m_spell.erase(m_pMap->m_spell.begin()+i);
 		}
 	}
@@ -1074,7 +1168,7 @@ bool	CLogic::CheckIfAlive()
 	if (m_pPlayer->GetHP() < 1)
 		return	false;
 
-	if (m_VCloseEnemy.size() < 1)
+	if (m_VCloseEnemy.empty())
 		return true;
 
 	for (int i = m_VCloseEnemy.size()-1; i >= 0; i--)
@@ -1084,16 +1178,17 @@ bool	CLogic::CheckIfAlive()
 			m_pQuest->UpdateQuest(m_VCloseEnemy[i]->GetTypeID());
 
 			// maybe m_VCloseEnemy should contain index with which we can access m_closeEnemyXY
-			for (size_t j = m_pMap->m_closeEnemyXY.size(); j >= 0; j--)
+			for (size_t j = m_pMap->m_closeEnemyXY.size()-1; j >= 0; j--)
 			{
 				if (m_pMap->m_closeEnemyXY[j].ID == m_VCloseEnemy[i]->GetID())
 				{
 					m_pMap->m_closeEnemyXY.erase(m_pMap->m_closeEnemyXY.begin()+j);
+					m_VCloseEnemy[i]->Clean();
+					DD_DELETE(m_VCloseEnemy[i]);
+					m_VCloseEnemy.erase(m_VCloseEnemy.begin()+i);
+					break;
 				}
 			}
-		
-			m_VCloseEnemy[i]->Clean();
-			m_VCloseEnemy.erase(m_VCloseEnemy.begin()+i);
 		}
 	}
 

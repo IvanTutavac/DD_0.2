@@ -105,13 +105,17 @@ bool	CGame::Run()
 	while (m_gameLoop)
 	{
 		currentTime = m_pTimer->GetTimeEx(); 
+
 		if (!Events())
 			break;
+
 		m_pTimer->End();
 		deltaTime = m_pTimer->GetTime();
 		fps		  = m_pTimer->GetMicro();
 		m_pTimer->Start();
+
 		m_gameLoop = Logic(deltaTime);
+
 		if (g_FPSLimit)
 		{
 			if (vSyncLastTime + 8333.333333 <= currentTime)
