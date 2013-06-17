@@ -113,9 +113,9 @@ class CLogic
 
 private:
 	
-	std::vector<CEnemy*> m_VEnemyList; // enemies which can be available 
-	std::vector<CEnemy*> m_VEnemy; // enemies on map
-	std::vector<CEnemy*> m_VCloseEnemy; // enemies near you
+	std::vector<CEnemy> m_VEnemyList; // enemies which can be available 
+	std::vector<CEnemy> m_VEnemy; // enemies on map
+	std::vector<CEnemy> m_VCloseEnemy; // enemies near you
 	//std::vector<CQuest*> m_VQuests; // contains all quests
 	CQuestManager	*m_pQuest;
 
@@ -204,7 +204,7 @@ public:
 	_renderFlags	m_renderFlags;
 	CMap			*m_pMap;
 	CPlayer			*m_pPlayer;
-	std::vector<CNPC*> m_VNpc;
+	std::vector<CNPC> m_VNpc;
 
 	bool			Init();
 	void			Clean();

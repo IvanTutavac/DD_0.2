@@ -124,26 +124,23 @@ void	CLogic::Clean()
 
 	for (size_t i = 0; i < m_VEnemyList.size(); i++)
 	{
-		m_VEnemyList[i]->Clean();
-		DD_DELETE(m_VEnemyList[i]);
+		m_VEnemyList[i].Clean();
+		//DD_DELETE(m_VEnemyList[i]);
 	}
 
 	for (size_t i = 0; i < m_VEnemy.size(); i++)
 	{
-		m_VEnemy[i]->Clean();
-		DD_DELETE(m_VEnemy[i]);
+		m_VEnemy[i].Clean();
 	}
 
 	for (size_t i = 0; i < m_VCloseEnemy.size(); i++)
 	{
-		m_VCloseEnemy[i]->Clean();
-		DD_DELETE(m_VCloseEnemy[i]);
+		m_VCloseEnemy[i].Clean();
 	}
 
 	for (size_t i = 0; i < m_VNpc.size(); i++)
 	{
-		m_VNpc[i]->Clean();
-		DD_DELETE(m_VNpc[i]);
+		m_VNpc[i].Clean();
 	}
 }
 
@@ -168,21 +165,21 @@ bool	CLogic::LoadAllEntities()
 	if (!LoadEnemies())
 		return	false;
 	Log("Enemies loaded");
-
+	
 	SetMapEnemy(); 
 
-	CNPC	*NPC = DD_NEW CNPC;
+	CNPC	NPC;//*NPC = DD_NEW CNPC;
 
-	if (!NPC->Init())
+	if (!NPC.Init())
 		return	false;
 
-	NPC->SetQuestID(0,0); // testing...
+	NPC.SetQuestID(0,0); // testing...
 
 	m_VNpc.push_back(NPC);
 
-	CNPC	*NPC1 = DD_NEW CNPC;
+	CNPC	NPC1;//*NPC1 = DD_NEW CNPC;
 
-	if (!NPC1->Init("Just testing..."))
+	if (!NPC1.Init("Just testing..."))
 		return	true;
 
 	m_VNpc.push_back(NPC1);
@@ -215,20 +212,20 @@ bool	CLogic::LoadEnemies()
 		if (dat.eof())
 			break;
 
-		CEnemy	*temp	=	DD_NEW CEnemy;
+		CEnemy	temp;
 
-		if (!temp->Init())
+		if (!temp.Init())
 		{
 			dat.clear();
 			dat.close();
 			return	false;
 		}
 
-		temp->SetName(enemy.name);
-		temp->SetHP(enemy.hp);
-		temp->SetMP(enemy.mp);
-		temp->SetTypeID(enemy.typeID);
-		temp->SetID(-1);
+		temp.SetName(enemy.name);
+		temp.SetHP(enemy.hp);
+		temp.SetMP(enemy.mp);
+		temp.SetTypeID(enemy.typeID);
+		temp.SetID(-1);
 		m_VEnemyList.push_back(temp);
 	}
 
@@ -242,22 +239,22 @@ bool	CLogic::SetMapEnemy()
 	// fali provjera dal je uniqueEnemyID > m_IDLimit
 	// trebalo bi citati iz datoteka koji neprijatelj je na kojoj lokaciji mape
 	// map editor bi to trebao raditi
-	CEnemy *Enemy = DD_NEW CEnemy;
+	CEnemy Enemy;// = DD_NEW CEnemy;
 
-	if (!Enemy->Init())
+	if (!Enemy.Init())
 		return false;
 
-	Enemy->SetHP(m_VEnemyList[0]->GetHP());
-	Enemy->SetMP(m_VEnemyList[0]->GetMP());
-	Enemy->SetName(m_VEnemyList[0]->GetName());
-	Enemy->SetTypeID(m_VEnemyList[0]->GetTypeID());
-	Enemy->SetID(m_UniqueEnemyID++);
+	Enemy.SetHP(m_VEnemyList[0].GetHP());
+	Enemy.SetMP(m_VEnemyList[0].GetMP());
+	Enemy.SetName(m_VEnemyList[0].GetName());
+	Enemy.SetTypeID(m_VEnemyList[0].GetTypeID());
+	Enemy.SetID(m_UniqueEnemyID++);
 
 	m_VCloseEnemy.push_back(Enemy);
 
 	_location	temp;
-	temp.ID = m_VCloseEnemy.back()->GetID();
-	temp.imgID = m_VCloseEnemy.back()->GetTypeID();
+	temp.ID = m_VCloseEnemy.back().GetID();
+	temp.imgID = m_VCloseEnemy.back().GetTypeID();
 	temp.x = 32*2,temp.y = 32*7;
 
 	m_pMap->m_closeEnemyXY.push_back(temp);
@@ -361,7 +358,7 @@ void	CLogic::UpdateObjects()
 
 	for (size_t i = 0; i < m_VCloseEnemy.size(); i++)
 	{
-		m_VCloseEnemy[i]->UpdateSpellDuration(deltaTime);
+		m_VCloseEnemy[i].UpdateSpellDuration(deltaTime);
 	}
 }
 
@@ -410,10 +407,10 @@ void	CLogic::Nearby(CEventMessage *EventMessage)
 			m_textRenderInfo.selectedNPCIndex		=	m_nearNPCIndex;
 
 			// starting conversation, get available conversations
-			m_VNpc[m_nearNPCIndex]->AvailableConversations();
+			m_VNpc[m_nearNPCIndex].AvailableConversations();
 
 			// if no (quest) conversation available 
-			if (m_VNpc[m_nearNPCIndex]->m_availableConversations.size() < 1)
+			if (m_VNpc[m_nearNPCIndex].m_availableConversations.size() < 1)
 			{
 				m_logicFlags.npcConversation		=	NPCC_commonTalk;
 				m_textRenderInfo.setCommonTextBox	=	true;
@@ -520,9 +517,9 @@ void	CLogic::UpdateConversationState()
 	{
 		// if wait state, to continue we need to check if the quest has been completed 
 		// if not, we won't update conversation status 
-		if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationWait(m_textRenderInfo.selectedConversationIndex))
+		if (m_VNpc[m_textRenderInfo.selectedNPCIndex].ConversationWait(m_textRenderInfo.selectedConversationIndex))
 		{
-			int questID = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetQuestID(m_textRenderInfo.selectedConversationIndex);
+			int questID = m_VNpc[m_textRenderInfo.selectedNPCIndex].GetQuestID(m_textRenderInfo.selectedConversationIndex);
 
 			// valjda ???
 			if (!m_pQuest->CheckQuestCompleted(questID)) // quest has not been completed 
@@ -534,20 +531,20 @@ void	CLogic::UpdateConversationState()
 			{
 				//completed = false because of CheckQuestCompleted 
 				EndConversation();
-				m_VNpc[m_textRenderInfo.selectedNPCIndex]->UpdateConversation(m_textRenderInfo.selectedConversationIndex);
+				m_VNpc[m_textRenderInfo.selectedNPCIndex].UpdateConversation(m_textRenderInfo.selectedConversationIndex);
 				m_pQuest->SetActiveQuest(questID,false);
 				return;
 			}
 		}
 		// update Conversation status
-		m_VNpc[m_textRenderInfo.selectedNPCIndex]->UpdateConversation(m_textRenderInfo.selectedConversationIndex);
+		m_VNpc[m_textRenderInfo.selectedNPCIndex].UpdateConversation(m_textRenderInfo.selectedConversationIndex);
 
 		// we check for conversation selection 
-		if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationSelection(m_textRenderInfo.selectedConversationIndex))
+		if (m_VNpc[m_textRenderInfo.selectedNPCIndex].ConversationSelection(m_textRenderInfo.selectedConversationIndex))
 		{
 			m_textRenderInfo.setTextBox =	true;
 			m_textRenderInfo.chars		=	0;
-			m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+			m_VNpc[m_textRenderInfo.selectedNPCIndex].GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
 		}
 		else // yes or no clicked so we finish the conversation
 		{
@@ -694,7 +691,7 @@ void	CLogic::CheckTextBoxClick(const CEventMessage *EventMessage)
 
 void	CLogic::CheckConversationSelectionClick(const CEventMessage *EventMessage)
 {
-	int height = m_VNpc[m_textRenderInfo.selectedNPCIndex]->m_NumConversations;
+	int height = m_VNpc[m_textRenderInfo.selectedNPCIndex].m_NumConversations;
 
 	if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,240,404,height * 20))
 	{
@@ -706,12 +703,12 @@ void	CLogic::CheckConversationSelectionClick(const CEventMessage *EventMessage)
 			if (EventMessage->m_Event.y >= 240+20*i && EventMessage->m_Event.y <= 240+20*(i+1))
 			{
 				// conversation index
-				m_textRenderInfo.selectedConversationIndex = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetConversationIndex(i);				
+				m_textRenderInfo.selectedConversationIndex = m_VNpc[m_textRenderInfo.selectedNPCIndex].GetConversationIndex(i);				
 			}
 		}
 
 		// text index
-		m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+		m_VNpc[m_textRenderInfo.selectedNPCIndex].GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
 	}
 }
 
@@ -722,17 +719,17 @@ void	CLogic::CheckTextSelectionClick(const CEventMessage	*EventMessage)
 		if (m_logicFlags.npcConversation == NPCC_questTalk)
 		{
 			// yes no selection
-			if (m_VNpc[m_textRenderInfo.selectedNPCIndex]->ConversationSelection(m_textRenderInfo.selectedConversationIndex))
+			if (m_VNpc[m_textRenderInfo.selectedNPCIndex].ConversationSelection(m_textRenderInfo.selectedConversationIndex))
 			{
 				if (EventMessage->m_Event.y >= 260 && EventMessage->m_Event.y <= 280) // yes option
 				{
 					m_textRenderInfo.setTextBox =	true;
 					m_textRenderInfo.chars		=	0;
-					m_VNpc[m_textRenderInfo.selectedNPCIndex]->SetConversationStateYes(m_textRenderInfo.selectedConversationIndex);
-					m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+					m_VNpc[m_textRenderInfo.selectedNPCIndex].SetConversationStateYes(m_textRenderInfo.selectedConversationIndex);
+					m_VNpc[m_textRenderInfo.selectedNPCIndex].GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
 
 					// set the quest to active
-					int questID = m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetQuestID(m_textRenderInfo.selectedConversationIndex);
+					int questID = m_VNpc[m_textRenderInfo.selectedNPCIndex].GetQuestID(m_textRenderInfo.selectedConversationIndex);
 					if (questID != -1)
 					{
 						m_pQuest->FindIndex(questID);
@@ -744,8 +741,8 @@ void	CLogic::CheckTextSelectionClick(const CEventMessage	*EventMessage)
 				{
 					m_textRenderInfo.setTextBox =	true;
 					m_textRenderInfo.chars		=	0;
-					m_VNpc[m_textRenderInfo.selectedNPCIndex]->SetConversationStateNo(m_textRenderInfo.selectedConversationIndex);
-					m_VNpc[m_textRenderInfo.selectedNPCIndex]->GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
+					m_VNpc[m_textRenderInfo.selectedNPCIndex].SetConversationStateNo(m_textRenderInfo.selectedConversationIndex);
+					m_VNpc[m_textRenderInfo.selectedNPCIndex].GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
 				}
 			}
 			else  // next textBox
@@ -891,13 +888,13 @@ void	CLogic::SpellCollision()
 			{
 				for (size_t k = 0; k < m_VCloseEnemy.size(); k++)
 				{
-					if (m_VCloseEnemy[k]->GetID() == m_pMap->m_closeEnemyXY[j].ID)
+					if (m_VCloseEnemy[k].GetID() == m_pMap->m_closeEnemyXY[j].ID)
 					{
 						for (size_t l = 0; l < m_VAllSpells.size(); l++)
 						{
 							if (m_VAllSpells[l].ID == m_pMap->m_spell[i].imgID)
 							{
-								m_VCloseEnemy[k]->ReduceHP(m_VAllSpells[l].value);
+								m_VCloseEnemy[k].ReduceHP(m_VAllSpells[l].value);
 								search = false;
 								erase = true;
 								break;
@@ -1097,7 +1094,6 @@ void	CLogic::MoveRight(float &x,float speed,bool flag)
 		x = MAP_WIDTH - TILE_SIZE;
 	}
 }
-
 void	CLogic::MoveLeft(float &x,float speed,bool flag)
 {
 	float	temp	=	(float)(speed * deltaTime);
@@ -1173,18 +1169,16 @@ bool	CLogic::CheckIfAlive()
 
 	for (int i = m_VCloseEnemy.size()-1; i >= 0; i--)
 	{
-		if (m_VCloseEnemy[i]->GetHP() < 1)
+		if (m_VCloseEnemy[i].GetHP() < 1)
 		{
-			m_pQuest->UpdateQuest(m_VCloseEnemy[i]->GetTypeID());
+			m_pQuest->UpdateQuest(m_VCloseEnemy[i].GetTypeID());
 
-			// maybe m_VCloseEnemy should contain index with which we can access m_closeEnemyXY
 			for (size_t j = m_pMap->m_closeEnemyXY.size()-1; j >= 0; j--)
 			{
-				if (m_pMap->m_closeEnemyXY[j].ID == m_VCloseEnemy[i]->GetID())
+				if (m_pMap->m_closeEnemyXY[j].ID == m_VCloseEnemy[i].GetID())
 				{
 					m_pMap->m_closeEnemyXY.erase(m_pMap->m_closeEnemyXY.begin()+j);
-					m_VCloseEnemy[i]->Clean();
-					DD_DELETE(m_VCloseEnemy[i]);
+					m_VCloseEnemy[i].Clean();
 					m_VCloseEnemy.erase(m_VCloseEnemy.begin()+i);
 					break;
 				}

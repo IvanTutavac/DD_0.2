@@ -63,7 +63,7 @@ public:
 	float	m_playerY; // mapY -> if we need windowY - WINDOW_HEIGHT/2
 	float	m_tempPlayerX; // so that we can revert the movement ( collision ... )
 	float   m_tempPlayerY; 
-	float   m_playerSpeed; // prebaciti kasnije u player klasu
+	float   m_playerSpeed; 
 	float	m_cameraX;
 	float	m_cameraY;
 

@@ -28,6 +28,7 @@
 #include "Events\CEventMessage.h"
 #include "configuration.h"
 #include "Logic\CEntity.h"
+#include "Logic\CEnemy.h"
 #include "Logic\CMap.h"
 #include "Logic\CPlayer.h"
 #include "Logic\CNPC.h"
@@ -149,13 +150,13 @@ bool	CGame::Logic(double deltaTime)
 
 	if (m_pLogic->m_textRenderInfo.setFirstTextBox)
 	{
-		m_pRender->SetTextBox(m_pLogic->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex]->m_availableConversations);
+		m_pRender->SetTextBox(m_pLogic->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex].m_availableConversations);
 
 		m_pLogic->m_textRenderInfo.setFirstTextBox = false;
 	}
 	else if (m_pLogic->m_textRenderInfo.setCommonTextBox)
 	{
-		m_pRender->SetTextBox(m_pLogic->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex]->m_conversation);
+		m_pRender->SetTextBox(m_pLogic->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex].m_conversation);
 
 		m_pLogic->m_textRenderInfo.setCommonTextBox = false;
 	}
@@ -165,7 +166,7 @@ bool	CGame::Logic(double deltaTime)
 		int j	=	m_pLogic->m_textRenderInfo.selectedConversationIndex;
 		int	k	=	m_pLogic->m_textRenderInfo.selectedTextIndex;
 
-		m_pRender->SetTextBox(m_pLogic->m_VNpc[i]->m_VConversation[j]->m_VText[k]);
+		m_pRender->SetTextBox(m_pLogic->m_VNpc[i].m_VConversation[j]->m_VText[k]);
 
 		m_pLogic->m_textRenderInfo.setTextBox = false;
 	}
