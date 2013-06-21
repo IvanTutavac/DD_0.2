@@ -21,7 +21,7 @@
 #include "Log.h"
 #include "CGame.h"
 #include "CTimer.h"
-//#include "Render\IRender.h"
+#include "Render\CRender.h"
 #include "Render\CSDLRender.h"
 #include "Logic\CLogic.h"
 #include "Events\CEvent.h"
@@ -37,8 +37,6 @@
 // default configuration
 SDL_GrabMode	g_grabMode	=	SDL_GRAB_ON;
 bool			g_FPSLimit	=	true;
-
-std::ofstream logDat1;
 
 bool	CGame::Init()
 {

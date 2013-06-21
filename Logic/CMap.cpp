@@ -18,7 +18,6 @@
 */
 
 #include "CMap.h"
-//#include "..\CTimer.h"
 #include <fstream>
 
 bool	CMap::Init()

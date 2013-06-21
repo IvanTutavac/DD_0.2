@@ -96,6 +96,7 @@
     <ClCompile Include="Logic\Quest\CQuestManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Render\CImageSurface.cpp" />
+    <ClCompile Include="Render\CRender.cpp" />
     <ClCompile Include="Render\CSDLRender.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -119,7 +120,7 @@
     <ClInclude Include="Logic\Quest\CQuestManager.h" />
     <ClInclude Include="Render\CImageSurface.h" />
     <ClInclude Include="Render\CSDLRender.h" />
-    <ClInclude Include="Render\IRender.h" />
+    <ClInclude Include="Render\CRender.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

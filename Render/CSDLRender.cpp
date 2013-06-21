@@ -21,7 +21,7 @@
 #include "..\Log.h"
 #include "CSDLRender.h"
 #include "CImageSurface.h"
-#include "..\Logic\CMap.h"
+//#include "..\Logic\CMap.h"
 #include "..\const.h"
 #include "..\configuration.h"
 
@@ -63,19 +63,11 @@ bool	CSDLRender::Init()
 
 void	CSDLRender::Clean()
 {
-	m_pTileSurface->DeleteAll();
-	m_pEnemySurface->DeleteAll();
-	m_pPlayerSurface->DeleteAll();
-	m_pMenuSurface->DeleteAll();
-	m_pNPCSurface->DeleteAll();
-	m_pSpellSurface->DeleteAll();
-
-	DD_DELETE(m_pTileSurface);
-	DD_DELETE(m_pEnemySurface);
-	DD_DELETE(m_pPlayerSurface);
-	DD_DELETE(m_pMenuSurface);
-	DD_DELETE(m_pNPCSurface);
-	DD_DELETE(m_pSpellSurface);
+	for (size_t i = 0; i < m_pVImage.size(); i++)
+	{
+		m_pVImage[i]->DeleteAll();
+		DD_DELETE(m_pVImage[i]);
+	}
 	
 	TTF_CloseFont(m_pHUDFont);
 
@@ -84,7 +76,7 @@ void	CSDLRender::Clean()
 
 void	CSDLRender::ClearWindow()
 {
-	RenderImage(0,0,m_pMenuSurface->m_imageSurface[0],m_pWindow);
+	RenderImage(0,0,TYPE_MENU,0);
 }
 
 void	CSDLRender::ClearHUD()
@@ -98,114 +90,102 @@ void	CSDLRender::UpdateWindow()
 	SDL_Flip(m_pWindow);
 }
 
-void	CSDLRender::RenderAllTiles(CMap *MapPointer)
+void	CSDLRender::RenderOptions()
 {
-	int	cameraX		=	(int)MapPointer->m_cameraX/32;
-	int	cameraY		=	(int)MapPointer->m_cameraY/32;
+	RenderButton("Grab mode:",32,32,25,25,112);
 
-	int	k =	0, l = 0;
+	if (g_grabMode == SDL_GRAB_ON)
+		RenderText("Yes",230,57,25,25,112);
+	else
+		RenderText("No",230,57,25,25,112);
 
-	for (int i = -7; i < 8; i++)
-	{
-		for (int j = -10; j < 10; j++)
-		{
-			k = j, l = i;
-			k += 10, l += 7;
-			RenderImage(k*32,l*32,m_pTileSurface->m_imageSurface[MapPointer->m_allTilesMap[cameraY+i][cameraX+j]],m_pWindow);
-		}
-	}
+	RenderButton("Limit FPS:",32,96,25,25,112);
 
-	RenderButton("Return",20,WINDOW_HEIGHT,98,0,49);
-	RenderImage(230,WINDOW_HEIGHT,m_pTileSurface->m_imageSurface[MapPointer->m_selectedTile],m_pWindow);
+	if (g_FPSLimit)
+		RenderText("Yes",230,121,25,25,112);
+	else
+		RenderText("No",230,121,25,25,112);
+
+	RenderButton("Return",128,480,25,25,112);
+	RenderButton("Exit",320,480,25,25,112);
 }
 
-void	CSDLRender::RenderMapEditor(CMap *MapPointer)
+void	CSDLRender::RenderImage(int x,int y,const int type,int i)
 {
-	int cameraX = (int)MapPointer->m_cameraX/32;
-	int cameraY = (int)MapPointer->m_cameraY/32;
-
-	int k = 0, l = 0;
-
-	for (int i = -7; i < 8; i++)
-	{
-		for (int j = -10; j < 10; j++)
-		{
-			k = j, l = i;
-			k += 10, l+=7;
-			RenderImage(k*32,l*32,m_pTileSurface->m_imageSurface[MapPointer->m_mapEditor[cameraY+i][cameraX+j]],m_pWindow);
-			k = 0, l = 0;
-		}
-	}
-
-	RenderButton("Return",20,WINDOW_HEIGHT,98,0,49);
-	RenderButton("All tiles",210,WINDOW_HEIGHT,98,0,49);
-	RenderButton("Save map",400,WINDOW_HEIGHT,98,0,49);
+	RenderImage(x,y,m_pVImage[type]->m_imageSurface[i],m_pWindow);
 }
 
-void	CSDLRender::RenderMap(CMap *MapPointer)
+void	CSDLRender::RenderText(char *text,int x,int y,int r,int g,int b)
 {
-	int	cameraX = (int)MapPointer->m_cameraX / 32; // window middle
-	int	cameraY = (int)MapPointer->m_cameraY / 32;
+	SDL_Color	fontColor;
+	fontColor.r =  r,fontColor.g = g,fontColor.b = b;
 
-	int k = 0, l = 0; // where will the image be drawn if multiplied by 32
-	// [cameraY + i][cameraX + j]  which tile needs to be drawn
+	SDL_Surface *tempSurface = NULL;
 
-	for (int i = -7; i < 8; i++)
-	{
-		for (int j = -10; j < 10; j++)
-		{
-			k = j, l = i;
-			k+=10,l+=7; // we can not use negative numbers
-			RenderImage(k*32,l*32,m_pTileSurface->m_imageSurface[MapPointer->m_map[cameraY+i][cameraX+j]],m_pWindow);
-			k = 0, l = 0;
-		}
-	}
+	tempSurface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
 
-	// m_playerX and m_playerY are map locations, we need window locations
-	int x = (int)(MapPointer->m_playerX - MapPointer->m_cameraX + WINDOW_WIDTH/2);
-	int y = (int)(MapPointer->m_playerY - MapPointer->m_cameraY + WINDOW_HEIGHT/2);
+	RenderImage(x,y,tempSurface,m_pWindow);
 
-	if (x >= 0 && y >= 0 && x <= WINDOW_WIDTH - TILE_SIZE && y <= WINDOW_HEIGHT - TILE_SIZE) // do not let player be rendered onto bottom screen
-		RenderImage(x,y,m_pPlayerSurface->m_imageSurface[0],m_pWindow); // render player
-
-	for (size_t i = 0; i < MapPointer->m_closeEnemyXY.size(); i++)
-	{
-		x = (int)MapPointer->m_closeEnemyXY[i].x;
-		y = (int)MapPointer->m_closeEnemyXY[i].y;
-		if (CheckIfInWindow((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
-			RenderImage(x,y,m_pEnemySurface->m_imageSurface[MapPointer->m_closeEnemyXY[i].imgID],m_pWindow);
-			/* You can not use ->m_imageSurface[i] for image that needs to be drawn, because there can be more than one*/
-	}
-
-	for (size_t i = 0; i < MapPointer->m_npcXY.size(); i++)
-	{
-		x = (int)MapPointer->m_npcXY[i].x;
-		y = (int)MapPointer->m_npcXY[i].y;
-		if (CheckIfInWindow((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
-			RenderImage(x,y,m_pNPCSurface->m_imageSurface[MapPointer->m_npcXY[i].imgID],m_pWindow);
-	}
-
-	for (size_t i = 0; i < MapPointer->m_spell.size(); i++)
-	{
-		x = (int)MapPointer->m_spell[i].x;
-		y = (int)MapPointer->m_spell[i].y;
-		if (CheckIfInWindow((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
-			RenderImage(x,y,m_pSpellSurface->m_imageSurface[MapPointer->m_spell[i].imgID],m_pWindow);
-	}
+	SDL_FreeSurface(tempSurface);
+	tempSurface = NULL;
 }
 
-void	CSDLRender::RenderHUD(int fps,int hp,int mp)
+void	CSDLRender::RenderFPS(int fps)
 {
-	RenderFPS(fps);
-	RenderText("HP:",20,490,98,0,49);
-	RenderValue(hp,60,490,98,0,49);
-	RenderText("MP:",20,520,98,0,49);
-	RenderValue(mp,60,520,98,0,49);
+	SDL_Color	fontColor;
+	fontColor.b = 49, fontColor.g = 0, fontColor.r = 98;
+
+	char	text[25];
+
+	_itoa_s(fps,text,10);
+
+	SDL_Surface *tempSurface = NULL;
+
+	tempSurface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
+
+	RenderImage(WINDOW_WIDTH-8-tempSurface->w,WINDOW_HEIGHT,tempSurface,m_pWindow);
+
+	SDL_FreeSurface(tempSurface);
+	tempSurface = NULL;
 }
 
-void	CSDLRender::SetTextBox(std::string text)
+void	CSDLRender::RenderValue(int value,int x,int y,int r,int g,int b)
 {
-	m_text = text;
+	SDL_Color	fontColor;
+	fontColor.b = b, fontColor.g = g, fontColor.r = r;
+
+	char	text[25];
+
+	_itoa_s(value,text,10);
+
+	SDL_Surface *surface = NULL;
+
+	surface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
+
+	RenderImage(x,y,surface,m_pWindow);
+
+	SDL_FreeSurface(surface);
+	surface = NULL;
+}
+
+void	CSDLRender::RenderButton(char *text,int x,int y,int r,int g,int b)
+{
+	SDL_Color	fontColor;
+	fontColor.r = r, fontColor.g = g, fontColor.b = b;
+
+	SDL_Surface *surface = NULL;
+
+	surface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
+
+	// the button needs to have the text centered
+	int k = (x + m_pVImage[TYPE_MENU]->m_imageSurface[1]->w / 2) - surface->w/2;
+	int l = (y + m_pVImage[TYPE_MENU]->m_imageSurface[1]->h / 2) - surface->h/2;
+
+	RenderImage(x,y,m_pVImage[TYPE_MENU]->m_imageSurface[1],m_pWindow); // render button
+	RenderImage(k,l,surface,m_pWindow); // render text
+
+	SDL_FreeSurface(surface);
+	surface = NULL;
 }
 
 bool	CSDLRender::RenderTextBox(unsigned int &chars,bool &next,bool first)
@@ -290,118 +270,16 @@ bool	CSDLRender::RenderTextBox(unsigned int &chars,bool &next,bool first)
 	return	true;
 }
 
-void	CSDLRender::RenderButton(char *text,int x,int y,int r,int g,int b)
-{
-	SDL_Color	fontColor;
-	fontColor.r = r, fontColor.g = g, fontColor.b = b;
-
-	SDL_Surface *surface = NULL;
-
-	surface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
-
-	// the button needs to have the text centered
-	int k = (x + m_pMenuSurface->m_imageSurface[1]->w / 2) - surface->w/2;
-	int l = (y + m_pMenuSurface->m_imageSurface[1]->h / 2) - surface->h/2;
-
-	RenderImage(x,y,m_pMenuSurface->m_imageSurface[1],m_pWindow); // render button
-	RenderImage(k,l,surface,m_pWindow); // render text
-
-	SDL_FreeSurface(surface);
-	surface = NULL;
-}
-
-void	CSDLRender::RenderText(char *text,int x,int y,int r,int g,int b)
-{
-	SDL_Color	fontColor;
-	fontColor.r =  r,fontColor.g = g,fontColor.b = b;
-
-	SDL_Surface *tempSurface = NULL;
-
-	tempSurface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
-
-	RenderImage(x,y,tempSurface,m_pWindow);
-
-	SDL_FreeSurface(tempSurface);
-	tempSurface = NULL;
-}
-
-void	CSDLRender::RenderValue(int value,int x,int y,int r,int g,int b)
-{
-	SDL_Color	fontColor;
-	fontColor.b = b, fontColor.g = g, fontColor.r = r;
-
-	char	text[25];
-
-	_itoa_s(value,text,10);
-
-	SDL_Surface *surface = NULL;
-
-	surface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
-
-	RenderImage(x,y,surface,m_pWindow);
-
-	SDL_FreeSurface(surface);
-	surface = NULL;
-}
-
-void	CSDLRender::RenderMainMenu()
-{
-	RenderButton("New game",224,144,25,23,112);
-	RenderButton("Map editor",224,208,25,25,112);
-	RenderButton("Options",224,272,25,25,112);
-	RenderButton("Exit",224,336,25,23,112);
-}
-
-void	CSDLRender::RenderOptions()
-{
-	RenderButton("Grab mode:",32,32,25,25,112);
-
-	if (g_grabMode == SDL_GRAB_ON)
-		RenderText("Yes",230,57,25,25,112);
-	else
-		RenderText("No",230,57,25,25,112);
-
-	RenderButton("Limit FPS:",32,96,25,25,112);
-
-	if (g_FPSLimit)
-		RenderText("Yes",230,121,25,25,112);
-	else
-		RenderText("No",230,121,25,25,112);
-
-	RenderButton("Return",128,480,25,25,112);
-	RenderButton("Exit",320,480,25,25,112);
-}
-
 // rest
-
-void	CSDLRender::RenderImage(int x,int y,SDL_Surface *image,SDL_Surface *surface)
-{
-	SDL_Rect	tempRect;
-	tempRect.x = x;
-	tempRect.y = y;
-
-	SDL_BlitSurface(image,0,surface,&tempRect);
-}
-
-bool	CSDLRender::CheckIfInWindow(int cameraX,int cameraY,int &x,int &y)
-{
-	if (x < (cameraX - WINDOW_WIDTH/2) || x > (cameraX + WINDOW_WIDTH/2) || y < (cameraY - WINDOW_HEIGHT/2) || y > (cameraY + WINDOW_HEIGHT/2))
-		return false; // outside
-	// ( lets say, 1200X,800Y on map -> and our window has 640,480 )
-	// MapX,MapY transform into X and Y for window 
-	x-= (cameraX - WINDOW_WIDTH/2);
-	y-= (cameraY - WINDOW_HEIGHT/2);
-	return true;
-}
 
 bool	CSDLRender::LoadClasses()
 {
-	m_pTileSurface		=	DD_NEW	CTileImageSurface;
-	m_pEnemySurface		=	DD_NEW	CEnemyImageSurface;
-	m_pPlayerSurface	=	DD_NEW	CPlayerImageSurface;
-	m_pMenuSurface		=	DD_NEW	CMenuImageSurface;
-	m_pNPCSurface		=	DD_NEW	CNPCImageSurface;
-	m_pSpellSurface		=	DD_NEW	CSpellImageSurface;
+	CImageSurface	*m_pTileSurface		=	DD_NEW	CTileImageSurface;
+	CImageSurface	*m_pEnemySurface	=	DD_NEW	CEnemyImageSurface;
+	CImageSurface	*m_pPlayerSurface	=	DD_NEW	CPlayerImageSurface;
+	CImageSurface	*m_pMenuSurface		=	DD_NEW	CMenuImageSurface;
+	CImageSurface	*m_pNPCSurface		=	DD_NEW	CNPCImageSurface;
+	CImageSurface	*m_pSpellSurface	=	DD_NEW	CSpellImageSurface;
 
 	if (m_pTileSurface->LoadAll() != 1) // tile 1 will return 0 if it failed to load
 		return	false;
@@ -427,6 +305,13 @@ bool	CSDLRender::LoadClasses()
 		return	false;
 	Log("Spell images loaded");
 
+	m_pVImage.push_back(m_pTileSurface);
+	m_pVImage.push_back(m_pEnemySurface);
+	m_pVImage.push_back(m_pPlayerSurface);
+	m_pVImage.push_back(m_pMenuSurface);
+	m_pVImage.push_back(m_pNPCSurface);
+	m_pVImage.push_back(m_pSpellSurface);
+
 	return	true;
 }
 
@@ -439,21 +324,13 @@ bool	CSDLRender::LoadFonts()
 	return	true;
 }
 
-void	CSDLRender::RenderFPS(int fps)
+void	CSDLRender::RenderImage(int x,int y,SDL_Surface *image,SDL_Surface *surface)
 {
-	SDL_Color	fontColor;
-	fontColor.b = 49, fontColor.g = 0, fontColor.r = 98;
+	SDL_Rect	tempRect;
+	tempRect.x = x;
+	tempRect.y = y;
 
-	char	text[25];
-
-	_itoa_s(fps,text,10);
-
-	SDL_Surface *tempSurface = NULL;
-
-	tempSurface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
-
-	RenderImage(WINDOW_WIDTH-8-tempSurface->w,WINDOW_HEIGHT,tempSurface,m_pWindow);
-
-	SDL_FreeSurface(tempSurface);
-	tempSurface = NULL;
+	SDL_BlitSurface(image,0,surface,&tempRect);
 }
+
+

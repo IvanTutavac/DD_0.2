@@ -66,6 +66,9 @@
     <ClCompile Include="Logic\Quest\CQuestManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Render\CRender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Events\CEvent.h">
@@ -78,9 +81,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Render\CSDLRender.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\IRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CGame.h">
@@ -129,6 +129,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Logic\Quest\CQuestManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\CRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

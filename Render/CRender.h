@@ -22,10 +22,21 @@
 
 class CMap;
 
-class IRender
+class CRender
 {
 
 private:
+
+protected:
+
+	std::string		m_text;
+
+	bool	CRender::CheckIfInWindow(int cameraX,int cameraY,int &x,int &y);
+
+
+	virtual void	RenderFPS(int fps)=0;
+	// image will be drawn on main window
+	virtual void	RenderImage(int x,int y,const int type,int i)=0; 
 
 public:
 
@@ -37,18 +48,19 @@ public:
 
 	virtual void	UpdateWindow()=0;
 
-	virtual void	RenderMap(CMap *MapPointer)=0;
-	virtual void	RenderMapEditor(CMap *MapPointer)=0;
-	virtual void	RenderAllTiles(CMap *MapPointer)=0;
-	virtual void    RenderMainMenu()=0;
 	virtual void	RenderOptions()=0;
 	virtual void	RenderText(char *text,int x,int y,int r,int  g,int b)=0;
 	virtual void	RenderValue(int value,int x,int y,int r,int g,int b)=0;
 	virtual void	RenderButton(char *text,int x,int y,int r,int g,int b)=0;
 	virtual bool	RenderTextBox(unsigned int &words,bool &next,bool first)=0;
-	virtual	void	SetTextBox(std::string text)=0;
-	virtual void	RenderHUD(int fps,int hp,int mp)=0;
 
-	virtual	~IRender(){}
+	void	RenderMap(CMap *MapPointer);
+	void	RenderMapEditor(CMap *MapPointer);
+	void	RenderAllTiles(CMap *MapPointer);
+	void    RenderMainMenu();
+	void	SetTextBox(std::string text);
+	void	RenderHUD(int fps,int hp,int mp);
+
+	virtual	~CRender(){}
 
 };

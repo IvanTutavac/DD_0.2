@@ -791,8 +791,12 @@ void	CLogic::CheckMapEditorClickPress(const CEventMessage *EventMessage)
 	// so, while we're holding left mouse click pressed, set the map tile
 	if (CheckPointCollision(EventMessage->m_MotionEvent.x,EventMessage->m_MotionEvent.y,0,0,WINDOW_WIDTH,WINDOW_HEIGHT))
 	{
-		int k = (int)((EventMessage->m_MotionEvent.y + m_pMap->m_cameraY-WINDOW_HEIGHT/2)/32);
-		int l = (int)((EventMessage->m_MotionEvent.x + m_pMap->m_cameraX-WINDOW_WIDTH/2)/32);
+		int k		=	(int)((EventMessage->m_MotionEvent.y + m_pMap->m_cameraY-WINDOW_HEIGHT/2)/32);
+		float tempL	=	(float)((EventMessage->m_MotionEvent.x + m_pMap->m_cameraX-WINDOW_WIDTH/2)/32);
+		int	l		=	(int)tempL;
+
+		if (l > tempL)
+			l--;
 
 		m_pMap->m_mapEditor[k][l] = m_pMap->m_selectedTile;
 	}

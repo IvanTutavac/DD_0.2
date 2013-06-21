@@ -30,6 +30,9 @@ const	int	TILE_SIZE			=	32;
 
 const	int SPELL_NUMBER		=	1;
 	
-const	int	PlayerType			=	1;
-const	int	EnemyType			=	2;
-const	int	NPCType				=	3;
+const	int	TYPE_TILE			=	0;
+const	int	TYPE_ENEMY			=	1;
+const	int	TYPE_PLAYER			=	2;
+const	int	TYPE_MENU			=	3;
+const	int	TYPE_NPC			=	4;
+const	int	TYPE_SPELL			=	5;

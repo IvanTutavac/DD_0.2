@@ -34,7 +34,6 @@ struct _location
 	int ID;
 	int imgID; // which img represents the entity
 	int speed; 
-	LocationState state;  // use ls_
 };
 
 struct _location1

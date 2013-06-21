@@ -23,7 +23,7 @@ class CTimer;
 class CEvent;
 class CEventMessage;
 class CLogic;
-class IRender;
+class CRender;
 
 class CGame
 {
@@ -37,7 +37,7 @@ private:
 	CLogic			*m_pLogic;	
 	CEventMessage	*m_pEventMessage;
 
-	IRender		*m_pRender; 
+	CRender		*m_pRender; 
 	
 	bool		Render(double deltaTime);
 	bool		Events();

@@ -18,13 +18,14 @@
 */
 
 #pragma once
-#include "IRender.h"
+#include "CRender.h"
 #include "SDL.h"
 #include <SDL_ttf.h>
+#include <vector>
 
 class CImageSurface;
 
-class CSDLRender : public IRender
+class CSDLRender : public CRender
 {
 
 private:
@@ -32,25 +33,24 @@ private:
 	SDL_Surface		*m_pWindow;
 
 	TTF_Font		*m_pHUDFont;
-
-	CImageSurface	*m_pTileSurface;
-	CImageSurface	*m_pEnemySurface;
-	CImageSurface	*m_pPlayerSurface;
-	CImageSurface	*m_pMenuSurface;
-	CImageSurface	*m_pNPCSurface;
-	CImageSurface	*m_pSpellSurface;
+	
+	std::vector<CImageSurface*> m_pVImage;
 
 	SDL_Rect		m_clearHUDRect;
 	SDL_Rect		m_clearTextBoxRect;
 
-	std::string		m_text;
-
-	bool	CheckIfInWindow(int cameraX,int cameraY,int &x,int &y);
 
 	bool	LoadClasses();
 	bool	LoadFonts();
 
+	void	RenderImage(int x,int y,SDL_Surface *image,SDL_Surface *surface);
+
+	bool	CheckIfInWindow(int cameraX,int cameraY,int &x,int &y);
+
+protected:
+
 	void	RenderFPS(int fps);
+	void	RenderImage(int x,int y,const int type,int i);
 
 public:
 
@@ -62,10 +62,6 @@ public:
 
 	void	UpdateWindow();
 	
-	void	RenderMap(CMap *MapPointer);
-	void	RenderMapEditor(CMap *MapPointer);
-	void	RenderAllTiles(CMap *MapPointer);
-	void	RenderMainMenu();
 	void	RenderOptions();
 	void	RenderText(char *text,int x,int y,int r,int g,int b);
 	void	RenderValue(int value,int x,int y,int r,int g,int b);
@@ -74,8 +70,4 @@ public:
 	// will return false if there's no more text to render, logic reads the result 
 	bool	RenderTextBox(unsigned int &words,bool &next,bool first);
 
-	void	SetTextBox(std::string text);
-	void	RenderHUD(int fps,int hp,int mp);
-
-	void	RenderImage(int x,int y,SDL_Surface *image,SDL_Surface *surface);
 };
