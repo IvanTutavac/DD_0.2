@@ -84,4 +84,6 @@ public:
 	bool	LoadMap(char *fileName);
 	bool	LoadMapEditorMap(char *fileName);
 	void	SaveMapEditorMap();
+
+	void	CheckTimedOutSpells(double deltaTime);
 };

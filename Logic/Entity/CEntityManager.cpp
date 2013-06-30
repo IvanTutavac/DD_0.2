@@ -172,7 +172,7 @@ bool	CEntityManager::SetMapEnemy(CMap *MapPointer)
 	// fali provjera dal je uniqueEnemyID > m_IDLimit
 	// trebalo bi citati iz datoteka koji neprijatelj je na kojoj lokaciji mape
 	// map editor bi to trebao raditi
-	CEnemy Enemy;// = DD_NEW CEnemy;
+	CEnemy Enemy;
 
 	if (!Enemy.Init())
 		return false;
@@ -181,7 +181,7 @@ bool	CEntityManager::SetMapEnemy(CMap *MapPointer)
 	Enemy.SetMP(m_VEnemyList[0].GetMP());
 	Enemy.SetName(m_VEnemyList[0].GetName());
 	Enemy.SetTypeID(m_VEnemyList[0].GetTypeID());
-	Enemy.SetID(m_UniqueEnemyID);
+	Enemy.SetID(m_UniqueEnemyID++);
 
 	m_VCloseEnemy.push_back(Enemy);
 
@@ -191,6 +191,26 @@ bool	CEntityManager::SetMapEnemy(CMap *MapPointer)
 	temp.x = 32*2,temp.y = 32*7;
 
 	MapPointer->m_closeEnemyXY.push_back(temp);
+
+	CEnemy Enemy1;
+
+	if (!Enemy1.Init())
+		return	false;
+	
+	Enemy1.SetHP(m_VEnemyList[0].GetHP());
+	Enemy1.SetMP(m_VEnemyList[0].GetMP());
+	Enemy1.SetName(m_VEnemyList[0].GetName());
+	Enemy1.SetTypeID(m_VEnemyList[0].GetTypeID());
+	Enemy1.SetID(m_UniqueEnemyID++);
+
+	m_VCloseEnemy.push_back(Enemy1);
+
+	temp.ID = m_VCloseEnemy.back().GetID();
+	temp.imgID = m_VCloseEnemy.back().GetTypeID();
+	temp.x = 32*15,temp.y = 32*3;
+
+	MapPointer->m_closeEnemyXY.push_back(temp);
+
 
 	return	true;
 }

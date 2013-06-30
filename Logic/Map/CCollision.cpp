@@ -39,13 +39,8 @@ void	CCollision::SpellCollision(CMap *MapPointer,CEntityManager *EntityPointer,C
 	if (MapPointer->m_spell.empty())
 		return;
 
-	bool	erase	=	false;
-	bool	search	=	true;
-
 	for (int i = MapPointer->m_spell.size()-1; i >= 0; i--)
 	{
-		search	=	true;
-
 		// check if player was hit by a spell
 		if (CheckCollision((int)MapPointer->m_playerX,(int)MapPointer->m_playerY,(int)MapPointer->m_spell[i].x,(int)MapPointer->m_spell[i].y,TILE_SIZE))
 		{
@@ -73,8 +68,6 @@ void	CCollision::SpellCollision(CMap *MapPointer,CEntityManager *EntityPointer,C
 		{
 			if (CheckCollision((int)MapPointer->m_closeEnemyXY[j].x,(int)MapPointer->m_closeEnemyXY[j].y,(int)MapPointer->m_spell[i].x,(int)MapPointer->m_spell[i].y,TILE_SIZE))
 			{
-				// an enemy created on map must be created at the same time in EntityManager so that the same index can be used to access both
-				
 				int hp = EntityPointer->m_VCloseEnemy[j].GetHP();
 				int mp = EntityPointer->m_VCloseEnemy[j].GetMP();
 
@@ -83,6 +76,7 @@ void	CCollision::SpellCollision(CMap *MapPointer,CEntityManager *EntityPointer,C
 				EntityPointer->m_VCloseEnemy[j].SetHP(hp);
 				EntityPointer->m_VCloseEnemy[j].SetMP(mp);
 				
+				// enemies created on map must be created in the same order in EntityManager so that the same index can be used to access both
 				MapPointer->m_spell.erase(MapPointer->m_spell.begin()+i);
 				
 				break;

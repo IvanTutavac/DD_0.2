@@ -277,9 +277,6 @@ void	CLogic::Collision()
 	m_pCollision->PlayerEnemyCollision(m_pMap);
 	m_pCollision->PlayerNPCCollision(m_pMap);
 	m_pCollision->SpellCollision(m_pMap,m_pEntity,m_pSpell);
-	//PlayerEnemyCollision();
-	//SpellCollision();
-	//PlayerNPCCollision();
 }
 
 bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
@@ -345,7 +342,7 @@ void	CLogic::Action()
 
 void	CLogic::FinalCheck()
 {
-	CheckTimedOutSpells();
+	m_pMap->CheckTimedOutSpells(deltaTime);
 
 	// nesto bi trebalo loviti vracenu vrijednost i ako je false, vratiti korisnika u izbornik
 	CheckIfAlive();
@@ -731,22 +728,6 @@ bool	CLogic::CheckDistance(int x1,int y1,int x2,int y2,int distanceX,int distanc
 	return	false;
 }
 
-void	CLogic::CheckTimedOutSpells()
-{
-	if (m_pMap->m_spell.size() < 1)
-		return;
-
-	for (int i = m_pMap->m_spell.size()-1; i >= 0; i--)
-	{
-		m_pMap->m_spell[i].duration -= deltaTime;
-		if (m_pMap->m_spell[i].duration <= 0)
-		{
-
-			m_pMap->m_spell.erase(m_pMap->m_spell.begin()+i);
-		}
-	}
-}
-
 bool	CLogic::CheckIfAlive()
 {
 	if (m_pEntity->m_pPlayer->GetHP() < 1)
@@ -761,16 +742,9 @@ bool	CLogic::CheckIfAlive()
 		{
 			m_pQuest->UpdateQuest(m_pEntity->m_VCloseEnemy[i].GetTypeID());
 
-			for (size_t j = m_pMap->m_closeEnemyXY.size()-1; j >= 0; j--)
-			{
-				if (m_pMap->m_closeEnemyXY[j].ID == m_pEntity->m_VCloseEnemy[i].GetID())
-				{
-					m_pMap->m_closeEnemyXY.erase(m_pMap->m_closeEnemyXY.begin()+j);
-					m_pEntity->m_VCloseEnemy[i].Clean();
-					m_pEntity->m_VCloseEnemy.erase(m_pEntity->m_VCloseEnemy.begin()+i);
-					break;
-				}
-			}
+			m_pMap->m_closeEnemyXY.erase(m_pMap->m_closeEnemyXY.begin()+i);
+			m_pEntity->m_VCloseEnemy[i].Clean();
+			m_pEntity->m_VCloseEnemy.erase(m_pEntity->m_VCloseEnemy.begin()+i);
 		}
 	}
 

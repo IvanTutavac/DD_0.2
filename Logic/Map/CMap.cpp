@@ -160,3 +160,19 @@ void	CMap::InitAllTilesMap()
 
 	m_allTilesMapState	=	true;
 }
+
+void	CMap::CheckTimedOutSpells(double deltaTime)
+{
+	if (m_spell.size() < 1)
+		return;
+
+	for (int i = m_spell.size()-1; i >= 0; i--)
+	{
+		m_spell[i].duration -= deltaTime;
+		
+		if (m_spell[i].duration <= 0)
+		{
+			m_spell.erase(m_spell.begin()+i);
+		}
+	}
+}
