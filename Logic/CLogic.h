@@ -22,6 +22,7 @@
 #include "dataStructs.h"
 
 class CMap;
+class CMovement;
 class CEntity;
 class CEnemy;
 class CPlayer;
@@ -118,6 +119,7 @@ private:
 	std::vector<CEnemy> m_VCloseEnemy; // enemies near you
 	//std::vector<CQuest*> m_VQuests; // contains all quests
 	CQuestManager	*m_pQuest;
+	CMovement		*m_pMovement;
 
 	std::vector<_spell> m_VAllSpells; // contains all spells
 
@@ -180,16 +182,6 @@ private:
 
 	// create spell data needed for movement ( render and timer data )
 	void			SetupSpellMap(int id/*_spell.ID*/,float x,float y,double duration /*_spell.duration*/,int speed /*_spell.speed*/);
-
-
-	void			CameraMovement(const CEventMessage *EventMessage);
-	void			SpellMovement(const CEventMessage *EventMessage);
-	void			MoveEntity(const CEventMessage *EventMessage,float &x,float &y,float speed);
-	void			MoveLeft(float &x,float speed,bool flag = true);
-	void			MoveRight(float &x,float speed,bool flag = true);
-	void			MoveUp(float &y,float speed,bool flag = true);
-	void			MoveDown(float &y,float speed,bool flag = true);
-
 
 
 	// check all spell timers, see if they exceeded their duration, if yes delete the spell from CMap and delete the spellTimer

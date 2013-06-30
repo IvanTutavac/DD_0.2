@@ -21,7 +21,6 @@
 #include "Log.h"
 #include "CGame.h"
 #include "CTimer.h"
-#include "Render\CRender.h"
 #include "Render\CSDLRender.h"
 #include "Logic\CLogic.h"
 #include "Events\CEvent.h"
@@ -33,7 +32,7 @@
 #include "Logic\CPlayer.h"
 #include "Logic\CNPC.h"
 #include "Logic\CConversation.h"
-//#include <cstring>
+
 // default configuration
 SDL_GrabMode	g_grabMode	=	SDL_GRAB_ON;
 bool			g_FPSLimit	=	true;
@@ -90,9 +89,7 @@ bool	CGame::Run()
 {
 	m_gameLoop	=	true;
 
-	//m_pLogic->m_renderFlags.renderMap	=	true; // remove later
 	m_pLogic->m_renderFlags.state	= RS_renderMainMenu;
-	//m_pLogic->m_renderFlags.renderTextBox = true;
 
 	double	deltaTime	=	0;
 	double  fps			=	0;
@@ -193,7 +190,7 @@ bool	CGame::Render(double deltaTime)
 		}
 		else if (m_pLogic->m_renderFlags.textBoxState	== RTBS_renderTextBox)
 		{
-			m_pEventMessage->m_continueConversation = m_pRender->RenderTextBox(m_pLogic->m_textRenderInfo.chars,m_pLogic->m_textRenderInfo.nextTextBox,false);
+			 m_pEventMessage->m_continueConversation = m_pRender->RenderTextBox(m_pLogic->m_textRenderInfo.chars,m_pLogic->m_textRenderInfo.nextTextBox,false);
 		}
 		RenderHUD(deltaTime);
 	}

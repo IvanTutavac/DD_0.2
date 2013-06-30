@@ -28,6 +28,8 @@ protected:
 	int	N;
 public:
 
+	virtual ~CImageSurface(){}
+
 	std::vector<SDL_Surface*>	m_imageSurface; // contains images
 
 	virtual	int		LoadAll()=0;

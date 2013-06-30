@@ -19,20 +19,16 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "../debug.h"
 #include "..\Log.h"
-//#include "../Events/CEvent.h"
 #include "../Events/CEventMessage.h"
 #include "CLogic.h"
 #include "Quest\CQuestManager.h"
 #include "CMap.h"
+#include "CMovement.h"
 #include "CPlayer.h"
 #include "CEnemy.h"
 #include "CNPC.h"
 #include "..\CTimer.h"
 #include "..\configuration.h"
-//#include <fstream>
-//#include "SDL.h"
-
-//SDL_GrabMode g_grabMode;
 
 #pragma pack(1)
 struct _enemy
@@ -81,6 +77,7 @@ bool	CLogic::Init()
 	m_UniqueEnemyID		=	0;
 
 	m_pMap			=	DD_NEW CMap;
+	m_pMovement		=	DD_NEW CMovement;
 	m_pQuest		=	DD_NEW CQuestManager;
 
 	if (!m_pMap->Init())
@@ -121,6 +118,8 @@ void	CLogic::Clean()
 
 	m_pPlayer->Clean();
 	DD_DELETE(m_pPlayer);
+
+	DD_DELETE(m_pMovement);
 
 	for (size_t i = 0; i < m_VEnemyList.size(); i++)
 	{
@@ -375,7 +374,9 @@ void	CLogic::Movement(const CEventMessage *EventMessage)
 	if (!m_lockFlags.cameraMovement && g_grabMode == SDL_GRAB_ON && EventMessage->m_MotionEvent.Event == ME_moved)
 	{
 		if (m_logicFlags.state == LGS_inGame || m_logicFlags.state == LGS_allTiles || m_logicFlags.state == LGS_mapEditor)
-			CameraMovement(EventMessage);
+		{
+			m_pMovement->CameraMovement(EventMessage->m_MotionEvent.x,EventMessage->m_MotionEvent.y,m_pMap->m_cameraX,m_pMap->m_cameraY,deltaTime);
+		}
 	}
 
 	if (m_lockFlags.movement)
@@ -384,13 +385,13 @@ void	CLogic::Movement(const CEventMessage *EventMessage)
 	if (m_logicFlags.state != LGS_inGame)
 		return;
 
+	// move player
 	m_pMap->m_tempPlayerX = m_pMap->m_playerX;
 	m_pMap->m_tempPlayerY = m_pMap->m_playerY;
-	MoveEntity(EventMessage,m_pMap->m_playerX,m_pMap->m_playerY,m_pMap->m_playerSpeed);
+	m_pMovement->MoveEntity(EventMessage->m_moveLeftRight,EventMessage->m_moveUpDown,m_pMap->m_playerX,m_pMap->m_playerY,m_pMap->m_playerSpeed,deltaTime);
 
-	SpellMovement(EventMessage);
+	m_pMovement->SpellMovement(m_pMap,(float)EventMessage->m_MotionEvent.x,(float)EventMessage->m_MotionEvent.y,deltaTime);
 
-	// movement not valid for enemy
 }
 
 void	CLogic::Nearby(CEventMessage *EventMessage)
@@ -955,175 +956,6 @@ bool	CLogic::CheckPointCollision(int x1,int y1,int x2,int y2,int sizeX,int sizeY
 		return	true;
 
 	return	false;
-}
-
-void	CLogic::SpellMovement(const CEventMessage *EventMessage)
-{
-	if (m_pMap->m_spell.size() < 1)
-		return;
-
-	float x = 0, y = 0, d = 0;
-
-	for (int i = m_pMap->m_spell.size()-1; i >= 0; i--)
-	{
-		if (m_pMap->m_spell[i].state == LS_nothing)
-		{
-			x = EventMessage->m_MotionEvent.x - m_pMap->m_playerX;
-			y = EventMessage->m_MotionEvent.y - m_pMap->m_playerY;
-
-			d = sqrt(x*x+y*y);
-
-			x/= d;
-			y/= d;
-
-			m_pMap->m_spell[i].tempX = x;
-			m_pMap->m_spell[i].tempY = y;
-			m_pMap->m_spell[i].state = LS_moving;
-		}
-
-		m_pMap->m_spell[i].x += (float)(m_pMap->m_spell[i].tempX * deltaTime * m_pMap->m_spell[i].speed);
-		m_pMap->m_spell[i].y += (float)(m_pMap->m_spell[i].tempY * deltaTime * m_pMap->m_spell[i].speed);
-
-		if (m_pMap->m_spell[i].x < 0 || m_pMap->m_spell[i].x > MAP_WIDTH-TILE_SIZE || m_pMap->m_spell[i].y < 0 || m_pMap->m_spell[i].y > MAP_HEIGHT-TILE_SIZE)
-		{ 
-			// spell outside of map
-			m_pMap->m_spell.erase(m_pMap->m_spell.begin()+i);
-		}
-	}
-}
-
-void	CLogic::CameraMovement(const CEventMessage *EventMessage)
-{
-	float v = 600;
-	float speed	= v*0.70710678118f;
-
-	if (EventMessage->m_MotionEvent.x >= WINDOW_WIDTH-1 && m_pMap->m_cameraX < MAP_WIDTH - WINDOW_WIDTH/2)
-	{
-		if (EventMessage->m_MotionEvent.y <= 0 && m_pMap->m_cameraY > WINDOW_HEIGHT/2)
-		{
-			m_pMap->m_cameraY -= (float)(speed * deltaTime);
-			m_pMap->m_cameraX += (float)(speed * deltaTime);
-		}
-		else if (EventMessage->m_MotionEvent.y >= WINDOW_HEIGHT-1+HUD_HEIGHT && m_pMap->m_cameraY < MAP_HEIGHT - WINDOW_HEIGHT/2)
-		{
-			m_pMap->m_cameraY += (float)(speed * deltaTime);
-			m_pMap->m_cameraX += (float)(speed * deltaTime);
-		}
-		else
-			m_pMap->m_cameraX += (float)(v * deltaTime);
-	}
-	else if (EventMessage->m_MotionEvent.x <= 0 && m_pMap->m_cameraX > WINDOW_WIDTH/2)
-	{
-		if (EventMessage->m_MotionEvent.y <= 0 && m_pMap->m_cameraY > WINDOW_HEIGHT/2)
-		{
-			m_pMap->m_cameraY -= (float)(speed * deltaTime);
-			m_pMap->m_cameraX -= (float)(speed * deltaTime);
-		}
-		else if (EventMessage->m_MotionEvent.y >= WINDOW_HEIGHT-1+HUD_HEIGHT && m_pMap->m_cameraY < MAP_HEIGHT - WINDOW_HEIGHT/2)
-		{
-			m_pMap->m_cameraY += (float)(speed * deltaTime);
-			m_pMap->m_cameraX -= (float)(speed * deltaTime);
-		}
-		else
-			m_pMap->m_cameraX -= (float)(v * deltaTime);
-	}
-	else if (EventMessage->m_MotionEvent.y >= WINDOW_HEIGHT-1+HUD_HEIGHT && m_pMap->m_cameraY < MAP_HEIGHT - WINDOW_HEIGHT/2)
-	{
-		m_pMap->m_cameraY += (float)(v * deltaTime);
-	}
-	else if (EventMessage->m_MotionEvent.y <= 0 && m_pMap->m_cameraY > WINDOW_HEIGHT/2)
-	{
-		m_pMap->m_cameraY -= (float)(v * deltaTime);
-	}
-
-	if (m_pMap->m_cameraX > MAP_WIDTH - WINDOW_WIDTH/2)
-		m_pMap->m_cameraX = MAP_WIDTH - WINDOW_WIDTH/2;	
-	else if (m_pMap->m_cameraX < WINDOW_WIDTH/2)
-		m_pMap->m_cameraX = WINDOW_WIDTH/2;
-
-	if (m_pMap->m_cameraY < WINDOW_HEIGHT/2)
-		m_pMap->m_cameraY = WINDOW_HEIGHT/2;
-	else if (m_pMap->m_cameraY > MAP_HEIGHT - WINDOW_HEIGHT/2)
-		m_pMap->m_cameraY = MAP_HEIGHT - WINDOW_HEIGHT/2;
-
-}
-
-void	CLogic::MoveEntity(const CEventMessage *EventMessage,float &x,float &y,float speed)
-{
-	//m_pMap->m_tempPlayerX = m_pMap->m_playerX; // will be used to reset movement if needed
-	//m_pMap->m_tempPlayerY = m_pMap->m_playerY;
-
-	if (EventMessage->m_moveLeftRight == LR_right)
-	{
-		if (EventMessage->m_moveUpDown == UD_up)
-		{
-			MoveUp(y,speed*0.70710678118f);
-			MoveRight(x,speed*0.70710678118f);
-		}
-		else if (EventMessage->m_moveUpDown == UD_down)
-		{
-			MoveDown(y,speed*0.70710678118f);
-			MoveRight(x,speed*0.70710678118f);
-		}
-		else
-			MoveRight(x,speed);
-	}
-	else if (EventMessage->m_moveLeftRight == LR_left)
-	{
-		if (EventMessage->m_moveUpDown == UD_up)
-		{
-			MoveUp(y,speed*0.70710678118f);
-			MoveLeft(x,speed*0.70710678118f);
-		}
-		else if (EventMessage->m_moveUpDown == UD_down)
-		{
-			MoveDown(y,speed*0.70710678118f);
-			MoveLeft(x,speed*0.70710678118f);
-		}
-		else
-			MoveLeft(x,speed);
-	}
-	else if (EventMessage->m_moveUpDown == UD_up)
-		MoveUp(y,speed);
-	else if (EventMessage->m_moveUpDown == UD_down)
-		MoveDown(y,speed);
-}
-
-void	CLogic::MoveRight(float &x,float speed,bool flag)
-{
-	float	temp	=	(float)(speed * deltaTime);
-	x += temp;
-	if (x > MAP_WIDTH - TILE_SIZE && flag)
-	{
-		x = MAP_WIDTH - TILE_SIZE;
-	}
-}
-void	CLogic::MoveLeft(float &x,float speed,bool flag)
-{
-	float	temp	=	(float)(speed * deltaTime);
-	x -= temp;
-	if (x < 0 && flag)
-	{
-		x = 0;
-	}
-}
-void	CLogic::MoveUp(float &y,float speed,bool flag)
-{
-	float	temp	=	(float)(speed * deltaTime);
-	y -= temp;
-	if (y < 0 && flag)
-	{
-		y = 0;
-	}
-}
-void	CLogic::MoveDown(float &y,float speed,bool flag)
-{
-	float	temp	=	(float)(speed * deltaTime);
-	y += temp;
-	if (y > MAP_HEIGHT - TILE_SIZE && flag)
-	{
-		y = MAP_HEIGHT - TILE_SIZE - 1;
-	}
 }
 
 bool	CLogic::CheckIfNPCNearby()

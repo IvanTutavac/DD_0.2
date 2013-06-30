@@ -90,6 +90,7 @@
     <ClCompile Include="Logic\CEntity.cpp" />
     <ClCompile Include="Logic\CLogic.cpp" />
     <ClCompile Include="Logic\CMap.cpp" />
+    <ClCompile Include="Logic\CMovement.cpp" />
     <ClCompile Include="Logic\CNPC.cpp" />
     <ClCompile Include="Logic\CPlayer.cpp" />
     <ClCompile Include="Logic\Quest\CQuest.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="Logic\CEntity.h" />
     <ClInclude Include="Logic\CLogic.h" />
     <ClInclude Include="Logic\CMap.h" />
+    <ClInclude Include="Logic\CMovement.h" />
     <ClInclude Include="Logic\CNPC.h" />
     <ClInclude Include="Logic\CPlayer.h" />
     <ClInclude Include="Logic\Quest\CQuest.h" />

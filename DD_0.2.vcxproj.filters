@@ -69,6 +69,9 @@
     <ClCompile Include="Render\CRender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\CMovement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Events\CEvent.h">
@@ -132,6 +135,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Render\CRender.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\CMovement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
