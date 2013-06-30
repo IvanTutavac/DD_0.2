@@ -44,7 +44,7 @@ void	CCollision::SpellCollision(CMap *MapPointer,CEntityManager *EntityPointer,C
 
 	for (int i = MapPointer->m_spell.size()-1; i >= 0; i--)
 	{
-		search = true;
+		search	=	true;
 
 		// check if player was hit by a spell
 		if (CheckCollision((int)MapPointer->m_playerX,(int)MapPointer->m_playerY,(int)MapPointer->m_spell[i].x,(int)MapPointer->m_spell[i].y,TILE_SIZE))
@@ -52,10 +52,40 @@ void	CCollision::SpellCollision(CMap *MapPointer,CEntityManager *EntityPointer,C
 			// check to see if the spell was not created by player
 			if (MapPointer->m_spell[i].parent != -1)
 			{
+				// spell casted by enemy
+				int hp = EntityPointer->m_pPlayer->GetHP();
+				int mp = EntityPointer->m_pPlayer->GetMP();
+
+				SpellPointer->SpellHit(MapPointer->m_spell[i].imgID,hp,mp);
 				
-				//EntityPointer->m_pPlayer->ReduceHP(
-				//MapPointer->m_spell.erase(MapPointer->m_spell.begin()+i);
+				EntityPointer->m_pPlayer->SetHP(hp);
+				EntityPointer->m_pPlayer->SetMP(mp);
+				
+				MapPointer->m_spell.erase(MapPointer->m_spell.begin()+i);
+
 				continue;
+			}
+		}
+
+		//checking if an enemy has been hit by a spell
+
+		for (size_t j = 0; j < MapPointer->m_closeEnemyXY.size(); j++)
+		{
+			if (CheckCollision((int)MapPointer->m_closeEnemyXY[j].x,(int)MapPointer->m_closeEnemyXY[j].y,(int)MapPointer->m_spell[i].x,(int)MapPointer->m_spell[i].y,TILE_SIZE))
+			{
+				// an enemy created on map must be created at the same time in EntityManager so that the same index can be used to access both
+				
+				int hp = EntityPointer->m_VCloseEnemy[j].GetHP();
+				int mp = EntityPointer->m_VCloseEnemy[j].GetMP();
+
+				SpellPointer->SpellHit(MapPointer->m_spell[i].imgID,hp,mp);
+
+				EntityPointer->m_VCloseEnemy[j].SetHP(hp);
+				EntityPointer->m_VCloseEnemy[j].SetMP(mp);
+				
+				MapPointer->m_spell.erase(MapPointer->m_spell.begin()+i);
+				
+				break;
 			}
 		}
 	}

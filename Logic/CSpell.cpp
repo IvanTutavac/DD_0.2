@@ -30,12 +30,16 @@ bool	CSpell::Init()
 	dummySpell.type = ST_hpRemoval;
 	dummySpell.duration = 3;
 	dummySpell.value = 25;
+	dummySpell.value1 = 0;
+	dummySpell.value2 = 0;
 	dummySpell.moving = true;
 	dummySpell.casted = false;
 	dummySpell.ID = 0;
 	dummySpell.cd = 1;
 	dummySpell.tempCD = dummySpell.cd;
 	dummySpell.speed = 300;
+	dummySpell.n = 1;
+	dummySpell.range = 0;
 	strcpy_s(dummySpell.name,"Fire");
 
 	m_VAllSpells.push_back(dummySpell);
@@ -44,12 +48,16 @@ bool	CSpell::Init()
 	dummySpell.type = ST_hpRemoval;
 	dummySpell.duration = 2;
 	dummySpell.value = 25;
+	dummySpell.value1 = 0;
+	dummySpell.value2 = 0;
 	dummySpell.moving = true;
 	dummySpell.casted = false;
 	dummySpell.ID = 1;
 	dummySpell.cd = 1;
 	dummySpell.tempCD = dummySpell.cd;
 	dummySpell.speed = 450;
+	dummySpell.n = 1;
+	dummySpell.range = 0;
 	strcpy_s(dummySpell.name,"Bolt");
 
 	m_VAllSpells.push_back(dummySpell);

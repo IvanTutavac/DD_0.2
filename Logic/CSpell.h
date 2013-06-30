@@ -47,6 +47,9 @@ public:
 	// parent  EntityID, -1 for player, everything else is EnemyID
 	void	SetupSpellMap(CMap *MapPointer,int id,float x,float y,double duration,int speed,int parent);
 
+	// m_VAllSpells[index]
 	void	CastSpell(int index,int &hp,int &mp);
+	
+	// m_VAllSpells[index]
 	void	SpellHit(int index,int &hp,int &mp);
 };

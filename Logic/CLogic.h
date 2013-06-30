@@ -111,9 +111,6 @@ private:
 
 	bool			CheckCollision(int x1,int y1,int x2,int y2,int size);
 	bool			CheckPointCollision(int x1,int y1,int x2,int y2,int sizeX,int sizeY);
-	void			PlayerEnemyCollision();
-	void			PlayerNPCCollision();
-	void			SpellCollision();
 	bool			CheckIfNPCNearby();
 	bool			CheckDistance(int x1,int y1,int x2,int y2,int distanceX,int distanceY);
 

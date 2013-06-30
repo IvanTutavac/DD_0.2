@@ -274,9 +274,12 @@ void	CLogic::Nearby(CEventMessage *EventMessage)
 
 void	CLogic::Collision()
 {
-	PlayerEnemyCollision();
-	SpellCollision();
-	PlayerNPCCollision();
+	m_pCollision->PlayerEnemyCollision(m_pMap);
+	m_pCollision->PlayerNPCCollision(m_pMap);
+	m_pCollision->SpellCollision(m_pMap,m_pEntity,m_pSpell);
+	//PlayerEnemyCollision();
+	//SpellCollision();
+	//PlayerNPCCollision();
 }
 
 bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
@@ -687,83 +690,6 @@ void	CLogic::PlayerSpellCast(const CEventMessage *EventMessage)
 			{
 				m_pSpell->SetupSpellMap(m_pMap,l,m_pMap->m_playerX,m_pMap->m_playerY,m_pEntity->m_pPlayer->m_spell[k].duration,(int)m_pSpell->m_VAllSpells[index].speed,-1);
 			}
-		}
-	}
-}
-
-void	CLogic::SpellCollision()
-{
-	if (m_pMap->m_spell.empty())
-		return;
-
-	bool	erase = false;
-	bool	search = true;
-	for (int i = m_pMap->m_spell.size()-1; i >= 0; i--)
-	{
-		search = true;
-
-		if (CheckCollision((int)m_pMap->m_playerX,(int)m_pMap->m_playerY,(int)m_pMap->m_spell[i].x,(int)m_pMap->m_spell[i].y,TILE_SIZE))
-		{
-			// takodjer isti vrag i s neprijateljem, kad casta spell da ne udari odmah na sebe
-			// spell kad se tek casta jeste u koliziji s playerom
-			// trebalo bi pamtiti ID tko je bacio spell, il enum koji govori dal je neprijatelj il player
-			//erase = true;
-		}
-		
-		for (size_t	j = 0; j < m_pMap->m_closeEnemyXY.size(); j++)
-		{
-			if (!search)
-				break;
-
-			if (CheckCollision((int)m_pMap->m_closeEnemyXY[j].x,(int)m_pMap->m_closeEnemyXY[j].y,(int)m_pMap->m_spell[i].x,(int)m_pMap->m_spell[i].y,TILE_SIZE))
-			{
-				for (size_t k = 0; k < m_pEntity->m_VCloseEnemy.size(); k++)
-				{
-					if (m_pEntity->m_VCloseEnemy[k].GetID() == m_pMap->m_closeEnemyXY[j].ID)
-					{
-						for (size_t l = 0; l < m_pSpell->m_VAllSpells.size(); l++)
-						{
-							if (m_pSpell->m_VAllSpells[l].ID == m_pMap->m_spell[i].imgID)
-							{
-								m_pEntity->m_VCloseEnemy[k].ReduceHP(m_pSpell->m_VAllSpells[l].value);
-								search = false;
-								erase = true;
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		if (erase)
-		{
-			m_pMap->m_spell.erase(m_pMap->m_spell.begin()+i);
-			erase = false;
-		}
-	}
-}
-
-void	CLogic::PlayerEnemyCollision()
-{
-	for (size_t i = 0; i < m_pMap->m_closeEnemyXY.size(); i++)
-	{
-		if (CheckCollision((int)m_pMap->m_playerX,(int)m_pMap->m_playerY,(int)m_pMap->m_closeEnemyXY[i].x,(int)m_pMap->m_closeEnemyXY[i].y,TILE_SIZE))
-		{
-			m_pMap->m_playerX = m_pMap->m_tempPlayerX;
-			m_pMap->m_playerY = m_pMap->m_tempPlayerY;
-		}
-	}
-}
-
-void	CLogic::PlayerNPCCollision()
-{
-	for (size_t i = 0; i < m_pMap->m_npcXY.size(); i++)
-	{
-		if (CheckCollision((int)m_pMap->m_playerX,(int)m_pMap->m_playerY,(int)m_pMap->m_npcXY[i].x,(int)m_pMap->m_npcXY[i].y,TILE_SIZE))
-		{
-			m_pMap->m_playerX = m_pMap->m_tempPlayerX;
-			m_pMap->m_playerY = m_pMap->m_tempPlayerY;
 		}
 	}
 }

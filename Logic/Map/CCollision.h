@@ -41,6 +41,6 @@ public:
 	// checks for collision between player and all NPC
 	void	PlayerNPCCollision(CMap *MapPointer);
 
-	// it will check if player or enemy was hit by a spell, do the spell action, and delete it from map
+	// it will check if player or enemy have been hit by a spell, do the spell action, and delete it from map
 	void	SpellCollision(CMap *MapPointer,CEntityManager *EntityPointer,CSpell *SpellPointer);
 };
