@@ -19,7 +19,17 @@
 
 #include "CMap.h"
 #include "CMovement.h"
-#include "..\const.h"
+#include "..\..\const.h"
+
+bool	CMovement::Init()
+{
+	return	true;
+}
+
+void	CMovement::Clean()
+{
+
+}
 
 void	CMovement::SpellMovement(CMap *MapPointer,float x,float y,double deltaTime)
 {

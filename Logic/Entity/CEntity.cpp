@@ -18,9 +18,9 @@
 */
 
 #include "CEntity.h"
-#include "..\CTimer.h"
-#include "..\debug.h"
-#include "..\const.h"
+#include "../../CTimer.h"
+#include "../../debug.h"
+#include "../../const.h"
 
 bool	CEntity::InitEntity()
 {
@@ -76,35 +76,19 @@ void	CEntity::ReduceMP(int value)
 		m_mp = 0;
 }
 
-void	CEntity::CastSpell(int spell)
+bool	CEntity::CheckSpellCD(int index)
 {
-	ReduceMP(m_spell[spell].cost);
-}
-
-void	CEntity::SpellHit(int spell)
-{
-
-}
-
-bool	CEntity::CheckSpellCD(int ID)
-{
-	for (size_t i = 0; i < m_VSpell.size(); i++)
+	if (m_VSpell[index].duration <= 0)
 	{
-		if (m_VSpell[i].ID == ID)
-		{
-			if (m_VSpell[i].cd <= 0)
-			{
-				m_VSpell[i].cd = m_VSpell[i].tempCD;
+		m_VSpell[index].duration = m_VSpell[index].tempDuration;
 
-				return	true;
-			}
-			else if (!m_VSpell[i].casted)
-			{
-				m_VSpell[i].casted = true;
+		return	true;
+	}
+	else if (!m_VSpell[index].casted)
+	{
+		m_VSpell[index].casted = true;
 				
-				return	true;
-			}
-		}
+		return	true;	
 	}
 	return	false;
 }
@@ -116,7 +100,6 @@ void	CEntity::UpdateSpellDuration(double deltaTime)
 		if (m_VSpell[i].casted)
 		{
 			m_VSpell[i].duration -= deltaTime;
-			m_VSpell[i].cd	-= deltaTime;
 		}
 	}
 }

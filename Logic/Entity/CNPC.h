@@ -19,7 +19,7 @@
 
 #pragma once
 #include <vector>
-#include "dataStructs.h"
+#include "..\dataStructs.h"
 
 class CConversation;
 

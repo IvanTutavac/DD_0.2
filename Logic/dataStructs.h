@@ -53,4 +53,41 @@ enum TextState
 	TS_finished
 };
 
+enum logicGameState
+{
+	LGS_nothing,
+	LGS_exit,
+	LGS_intro,
+	LGS_mainMenu,
+	LGS_mainOptions, // options accessed from mainMenu 
+	LGS_options, // options accessed from inGame
+	LGS_inGame,
+	LGS_mapEditor,
+	LGS_allTiles
+};
+
+enum NPCConversation
+{
+	NPCC_nothing,
+	NPCC_commonTalk,
+	NPCC_questTalk
+};
+
+enum RenderState
+{
+	RS_nothing,
+	RS_renderMap,
+	RS_renderMainMenu,
+	RS_renderGameExit,
+	RS_renderMapEditor,
+	RS_renderAllTiles,
+	RS_renderOptions
+};
+
+enum RenderTextBoxState
+{
+	RTBS_nothing,
+	RTBS_renderTextBox,
+	RTBS_renderFirstTextBox
+};
 

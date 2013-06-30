@@ -18,7 +18,7 @@
 */
 
 #pragma once
-#include "../const.h"
+#include "../../const.h"
 #include <vector>
 
 enum LocationState
@@ -42,6 +42,7 @@ struct _location1
 	float tempX,tempY;
 	int ID;
 	int imgID; // which img represents the entity
+	int	parent; // who has used the spell, -1 for player, everything else enemy
 	int speed; 
 	LocationState state;  // use LS_
 	double duration; // for how long will the object last

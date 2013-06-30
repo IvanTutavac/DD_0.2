@@ -17,44 +17,40 @@
     along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#pragma once
 
-#include "..\debug.h"
-#include "CEnemy.h"
-#include "CEntity.h"
-#include "..\Events\CEventMessage.h"
+#include <vector>
 
-bool	CEnemy::Init()
+class CEnemy;
+class CPlayer;
+class CNPC;
+class CSpell;
+class CMap;
+
+class CEntityManager
 {
-	m_pEvent	=	DD_NEW CEventMessage;
 
-	if (!this->InitEntity())
-		return	false;
-	
-	return	true;
-}
+private:
 
-void	CEnemy::Clean()
-{
-	this->CleanEntity();
-	DD_DELETE(m_pEvent);
-}
+	int				m_UniqueEnemyID;
 
-void	CEnemy::SetTypeID(int value)
-{
-	m_typeID = value;
-}
+	// loads all enemies which can be used 
+	// so for each enemy instance there's one new CEnemy in m_VEnemyList
+	bool	LoadEnemies();
 
-int		CEnemy::GetTypeID()
-{
-	return	m_typeID;
-}
+public:
 
-void	CEnemy::SetID(int value)
-{
-	m_ID = value;
-}
+	std::vector<CEnemy> m_VEnemyList; // enemies which can be available 
+	std::vector<CEnemy> m_VEnemy; // enemies on map
+	std::vector<CEnemy> m_VCloseEnemy; // enemies near you
 
-int		CEnemy::GetID()
-{
-	return	m_ID;
-}
+	std::vector<CNPC> m_VNpc;
+
+	CPlayer			*m_pPlayer;
+
+	bool	Init(CSpell *SpellPointer);
+	void	Clean();
+
+	// put enemies on map
+	bool	SetMapEnemy(CMap *MapPointer);
+};

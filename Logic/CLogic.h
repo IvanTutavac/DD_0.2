@@ -23,12 +23,10 @@
 
 class CMap;
 class CMovement;
-class CEntity;
-class CEnemy;
-class CPlayer;
+class CCollision;
+class CEntityManager;
+class CSpell;
 class CQuestManager;
-class CNPC;
-//class CTimer;
 
 struct _lockFlags
 {
@@ -40,24 +38,6 @@ struct _lockFlags
 	void			DisableAll();
 };
 
-enum RenderState
-{
-	RS_nothing,
-	RS_renderMap,
-	RS_renderMainMenu,
-	RS_renderGameExit,
-	RS_renderMapEditor,
-	RS_renderAllTiles,
-	RS_renderOptions
-};
-
-enum RenderTextBoxState
-{
-	RTBS_nothing,
-	RTBS_renderTextBox,
-	RTBS_renderFirstTextBox
-};
-
 struct _renderFlags
 {
 	RenderState		state;	// use RS_
@@ -67,26 +47,6 @@ struct _renderFlags
 	bool			renderTalkMessage;
 
 	void			Reset();
-};
-
-enum logicGameState
-{
-	LGS_nothing,
-	LGS_exit,
-	LGS_intro,
-	LGS_mainMenu,
-	LGS_mainOptions, // options accessed from mainMenu 
-	LGS_options, // options accessed from inGame
-	LGS_inGame,
-	LGS_mapEditor,
-	LGS_allTiles
-};
-
-enum NPCConversation
-{
-	NPCC_nothing,
-	NPCC_commonTalk,
-	NPCC_questTalk
 };
 
 struct _logicFlags
@@ -114,21 +74,14 @@ class CLogic
 
 private:
 	
-	std::vector<CEnemy> m_VEnemyList; // enemies which can be available 
-	std::vector<CEnemy> m_VEnemy; // enemies on map
-	std::vector<CEnemy> m_VCloseEnemy; // enemies near you
 	//std::vector<CQuest*> m_VQuests; // contains all quests
 	CQuestManager	*m_pQuest;
 	CMovement		*m_pMovement;
-
-	std::vector<_spell> m_VAllSpells; // contains all spells
+	CCollision		*m_pCollision;
 
 	_lockFlags		m_lockFlags;
 	_logicFlags		m_logicFlags;
 
-	int				m_UniqueSpellID; // used to set unique _spell.ID
-	int				m_UniqueEnemyID;
-	int				m_IDLimit;
 	int				m_nearNPCIndex; // CheckIfNPCNearby sets the value
 
 	bool			m_drawTiles;
@@ -180,9 +133,6 @@ private:
 	// cast the spell, if needed, create data needed for rendering and for timer
 	void			PlayerSpellCast(const CEventMessage *EventMessage);
 
-	// create spell data needed for movement ( render and timer data )
-	void			SetupSpellMap(int id/*_spell.ID*/,float x,float y,double duration /*_spell.duration*/,int speed /*_spell.speed*/);
-
 
 	// check all spell timers, see if they exceeded their duration, if yes delete the spell from CMap and delete the spellTimer
 	void			CheckTimedOutSpells(); 
@@ -194,9 +144,10 @@ public:
 
 	_TextRenderInfo m_textRenderInfo;
 	_renderFlags	m_renderFlags;
+
 	CMap			*m_pMap;
-	CPlayer			*m_pPlayer;
-	std::vector<CNPC> m_VNpc;
+	CEntityManager  *m_pEntity;
+	CSpell			*m_pSpell;
 
 	bool			Init();
 	void			Clean();

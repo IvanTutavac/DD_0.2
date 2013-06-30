@@ -18,9 +18,9 @@
 */
 
 
-#include "..\debug.h"
+#include "..\..\debug.h"
 #include "CNPC.h"
-#include "CConversation.h"
+#include "..\CConversation.h"
 
 
 bool	CNPC::Init()

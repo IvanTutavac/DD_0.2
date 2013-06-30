@@ -19,9 +19,17 @@
 
 #pragma once
 #include <vector>
-#include "dataStructs.h"
+//#include "..\dataStructs.h"
 
 class CTimer;
+
+struct _EntitySpell
+{
+	int		index; // CSpell->m_VAllSpells[index]
+	double	duration; // cooldown
+	double  tempDuration; // used to reset duration
+	bool	casted;
+};
 
 class CEntity
 {
@@ -40,12 +48,15 @@ protected:
 
 public:
 
+	std::vector<_EntitySpell> m_VSpell; // all available spells
+	std::vector<_EntitySpell> m_spell; // spells prepared for casting, event for the spell can be used as an index 
+	/*
 	// Logic should contain all spells and after they are loaded there, they can be sent to entities that know them
 	std::vector<_spell> m_VSpell; // all available spells for this entity, so spell ID from logic can not be used as an index to access a spell from this vector, search the spell by ID
 	// enemy will probably not use this vector, spells should be directly sent to m_spell
 	
 	std::vector<_spell>	m_spell; // spells prepared for casting, event for the spell can be used as an index 
-
+	*/
 	void	SetName(char *value);
 	char*	GetName();
 
@@ -57,11 +68,8 @@ public:
 	void	SetMP(int value);
 	void	ReduceMP(int value);
 
-	void	CastSpell(int spell);
-	void	SpellHit(int spell); // probaj saznati koji spell od koordinata, tj. kad gledas koliziju dal je spell pogodio, tada znas i koji spell je to bio
-
 	// returns true if spell can be used and will also reset duration and set casted to true
-	bool	CheckSpellCD(int ID);
+	bool	CheckSpellCD(int index);
 
 	// update .cd and .duration
 	void	UpdateSpellDuration(double deltaTime);

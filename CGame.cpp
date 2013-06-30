@@ -26,11 +26,12 @@
 #include "Events\CEvent.h"
 #include "Events\CEventMessage.h"
 #include "configuration.h"
-#include "Logic\CEntity.h"
-#include "Logic\CEnemy.h"
-#include "Logic\CMap.h"
-#include "Logic\CPlayer.h"
-#include "Logic\CNPC.h"
+#include "Logic\Entity\CEntityManager.h"
+#include "Logic\Entity\CEntity.h"
+#include "Logic\Entity\CEnemy.h"
+#include "Logic\Map\CMap.h"
+#include "Logic\Entity\CPlayer.h"
+#include "Logic\Entity\CNPC.h"
 #include "Logic\CConversation.h"
 
 // default configuration
@@ -145,13 +146,13 @@ bool	CGame::Logic(double deltaTime)
 
 	if (m_pLogic->m_textRenderInfo.setFirstTextBox)
 	{
-		m_pRender->SetTextBox(m_pLogic->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex].m_availableConversations);
+		m_pRender->SetTextBox(m_pLogic->m_pEntity->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex].m_availableConversations);
 
 		m_pLogic->m_textRenderInfo.setFirstTextBox = false;
 	}
 	else if (m_pLogic->m_textRenderInfo.setCommonTextBox)
 	{
-		m_pRender->SetTextBox(m_pLogic->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex].m_conversation);
+		m_pRender->SetTextBox(m_pLogic->m_pEntity->m_VNpc[m_pLogic->m_textRenderInfo.selectedNPCIndex].m_conversation);
 
 		m_pLogic->m_textRenderInfo.setCommonTextBox = false;
 	}
@@ -161,7 +162,7 @@ bool	CGame::Logic(double deltaTime)
 		int j	=	m_pLogic->m_textRenderInfo.selectedConversationIndex;
 		int	k	=	m_pLogic->m_textRenderInfo.selectedTextIndex;
 
-		m_pRender->SetTextBox(m_pLogic->m_VNpc[i].m_VConversation[j]->m_VText[k]);
+		m_pRender->SetTextBox(m_pLogic->m_pEntity->m_VNpc[i].m_VConversation[j]->m_VText[k]);
 
 		m_pLogic->m_textRenderInfo.setTextBox = false;
 	}
@@ -216,7 +217,7 @@ bool	CGame::Render(double deltaTime)
 void	CGame::RenderHUD(double deltaTime)
 {
 	m_pRender->ClearHUD();
-	m_pRender->RenderHUD((int)deltaTime,m_pLogic->m_pPlayer->GetHP(),m_pLogic->m_pPlayer->GetMP()); // 1000000/deltaTime
+	m_pRender->RenderHUD((int)deltaTime,m_pLogic->m_pEntity->m_pPlayer->GetHP(),m_pLogic->m_pEntity->m_pPlayer->GetMP()); // 1000000/deltaTime
 
 	if (m_pLogic->m_renderFlags.renderTalkMessage)
 	{

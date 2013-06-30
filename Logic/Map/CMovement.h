@@ -38,6 +38,9 @@ private:
 
 public:
 
+	bool	Init();
+	void	Clean();
+
 	// mouse based spell movement
 	// it will move all spells
 	void	SpellMovement(CMap *MapPointer,float mouseX,float mouseY,double deltaTime);
