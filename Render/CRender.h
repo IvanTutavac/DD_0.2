@@ -34,25 +34,25 @@ protected:
 	bool	CRender::CheckIfInWindow(int cameraX,int cameraY,int &x,int &y);
 
 
-	virtual void	RenderFPS(int fps)=0;
+	virtual void	VRenderFPS(int fps)=0;
 	// image will be drawn on main window
-	virtual void	RenderImage(int x,int y,const int type,int i)=0; 
+	virtual void	VRenderImage(int x,int y,const int type,int i)=0; 
 
 public:
 
-	virtual	bool	Init()=0;
-	virtual void	Clean()=0;
+	virtual	bool	VInit()=0;
+	virtual void	VClean()=0;
 
-	virtual	void	ClearWindow()=0;
-	virtual void	ClearHUD()=0;
+	virtual	void	VClearWindow()=0;
+	virtual void	VClearHUD()=0;
 
-	virtual void	UpdateWindow()=0;
+	virtual void	VUpdateWindow()=0;
 
-	virtual void	RenderOptions()=0;
-	virtual void	RenderText(char *text,int x,int y,int r,int  g,int b)=0;
-	virtual void	RenderValue(int value,int x,int y,int r,int g,int b)=0;
-	virtual void	RenderButton(char *text,int x,int y,int r,int g,int b)=0;
-	virtual bool	RenderTextBox(unsigned int &words,bool &next,bool first)=0;
+	virtual void	VRenderOptions()=0;
+	virtual void	VRenderText(char *text,int x,int y,int r,int  g,int b)=0;
+	virtual void	VRenderValue(int value,int x,int y,int r,int g,int b)=0;
+	virtual void	VRenderButton(char *text,int x,int y,int r,int g,int b)=0;
+	virtual bool	VRenderTextBox(unsigned int &words,bool &next,bool first)=0;
 
 	void	RenderMap(CMap *MapPointer);
 	void	RenderMapEditor(CMap *MapPointer);

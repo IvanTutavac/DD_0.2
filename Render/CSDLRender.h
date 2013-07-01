@@ -49,25 +49,25 @@ private:
 
 protected:
 
-	void	RenderFPS(int fps);
-	void	RenderImage(int x,int y,const int type,int i);
+	void	VRenderFPS(int fps) override;
+	void	VRenderImage(int x,int y,const int type,int i) override;
 
 public:
 
-	bool	Init();
-	void	Clean();
+	bool	VInit() override;
+	void	VClean() override;
 
-	void	ClearWindow();
-	void	ClearHUD();
+	void	VClearWindow() override;
+	void	VClearHUD() override;
 
-	void	UpdateWindow();
+	void	VUpdateWindow() override;
 	
-	void	RenderOptions();
-	void	RenderText(char *text,int x,int y,int r,int g,int b);
-	void	RenderValue(int value,int x,int y,int r,int g,int b);
-	void	RenderButton(char *text,int x,int y,int r,int g,int b);
+	void	VRenderOptions() override;
+	void	VRenderText(char *text,int x,int y,int r,int g,int b) override;
+	void	VRenderValue(int value,int x,int y,int r,int g,int b) override;
+	void	VRenderButton(char *text,int x,int y,int r,int g,int b) override;
 	
 	// will return false if there's no more text to render, logic reads the result 
-	bool	RenderTextBox(unsigned int &words,bool &next,bool first);
+	bool	VRenderTextBox(unsigned int &words,bool &next,bool first) override;
 
 };

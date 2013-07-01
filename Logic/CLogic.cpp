@@ -29,9 +29,11 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 #include "Entity\CPlayer.h"
 #include "Entity\CEnemy.h"
 #include "Entity\CNPC.h"
+#include "Input\CMouse.h"
+#include "Action\CAction.h"
 #include "CSpell.h"
 #include "../CTimer.h"
-#include "../configuration.h"
+//#include "../configuration.h"
 
 void	_renderFlags::Reset()
 {
@@ -73,6 +75,8 @@ bool	CLogic::Init()
 	m_pQuest		=	DD_NEW CQuestManager;
 	m_pEntity		=	DD_NEW CEntityManager;
 	m_pSpell		=	DD_NEW CSpell;
+	m_pMouse		=	DD_NEW CMouse;
+	m_pAction		=	DD_NEW CAction;
 
 	if (!m_pMap->Init())
 		return	false;
@@ -80,11 +84,15 @@ bool	CLogic::Init()
 
 	if (!m_pMovement->Init())
 		return	false;
-	Log("Movement init finished");
 
 	if (!m_pCollision->Init())
 		return	false;
-	Log("Collision init finished");
+
+	if (!m_pMouse->Init())
+		return	false;
+
+	if (!m_pAction->Init())
+		return	false;
 
 	if (!m_pQuest->Init())
 		return	false;
@@ -122,6 +130,12 @@ void	CLogic::Clean()
 	m_pCollision->Clean();
 	DD_DELETE(m_pCollision);
 
+	m_pMouse->Clean();
+	DD_DELETE(m_pMouse);
+
+	m_pAction->Clean();
+	DD_DELETE(m_pAction);
+
 	m_pQuest->Clean();
 	DD_DELETE(m_pQuest);
 
@@ -155,10 +169,10 @@ bool	CLogic::Run(CEventMessage	*EventMessage,double tempDeltaTime)
 		return	false;
 
 	CheckPlayerInput(EventMessage);
+	Action(); // reads input
 	Nearby(EventMessage); // maybe it's better to have the F button check here 
 	Movement(EventMessage);
 	Collision();
-	Action();
 	FinalCheck();
 
 	if (m_logicFlags.state == LGS_exit)
@@ -208,7 +222,7 @@ void	CLogic::Movement(const CEventMessage *EventMessage)
 	if (m_lockFlags.cameraMovement)
 		return;
 
-	if (!m_lockFlags.cameraMovement && g_grabMode == SDL_GRAB_ON && EventMessage->m_MotionEvent.Event == ME_moved)
+	if (!m_lockFlags.cameraMovement && m_pAction->isCameraEnabled()  && EventMessage->m_MotionEvent.Event == ME_moved)
 	{
 		if (m_logicFlags.state == LGS_inGame || m_logicFlags.state == LGS_allTiles || m_logicFlags.state == LGS_mapEditor)
 		{
@@ -287,13 +301,19 @@ bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
 	else if (m_logicFlags.state == LGS_mainMenu)
 	{
 		if (EventMessage->m_Event.Event == AE_ReleasedLeftClick)
-			if (!CheckMenuClick(EventMessage))
-				return	false;
+		{
+			m_pMouse->MenuCLick(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
+			//if (!CheckMenuClick(EventMessage))
+				//return	false;
+		}
 	}
 	else if (m_logicFlags.state == LGS_mainOptions || m_logicFlags.state == LGS_options)
 	{
 		if (EventMessage->m_Event.Event == AE_ReleasedLeftClick)
-			CheckOptionsClick(EventMessage);
+		{
+			m_pMouse->OptionsClick(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
+			//CheckOptionsClick(EventMessage);
+		}
 	}
 	else if (m_logicFlags.state == LGS_inGame)
 	{
@@ -335,9 +355,12 @@ void	CLogic::CheckPlayerInput(const CEventMessage *EventMessage)
 	}
 }
 
-void	CLogic::Action()
+bool	CLogic::Action()
 {
+	if (!m_pAction->ReadMouseMessage(m_pMouse->m_pMessage,m_pMap))
+		return	false;
 
+	return	true;
 }
 
 void	CLogic::FinalCheck()
@@ -420,41 +443,21 @@ void	CLogic::EndConversation()
 	m_lockFlags.scroll				=	false;
 }
 
-bool	CLogic::InitMapEditor()
-{
-	m_pMap->m_cameraX = 320;
-	m_pMap->m_cameraY = 240;
-
-	if (!m_pMap->LoadMapEditorMap("data/tempMap.dat"))
-		return	false;
-
-	return	true;
-}
-
-bool	CLogic::InitMap()
-{
-	m_pMap->m_cameraX = 320;
-	m_pMap->m_cameraY = 240;
-	// loadiranje next mape, odredjivanje koju mapu ucitati
-
-	return	true;
-}
-
 bool	CLogic::CheckMenuClick(const CEventMessage *EventMessage)
 {
 	if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,224,144,192,64))
 	{
 		m_logicFlags.state		=	LGS_inGame;
 		m_renderFlags.state		=	RS_renderMap;
-		if (!InitMap())
-			return	false;
+		//if (!InitMap())
+			//return	false;
 	}
 	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,224,208,192,64)) // map editor button 
 	{
 		m_logicFlags.state		=	LGS_mapEditor;
 		m_renderFlags.state		=	RS_renderMapEditor;
-		if (!InitMapEditor())
-			return	false;
+		//if (!InitMapEditor())
+			//return	false;
 	}
 	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,224,272,192,64)) // options button 
 	{
@@ -489,7 +492,7 @@ void	CLogic::CheckOptionsClick(const CEventMessage *EventMessage)
 		m_logicFlags.state	=	LGS_exit;
 		m_renderFlags.state	=	RS_renderGameExit;
 	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,32,32,192,64))
+	/*else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,32,32,192,64))
 	{
 		if (g_grabMode == SDL_GRAB_ON)
 			g_grabMode = SDL_GRAB_OFF;
@@ -504,12 +507,12 @@ void	CLogic::CheckOptionsClick(const CEventMessage *EventMessage)
 			g_FPSLimit = false;
 		else
 			g_FPSLimit = true;
-	}
+	}*/
 }
 
 void	CLogic::CheckInGameClickRelease(const CEventMessage *EventMessage)
 {
-	if (m_logicFlags.npcConversation)
+	if (m_logicFlags.npcConversation != NPCC_nothing)
 	{
 		CheckTextBoxClick(EventMessage);
 	}

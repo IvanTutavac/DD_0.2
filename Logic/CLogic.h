@@ -27,57 +27,19 @@ class CCollision;
 class CEntityManager;
 class CSpell;
 class CQuestManager;
-
-struct _lockFlags
-{
-	bool			movement;
-	bool			cameraMovement;
-	bool			scroll;
-
-	void			AllowAll();
-	void			DisableAll();
-};
-
-struct _renderFlags
-{
-	RenderState		state;	// use RS_
-	RenderTextBoxState textBoxState; // use RTBS_
-
-	bool			renderGameExit;
-	bool			renderTalkMessage;
-
-	void			Reset();
-};
-
-struct _logicFlags
-{
-	logicGameState	state; // use LGS_
-	NPCConversation	npcConversation; // use NPCC_
-
-	void			Reset();
-};
-
-struct _TextRenderInfo
-{
-	bool			nextTextBox;
-	bool			setTextBox;
-	bool			setFirstTextBox;
-	bool			setCommonTextBox;
-	int				selectedNPCIndex; 
-	int				selectedConversationIndex;
-	int				selectedTextIndex;
-	unsigned int	chars;
-};
+class CMouse;
+class CAction;
 
 class CLogic
 {
 
 private:
 	
-	//std::vector<CQuest*> m_VQuests; // contains all quests
 	CQuestManager	*m_pQuest;
 	CMovement		*m_pMovement;
 	CCollision		*m_pCollision;
+	CMouse			*m_pMouse;
+	CAction			*m_pAction;
 
 	_lockFlags		m_lockFlags;
 	_logicFlags		m_logicFlags;
@@ -103,7 +65,7 @@ private:
 	void			Movement(const CEventMessage *EventMessage);
 	void			Nearby(CEventMessage *EventMessage);
 	void			Collision();
-	void			Action();
+	bool			Action();
 	void			FinalCheck(); // clean up ...
 
 	void			UpdateConversationState();
@@ -123,8 +85,6 @@ private:
 	void			CheckMapEditorClickRelease(const CEventMessage *EventMessage);
 	void			CheckMapEditorClickPress(const CEventMessage *EventMessage);
 	void			CheckAllTilesClick(const CEventMessage *EventMessage);
-	bool			InitMapEditor();
-	bool			InitMap();
 
 
 	// cast the spell, if needed, create data needed for rendering and for timer

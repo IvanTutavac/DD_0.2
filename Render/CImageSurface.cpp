@@ -83,7 +83,7 @@ SDL_Surface	*CImageSurface::LoadPNGImage(char *name,bool alpha)
 		CTileImageSurface
 -----------------------------*/
 
-int	CTileImageSurface::LoadAll()
+int	CTileImageSurface::VLoadAll()
 {
 	N = 0;
 	char	a[14] = "",c[14]="",b[]="img/";
@@ -115,7 +115,7 @@ int	CTileImageSurface::LoadAll()
 		CEnemyImageSurface
 -----------------------------*/
 
-int	CEnemyImageSurface::LoadAll()
+int	CEnemyImageSurface::VLoadAll()
 {
 	N = 4000;
 	m_imageSurface.push_back(LoadPNGImage("img/4000.png",true));
@@ -129,7 +129,7 @@ int	CEnemyImageSurface::LoadAll()
 		CPlayerImageSurface
 -----------------------------*/
 
-int	CPlayerImageSurface::LoadAll()
+int	CPlayerImageSurface::VLoadAll()
 {
 	N = 950;
 	m_imageSurface.push_back(LoadPNGImage("img/950.png",true));
@@ -142,7 +142,7 @@ int	CPlayerImageSurface::LoadAll()
 		CMenuImageSurface
 -----------------------------*/
 
-int	CMenuImageSurface::LoadAll()
+int	CMenuImageSurface::VLoadAll()
 {
 	N = 1000;
 	m_imageSurface.push_back(LoadPNGImage("img/1000.png"));
@@ -163,7 +163,7 @@ int	CMenuImageSurface::LoadAll()
 		CNPCSurface
 -----------------------------*/
 
-int	CNPCImageSurface::LoadAll()
+int	CNPCImageSurface::VLoadAll()
 {
 	N = 2000;
 	m_imageSurface.push_back(LoadPNGImage("img/2000.png",true));
@@ -177,7 +177,7 @@ int	CNPCImageSurface::LoadAll()
 		CSpellSurface
 -----------------------------*/
 
-int	CSpellImageSurface::LoadAll()
+int	CSpellImageSurface::VLoadAll()
 {
 	N = 3000;
 	m_imageSurface.push_back(LoadPNGImage("img/3000.png",true));

@@ -32,7 +32,7 @@ public:
 
 	std::vector<SDL_Surface*>	m_imageSurface; // contains images
 
-	virtual	int		LoadAll()=0;
+	virtual	int		VLoadAll()=0;
 	bool			DeleteAll();
 	int				Return();
 
@@ -43,35 +43,35 @@ public:
 class  CTileImageSurface : public CImageSurface
 {
 public:
-	int		LoadAll();
+	int		VLoadAll() override;
 };
 
 class  CEnemyImageSurface : public CImageSurface
 {
 public:
-	int		LoadAll();
+	int		VLoadAll() override;
 };
 
 class CPlayerImageSurface : public CImageSurface
 {
 public:
-	int		LoadAll();
+	int		VLoadAll() override;
 };
 
 class  CMenuImageSurface : public CImageSurface
 {
 public:
-	int		LoadAll();
+	int		VLoadAll() override;
 };
 
 class CNPCImageSurface : public CImageSurface
 {
 public:
-	int		LoadAll();
+	int		VLoadAll() override;
 };
 
 class CSpellImageSurface : public CImageSurface
 {
 public:
-	int		LoadAll();
+	int		VLoadAll() override;
 };

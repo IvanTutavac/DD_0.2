@@ -85,8 +85,10 @@
     <ClCompile Include="Events\CEvent.cpp" />
     <ClCompile Include="Events\CEventMessage.cpp" />
     <ClCompile Include="Log.cpp" />
+    <ClCompile Include="Logic\Action\CAction.cpp" />
     <ClCompile Include="Logic\CSpell.cpp" />
     <ClCompile Include="Logic\Entity\CEntityManager.cpp" />
+    <ClCompile Include="Logic\Input\CMouse.cpp" />
     <ClCompile Include="Logic\Map\CCollision.cpp" />
     <ClCompile Include="Logic\CConversation.cpp" />
     <ClCompile Include="Logic\Entity\CEnemy.cpp" />
@@ -96,6 +98,7 @@
     <ClCompile Include="Logic\Map\CMovement.cpp" />
     <ClCompile Include="Logic\Entity\CNPC.cpp" />
     <ClCompile Include="Logic\Entity\CPlayer.cpp" />
+    <ClCompile Include="Logic\Message\CMouseMessage.cpp" />
     <ClCompile Include="Logic\Quest\CQuest.cpp" />
     <ClCompile Include="Logic\Quest\CQuestManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -112,8 +115,10 @@
     <ClInclude Include="Events\CEvent.h" />
     <ClInclude Include="Events\CEventMessage.h" />
     <ClInclude Include="Log.h" />
+    <ClInclude Include="Logic\Action\CAction.h" />
     <ClInclude Include="Logic\CSpell.h" />
     <ClInclude Include="Logic\Entity\CEntityManager.h" />
+    <ClInclude Include="Logic\Input\CMouse.h" />
     <ClInclude Include="Logic\Map\CCollision.h" />
     <ClInclude Include="Logic\CConversation.h" />
     <ClInclude Include="Logic\Entity\CEnemy.h" />
@@ -123,6 +128,7 @@
     <ClInclude Include="Logic\Map\CMovement.h" />
     <ClInclude Include="Logic\Entity\CNPC.h" />
     <ClInclude Include="Logic\Entity\CPlayer.h" />
+    <ClInclude Include="Logic\Message\CMouseMessage.h" />
     <ClInclude Include="Logic\Quest\CQuest.h" />
     <ClInclude Include="Logic\dataStructs.h" />
     <ClInclude Include="Logic\Quest\CQuestManager.h" />

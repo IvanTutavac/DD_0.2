@@ -3,8 +3,6 @@ Game Init started
 SDL Init...
 Logic init started
 Map init finished
-Movement init finished
-Collision init finished
 Quests loaded
 Spells loaded
 Entities...

@@ -27,7 +27,7 @@ struct _EntitySpell
 {
 	int		index; // CSpell->m_VAllSpells[index]
 	double	duration; // cooldown
-	double  tempDuration; // used to reset duration
+	double  tempDuration; // used to resetB duration
 	bool	casted;
 };
 

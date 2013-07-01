@@ -29,7 +29,7 @@
 
 // interface methods
 
-bool	CSDLRender::Init()
+bool	CSDLRender::VInit()
 {
 	m_pWindow	=	NULL;
 
@@ -61,7 +61,7 @@ bool	CSDLRender::Init()
 	return	true;
 }
 
-void	CSDLRender::Clean()
+void	CSDLRender::VClean()
 {
 	for (size_t i = 0; i < m_pVImage.size(); i++)
 	{
@@ -74,48 +74,48 @@ void	CSDLRender::Clean()
 	TTF_Quit();
 }
 
-void	CSDLRender::ClearWindow()
+void	CSDLRender::VClearWindow()
 {
-	RenderImage(0,0,TYPE_MENU,0);
+	VRenderImage(0,0,TYPE_MENU,0);
 }
 
-void	CSDLRender::ClearHUD()
+void	CSDLRender::VClearHUD()
 {
 	SDL_FillRect(m_pWindow,&m_clearHUDRect,SDL_MapRGB(m_pWindow->format,0,0,0));
 	//RenderImage(0,480,m_pMenuSurface->m_imageSurface[2],m_pWindow);
 }
 
-void	CSDLRender::UpdateWindow()
+void	CSDLRender::VUpdateWindow()
 {
 	SDL_Flip(m_pWindow);
 }
 
-void	CSDLRender::RenderOptions()
+void	CSDLRender::VRenderOptions()
 {
-	RenderButton("Grab mode:",32,32,25,25,112);
+	VRenderButton("Grab mode:",32,32,25,25,112);
 
 	if (g_grabMode == SDL_GRAB_ON)
-		RenderText("Yes",230,57,25,25,112);
+		VRenderText("Yes",230,57,25,25,112);
 	else
-		RenderText("No",230,57,25,25,112);
+		VRenderText("No",230,57,25,25,112);
 
-	RenderButton("Limit FPS:",32,96,25,25,112);
+	VRenderButton("Limit FPS:",32,96,25,25,112);
 
 	if (g_FPSLimit)
-		RenderText("Yes",230,121,25,25,112);
+		VRenderText("Yes",230,121,25,25,112);
 	else
-		RenderText("No",230,121,25,25,112);
+		VRenderText("No",230,121,25,25,112);
 
-	RenderButton("Return",128,480,25,25,112);
-	RenderButton("Exit",320,480,25,25,112);
+	VRenderButton("Return",128,480,25,25,112);
+	VRenderButton("Exit",320,480,25,25,112);
 }
 
-void	CSDLRender::RenderImage(int x,int y,const int type,int i)
+void	CSDLRender::VRenderImage(int x,int y,const int type,int i)
 {
 	RenderImage(x,y,m_pVImage[type]->m_imageSurface[i],m_pWindow);
 }
 
-void	CSDLRender::RenderText(char *text,int x,int y,int r,int g,int b)
+void	CSDLRender::VRenderText(char *text,int x,int y,int r,int g,int b)
 {
 	SDL_Color	fontColor;
 	fontColor.r =  r,fontColor.g = g,fontColor.b = b;
@@ -130,7 +130,7 @@ void	CSDLRender::RenderText(char *text,int x,int y,int r,int g,int b)
 	tempSurface = NULL;
 }
 
-void	CSDLRender::RenderFPS(int fps)
+void	CSDLRender::VRenderFPS(int fps)
 {
 	SDL_Color	fontColor;
 	fontColor.b = 49, fontColor.g = 0, fontColor.r = 98;
@@ -149,7 +149,7 @@ void	CSDLRender::RenderFPS(int fps)
 	tempSurface = NULL;
 }
 
-void	CSDLRender::RenderValue(int value,int x,int y,int r,int g,int b)
+void	CSDLRender::VRenderValue(int value,int x,int y,int r,int g,int b)
 {
 	SDL_Color	fontColor;
 	fontColor.b = b, fontColor.g = g, fontColor.r = r;
@@ -168,7 +168,7 @@ void	CSDLRender::RenderValue(int value,int x,int y,int r,int g,int b)
 	surface = NULL;
 }
 
-void	CSDLRender::RenderButton(char *text,int x,int y,int r,int g,int b)
+void	CSDLRender::VRenderButton(char *text,int x,int y,int r,int g,int b)
 {
 	SDL_Color	fontColor;
 	fontColor.r = r, fontColor.g = g, fontColor.b = b;
@@ -188,7 +188,7 @@ void	CSDLRender::RenderButton(char *text,int x,int y,int r,int g,int b)
 	surface = NULL;
 }
 
-bool	CSDLRender::RenderTextBox(unsigned int &chars,bool &next,bool first)
+bool	CSDLRender::VRenderTextBox(unsigned int &chars,bool &next,bool first)
 {
 	// if (first) we are showing conversations which can be selected, so after a nextLine is detected, we go to the nextLine
 	// if (next) we need to get the new m_text by removing the last text box words so that the next text box can be drawn
@@ -281,27 +281,27 @@ bool	CSDLRender::LoadClasses()
 	CImageSurface	*m_pNPCSurface		=	DD_NEW	CNPCImageSurface;
 	CImageSurface	*m_pSpellSurface	=	DD_NEW	CSpellImageSurface;
 
-	if (m_pTileSurface->LoadAll() != 1) // tile 1 will return 0 if it failed to load
+	if (m_pTileSurface->VLoadAll() != 1) // tile 1 will return 0 if it failed to load
 		return	false;
 	Log("Tiles loaded");
 
-	if (m_pEnemySurface->LoadAll() != 1)
+	if (m_pEnemySurface->VLoadAll() != 1)
 		return false;
 	Log("Enemy images loaded");
 
-	if (m_pPlayerSurface->LoadAll() != 1)
+	if (m_pPlayerSurface->VLoadAll() != 1)
 		return false;
 	Log("Player images loaded");
 
-	if (m_pMenuSurface->LoadAll() != 1)
+	if (m_pMenuSurface->VLoadAll() != 1)
 		return	false;
 	Log("Menu images loaded");
 
-	if (m_pNPCSurface->LoadAll() != 1)
+	if (m_pNPCSurface->VLoadAll() != 1)
 		return	false;
 	Log("NPC images loaded");
 
-	if (m_pSpellSurface->LoadAll() != 1)
+	if (m_pSpellSurface->VLoadAll() != 1)
 		return	false;
 	Log("Spell images loaded");
 

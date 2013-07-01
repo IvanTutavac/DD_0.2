@@ -95,3 +95,44 @@ enum RenderTextBoxState
 	RTBS_renderFirstTextBox
 };
 
+struct _lockFlags
+{
+	bool			movement;
+	bool			cameraMovement;
+	bool			scroll;
+
+	void			AllowAll();
+	void			DisableAll();
+};
+
+struct _renderFlags
+{
+	RenderState		state;	// use RS_
+	RenderTextBoxState textBoxState; // use RTBS_
+
+	bool			renderGameExit;
+	bool			renderTalkMessage;
+
+	void			Reset();
+};
+
+struct _logicFlags
+{
+	logicGameState	state; // use LGS_
+	NPCConversation	npcConversation; // use NPCC_
+
+	void			Reset();
+};
+
+struct _TextRenderInfo
+{
+	bool			nextTextBox;
+	bool			setTextBox;
+	bool			setFirstTextBox;
+	bool			setCommonTextBox;
+	int				selectedNPCIndex; 
+	int				selectedConversationIndex;
+	int				selectedTextIndex;
+	unsigned int	chars;
+};
+

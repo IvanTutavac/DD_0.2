@@ -56,7 +56,7 @@ bool	CGame::Init()
 		return	false;
 	Log("Logic init finished");
 
-	if (!m_pRender->Init())
+	if (!m_pRender->VInit())
 		return	false;
 	Log("Render init finished");
 
@@ -71,7 +71,7 @@ bool	CGame::Init()
 
 bool	CGame::Clean()
 {
-	m_pRender->Clean();
+	m_pRender->VClean();
 	m_pLogic->Clean();
 	m_pEvent->Clean();
 
@@ -173,13 +173,13 @@ bool	CGame::Render(double deltaTime)
 {
 	if (m_pLogic->m_renderFlags.state == RS_renderMainMenu)
 	{
-		m_pRender->ClearWindow();
+		m_pRender->VClearWindow();
 		m_pRender->RenderMainMenu();
 	}
 	else if (m_pLogic->m_renderFlags.state == RS_renderOptions)
 	{
-		m_pRender->ClearWindow();
-		m_pRender->RenderOptions();
+		m_pRender->VClearWindow();
+		m_pRender->VRenderOptions();
 	}
 	else if (m_pLogic->m_renderFlags.state == RS_renderMap)
 	{
@@ -187,11 +187,11 @@ bool	CGame::Render(double deltaTime)
 
 		if (m_pLogic->m_renderFlags.textBoxState == RTBS_renderFirstTextBox)
 		{
-			m_pRender->RenderTextBox(m_pLogic->m_textRenderInfo.chars,m_pLogic->m_textRenderInfo.nextTextBox,true);
+			m_pRender->VRenderTextBox(m_pLogic->m_textRenderInfo.chars,m_pLogic->m_textRenderInfo.nextTextBox,true);
 		}
 		else if (m_pLogic->m_renderFlags.textBoxState	== RTBS_renderTextBox)
 		{
-			 m_pEventMessage->m_continueConversation = m_pRender->RenderTextBox(m_pLogic->m_textRenderInfo.chars,m_pLogic->m_textRenderInfo.nextTextBox,false);
+			 m_pEventMessage->m_continueConversation = m_pRender->VRenderTextBox(m_pLogic->m_textRenderInfo.chars,m_pLogic->m_textRenderInfo.nextTextBox,false);
 		}
 		RenderHUD(deltaTime);
 	}
@@ -201,7 +201,7 @@ bool	CGame::Render(double deltaTime)
 	}
 	else if (m_pLogic->m_renderFlags.state == RS_renderAllTiles)
 	{
-		m_pRender->ClearHUD();
+		m_pRender->VClearHUD();
 		m_pRender->RenderAllTiles(m_pLogic->m_pMap);
 	}
 	else if (m_pLogic->m_renderFlags.state == RS_renderGameExit)
@@ -209,28 +209,28 @@ bool	CGame::Render(double deltaTime)
 		
 	}
 
-	m_pRender->UpdateWindow();
+	m_pRender->VUpdateWindow();
 	
 	return	true;
 }
 
 void	CGame::RenderHUD(double deltaTime)
 {
-	m_pRender->ClearHUD();
+	m_pRender->VClearHUD();
 	m_pRender->RenderHUD((int)deltaTime,m_pLogic->m_pEntity->m_pPlayer->GetHP(),m_pLogic->m_pEntity->m_pPlayer->GetMP()); // 1000000/deltaTime
 
 	if (m_pLogic->m_renderFlags.renderTalkMessage)
 	{
-		m_pRender->RenderText("Press F to talk",240,480,102,0,153);
+		m_pRender->VRenderText("Press F to talk",240,480,102,0,153);
 	}
 
 	// for testing
-	m_pRender->RenderValue((int)m_pLogic->m_pMap->m_cameraX,590,500,98,0,49);
-	m_pRender->RenderValue((int)m_pLogic->m_pMap->m_cameraY,590,520,98,0,49);
-	m_pRender->RenderValue((int)m_pLogic->m_pMap->m_playerX,530,500,98,0,49);
-	m_pRender->RenderValue((int)m_pLogic->m_pMap->m_playerY,530,520,98,0,49);
-	m_pRender->RenderValue(m_pEventMessage->m_MotionEvent.x,470,500,98,0,49);
-	m_pRender->RenderValue(m_pEventMessage->m_MotionEvent.y,470,520,98,0,49);
+	m_pRender->VRenderValue((int)m_pLogic->m_pMap->m_cameraX,590,500,98,0,49);
+	m_pRender->VRenderValue((int)m_pLogic->m_pMap->m_cameraY,590,520,98,0,49);
+	m_pRender->VRenderValue((int)m_pLogic->m_pMap->m_playerX,530,500,98,0,49);
+	m_pRender->VRenderValue((int)m_pLogic->m_pMap->m_playerY,530,520,98,0,49);
+	m_pRender->VRenderValue(m_pEventMessage->m_MotionEvent.x,470,500,98,0,49);
+	m_pRender->VRenderValue(m_pEventMessage->m_MotionEvent.y,470,520,98,0,49);
 }
 
 
