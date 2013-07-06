@@ -22,6 +22,7 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 #include "..\Message\CMouseMessage.h"
 #include "..\..\configuration.h"
 #include "..\Entity\CEntityManager.h"
+#include "..\Entity\CNPC.h"
 #include "..\Quest\CQuestManager.h"
 
 bool	CAction::Init()
@@ -43,7 +44,7 @@ void	CAction::Clean()
 
 }
 
-bool	CAction::ReadMouseMessage(CMouseMessage *Message,CMap *Map,CQuestManager *Quest,CEntityManager *Entity)
+bool	CAction::ReadMouseMessage(CMouseMessage *Message,CMap *Map,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo,_renderFlags &renderFlags)
 {
 	bool	returnValue = true;
 
@@ -67,11 +68,35 @@ bool	CAction::ReadMouseMessage(CMouseMessage *Message,CMap *Map,CQuestManager *Q
 		}
 		else if (Message->m_message == MouseMessage::textQuestSelection)
 		{
-			this->TextQuestSelection();
+			TextQuestSelection(Message->x,Message->y,Quest,Entity,textRenderInfo);
 		}
 		else if (Message->m_message == MouseMessage::textCommonSelection)
 		{
-			this->NextTextBox();
+			NextTextBox(textRenderInfo);
+		}
+		else if (Message->m_message == MouseMessage::conversationSelection)
+		{
+			ConversationSelection(Message->x,Message->y,textRenderInfo,renderFlags,Entity);
+		}
+		else if (Message->m_message == MouseMessage::setTileSelected)
+		{
+			SetTileSelected(Message->x,Message->y,Map);
+		}
+		else if (Message->m_message == MouseMessage::setTileOnMapExt)
+		{
+			SetTileOnMapExt(Message->x,Message->y,Map);
+		}
+		else if (Message->m_message == MouseMessage::setTileOnMap)
+		{
+			SetTileOnMap(Message->x,Message->y,Map);
+		}
+		else if (Message->m_message == MouseMessage::saveMapEditorMap)
+		{
+			Map->SaveMapEditorMap();
+		}
+		else if (Message->m_message == MouseMessage::initAllTiles)
+		{
+			InitAllTiles(Map);
 		}
 	}
 
@@ -132,4 +157,118 @@ void	CAction::ChangeFPSLock()
 bool	CAction::isCameraEnabled()
 {
 	return	m_moveCamera;
+}
+
+void	CAction::NextTextBox(_TextRenderInfo &textRenderInfo)
+{
+	textRenderInfo.nextTextBox = true;
+}
+
+void	CAction::TextQuestSelection(int mouseX,int mouseY,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo)
+{
+	if (Entity->m_VNpc[textRenderInfo.selectedNPCIndex].ConversationSelection(textRenderInfo.selectedConversationIndex))
+	{
+		YesNoSelection(mouseX,mouseY,Quest,Entity,textRenderInfo);
+	}
+	else
+	{
+		NextTextBox(textRenderInfo);
+	}
+}
+
+void	CAction::YesNoSelection(int mouseX,int mouseY,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo)
+{
+	if (mouseY >= 260 && mouseY <= 280) // yes option
+	{
+		textRenderInfo.setTextBox =	true;
+		textRenderInfo.chars		=	0;
+		Entity->m_VNpc[textRenderInfo.selectedNPCIndex].SetConversationStateYes(textRenderInfo.selectedConversationIndex);
+		Entity->m_VNpc[textRenderInfo.selectedNPCIndex].GetTextIndex(textRenderInfo.selectedTextIndex,textRenderInfo.selectedConversationIndex);
+
+		// set the quest to active
+		int questID = Entity->m_VNpc[textRenderInfo.selectedNPCIndex].GetQuestID(textRenderInfo.selectedConversationIndex);
+		if (questID != -1)
+		{
+			Quest->FindIndex(questID);
+			Quest->SetActiveQuest(true);
+		}
+
+	}
+	else if (mouseY > 280 && mouseY <= 300) // no option
+	{
+		textRenderInfo.setTextBox =	true;
+		textRenderInfo.chars		=	0;
+		Entity->m_VNpc[textRenderInfo.selectedNPCIndex].SetConversationStateNo(textRenderInfo.selectedConversationIndex);
+		Entity->m_VNpc[textRenderInfo.selectedNPCIndex].GetTextIndex(textRenderInfo.selectedTextIndex,textRenderInfo.selectedConversationIndex);
+	}
+}
+
+void	CAction::ConversationSelection(int mouseX,int mouseY,_TextRenderInfo &textRenderInfo,_renderFlags &renderFlags,CEntityManager *Entity)
+{
+	int height = Entity->m_VNpc[textRenderInfo.selectedNPCIndex].m_NumConversations;
+
+	if (CheckClick(mouseX,mouseY,118,240,404,height * 20))
+	{
+		renderFlags.textBoxState			=	RTBS_renderTextBox;
+		textRenderInfo.setTextBox			=	true;
+
+		for (int i = 0; i < height; i++)
+		{
+			if (mouseY >= 240+20*i && mouseY <= 240+20*(i+1))
+			{
+				// conversation index
+				textRenderInfo.selectedConversationIndex = Entity->m_VNpc[textRenderInfo.selectedNPCIndex].GetConversationIndex(i);				
+			}
+		}
+
+		// text index
+		Entity->m_VNpc[textRenderInfo.selectedNPCIndex].GetTextIndex(textRenderInfo.selectedTextIndex,textRenderInfo.selectedConversationIndex);
+	}
+}
+
+void	CAction::SetTileSelected(int mouseX,int mouseY,CMap *Map)
+{
+	int k = mouseX / 32;
+	int l = mouseY / 32;
+
+	Map->m_selectedTile = Map->m_allTilesMap[l][k];
+}
+
+void	CAction::SetTileOnMapExt(int mouseX,int mouseY,CMap *Map)
+{
+	int k		=	(int)((mouseY + Map->m_cameraY-WINDOW_HEIGHT/2)/32);
+	float tempL	=	(float)((mouseX + Map->m_cameraX-WINDOW_WIDTH/2)/32);
+	int	l		=	(int)tempL;
+
+	if (l > tempL)
+		l--;
+
+	Map->m_mapEditor[k][l] = Map->m_selectedTile;
+}
+
+void	CAction::SetTileOnMap(int mouseX,int mouseY,CMap *Map)
+{
+	int k = (int)((mouseY + Map->m_cameraY-WINDOW_HEIGHT/2)/32);
+	int l = (int)((mouseX + Map->m_cameraX-WINDOW_WIDTH/2)/32);
+
+	Map->m_mapEditor[k][l] = Map->m_selectedTile;
+}
+
+void	CAction::InitAllTiles(CMap *Map)
+{
+	Map->m_cameraX = 320;
+	Map->m_cameraY = 240;
+
+	if (!Map->m_allTilesMapState)
+	{
+		Map->InitAllTilesMap();
+	}
+}
+
+bool	CAction::CheckClick(int x1,int y1,int x2,int y2,int w2,int h2)
+{
+	if (x1 > x2 && x1 < x2 + w2 && y1 > y2 && y1 < y2 + h2)
+		return	true;
+
+	return	false;
 }

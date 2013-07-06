@@ -20,6 +20,7 @@
 #include "CMouse.h"
 #include "..\Message\CMouseMessage.h"
 #include "..\..\debug.h"
+#include "..\..\const.h"
 
 bool	CMouse::Init()
 {
@@ -132,7 +133,62 @@ void	CMouse::TextSelectionClick(int mouseX,int mouseY,_logicFlags &logicFlags,_r
 
 void	CMouse::ConversationSelectionClick(int mouseX,int mouseY,_logicFlags &logicFlags,_renderFlags &renderFlags)
 {
+	m_pMessage->m_message = MouseMessage::conversationSelection;
+	m_pMessage->x = mouseX;
+	m_pMessage->y = mouseY;
+}
 
+void	CMouse::MapEditorAllTilesClick(int mouseX,int mouseY,_logicFlags &logicFlags,_renderFlags &renderFlags)
+{
+	if (CheckClick(mouseX,mouseY,20,WINDOW_HEIGHT,192,64)) // return button
+	{
+		logicFlags.state = LGS_mapEditor;
+		renderFlags.state = RS_renderMapEditor;
+	}
+	else if (CheckClick(mouseX,mouseY,0,0,WINDOW_WIDTH,WINDOW_HEIGHT)) // tile clicked on window
+	{
+		m_pMessage->m_message = MouseMessage::setTileSelected;
+		m_pMessage->x = mouseX;
+		m_pMessage->y = mouseY;
+	}
+}
+
+void	CMouse::MapEditorClickPress(int mouseX,int mouseY)
+{
+	// if it's pressed but not released we check mouseX and mouseY from motion event, because pressed event has x and y of where the click happened
+	// so, while we're holding left mouse click pressed, set the map tile
+	if (CheckClick(mouseX,mouseY,0,0,WINDOW_WIDTH,WINDOW_HEIGHT))
+	{
+		m_pMessage->m_message = MouseMessage::setTileOnMapExt;
+		m_pMessage->x = mouseX;
+		m_pMessage->y = mouseY;
+	}
+}
+
+void	CMouse::MapEditorClickRelease(int mouseX,int mouseY,_logicFlags &logicFlags,_renderFlags &renderFlags)
+{
+	if (CheckClick(mouseX,mouseY,20,WINDOW_HEIGHT,192,64)) // return button
+	{
+		logicFlags.state		=	LGS_mainMenu;
+		renderFlags.state		=	RS_renderMainMenu;
+	}
+	else if (CheckClick(mouseX,mouseY,210,WINDOW_HEIGHT,192,64)) // all tiles button
+	{
+		logicFlags.state		=	LGS_allTiles;
+		renderFlags.state		=	RS_renderAllTiles;
+		m_pMessage->m_message	=	MouseMessage::initAllTiles;
+		
+	}
+	else if (CheckClick(mouseX,mouseY,400,WINDOW_HEIGHT,192,64)) // save button
+	{
+		m_pMessage->m_message	=	MouseMessage::saveMapEditorMap;
+	}
+	else if (CheckClick(mouseX,mouseY,0,0,WINDOW_WIDTH,WINDOW_HEIGHT)) // tile setting
+	{
+		m_pMessage->m_message	=	MouseMessage::setTileOnMap;
+		m_pMessage->x = mouseX;
+		m_pMessage->y = mouseY;
+	}
 }
 
 bool	CMouse::CheckClick(int x1,int y1,int x2,int y2,int w2,int h2)

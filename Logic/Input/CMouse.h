@@ -24,7 +24,7 @@
 class CMouseMessage;
 
 /*
-this class checks for mouse clicks and updates logic data ( logicFlags, renderFlags...)
+this class checks for mouse clicks, reads the game state and updates m_pMessage and logic data ( logicFlags, renderFlags...)
 m_pMessage contains message for CAction which will deal with the message
 */
 class CMouse
@@ -47,4 +47,8 @@ public:
 	void	MenuCLick(int mouseX,int mouseY,_logicFlags &logicFlags,_renderFlags &renderFlags);
 	void	OptionsClick(int mouseX,int mouseY,_logicFlags &logicFlags,_renderFlags &renderFlags);
 	void	InGameClick(int mouseX,int mouseY,_logicFlags &logicFlags,_renderFlags &renderFlags);
+	void	MapEditorClickRelease(int mouseX,int mouseY,_logicFlags &logicFlags,_renderFlags &renderFlags);
+	// for mouseX and mouseY use MotionEvent.x and MotionEvent.y
+	void	MapEditorClickPress(int mouseX,int mouseY);
+	void	MapEditorAllTilesClick(int mouseX,int mouseY,_logicFlags &logicFlags,_renderFlags &renderFlags);
 };

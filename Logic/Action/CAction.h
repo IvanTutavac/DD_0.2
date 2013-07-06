@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include "..\dataStructs.h"
+
 class CMouseMessage;
 class CMap;
 class CQuestManager;
@@ -34,18 +36,26 @@ private:
 	bool			InitMapEditor(CMap *Map);
 	bool			InitMap(CMap *Map);
 
+	bool			CheckClick(int x1,int y1,int x2,int y2,int w2,int h2);
+
+	// ReadMouseMessage calls these
 	void			ChangeFPSLock();
 	void			ChangeGrabMode();
-	void			TextQuestSelection();
-	void			YesNoSelection();
-	void			NextTextBox();
+	void			TextQuestSelection(int mouseX,int mouseY,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo);
+	void			YesNoSelection(int mouseX,int mouseY,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo);
+	void			NextTextBox(_TextRenderInfo &textRenderInfo);
+	void			ConversationSelection(int mouseX,int mouseY,_TextRenderInfo &textRenderInfo,_renderFlags &renderFlags,CEntityManager *Entity);
+	void			SetTileSelected(int mouseX,int mouseY,CMap *Map);
+	void			SetTileOnMapExt(int mouseX,int mouseY,CMap *Map);
+	void			SetTileOnMap(int mouseX,int mouseY,CMap *Map);
+	void			InitAllTiles(CMap *Map);
 
 public:
 
 	bool	Init();
 	void	Clean();
 
-	bool	ReadMouseMessage(CMouseMessage *Message,CMap *Map,CQuestManager *Quest,CEntityManager *Entity);
+	bool	ReadMouseMessage(CMouseMessage *Message,CMap *Map,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo,_renderFlags &renderFlags);
 
 	// grab mode affects camera
 	bool	isCameraEnabled();

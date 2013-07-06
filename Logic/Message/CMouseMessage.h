@@ -27,7 +27,13 @@ enum class MouseMessage
 	changeGrabMode,
 	changeFPSLock,
 	textQuestSelection,
-	textCommonSelection
+	textCommonSelection,
+	conversationSelection,
+	setTileSelected,
+	setTileOnMapExt, // extended version for press
+	setTileOnMap, // normal version for release
+	initAllTiles,
+	saveMapEditorMap
 };
 
 class CMouseMessage

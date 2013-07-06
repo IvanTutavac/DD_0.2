@@ -303,8 +303,6 @@ bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
 		if (EventMessage->m_Event.Event == AE_ReleasedLeftClick)
 		{
 			m_pMouse->MenuCLick(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
-			//if (!CheckMenuClick(EventMessage))
-				//return	false;
 		}
 	}
 	else if (m_logicFlags.state == LGS_mainOptions || m_logicFlags.state == LGS_options)
@@ -312,31 +310,34 @@ bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
 		if (EventMessage->m_Event.Event == AE_ReleasedLeftClick)
 		{
 			m_pMouse->OptionsClick(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
-			//CheckOptionsClick(EventMessage);
 		}
 	}
 	else if (m_logicFlags.state == LGS_inGame)
 	{
 		if (EventMessage->m_Event.Event == AE_ReleasedLeftClick)
-			CheckInGameClickRelease(EventMessage);
+		{
+			m_pMouse->InGameClick(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
+		}
 	}
 	else if (m_logicFlags.state == LGS_mapEditor)
 	{
 		if (EventMessage->m_Event.Event == AE_ReleasedLeftClick)
 		{
 			m_drawTiles = false;
-			CheckMapEditorClickRelease(EventMessage);
+			m_pMouse->MapEditorClickRelease(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
 		}
 		else if (EventMessage->m_Event.Event == AE_PressedLeftClick || m_drawTiles)
 		{
 			m_drawTiles = true;
-			CheckMapEditorClickPress(EventMessage);
+			m_pMouse->MapEditorClickPress(EventMessage->m_MotionEvent.x,EventMessage->m_MotionEvent.y);
 		}
 	}
 	else if (m_logicFlags.state == LGS_allTiles)
 	{
 		if (EventMessage->m_Event.Event == AE_ReleasedLeftClick)
-			CheckAllTilesClick(EventMessage);
+		{
+			m_pMouse->MapEditorAllTilesClick(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
+		}
 	}
 	return	true;
 }
@@ -357,8 +358,10 @@ void	CLogic::CheckPlayerInput(const CEventMessage *EventMessage)
 
 bool	CLogic::Action()
 {
-	if (!m_pAction->ReadMouseMessage(m_pMouse->m_pMessage,m_pMap))
+	if (!m_pAction->ReadMouseMessage(m_pMouse->m_pMessage,m_pMap,m_pQuest,m_pEntity,m_textRenderInfo,m_renderFlags))
+	{
 		return	false;
+	}
 
 	return	true;
 }
@@ -441,225 +444,6 @@ void	CLogic::EndConversation()
 	m_lockFlags.cameraMovement		=	false;
 	m_lockFlags.movement			=	false;
 	m_lockFlags.scroll				=	false;
-}
-
-bool	CLogic::CheckMenuClick(const CEventMessage *EventMessage)
-{
-	if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,224,144,192,64))
-	{
-		m_logicFlags.state		=	LGS_inGame;
-		m_renderFlags.state		=	RS_renderMap;
-		//if (!InitMap())
-			//return	false;
-	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,224,208,192,64)) // map editor button 
-	{
-		m_logicFlags.state		=	LGS_mapEditor;
-		m_renderFlags.state		=	RS_renderMapEditor;
-		//if (!InitMapEditor())
-			//return	false;
-	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,224,272,192,64)) // options button 
-	{
-		m_logicFlags.state		=	LGS_mainOptions;
-		m_renderFlags.state		=	RS_renderOptions;
-	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,224,336,192,64)) // exit button 
-	{
-		m_logicFlags.state		=	LGS_exit;
-		m_renderFlags.state		=	RS_renderGameExit;
-	}
-	return	true;
-}
-
-void	CLogic::CheckOptionsClick(const CEventMessage *EventMessage)
-{
-	if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,128,480,192,64)) // return button 
-	{
-		if (m_logicFlags.state == LGS_mainOptions)
-		{
-			m_logicFlags.state		=	LGS_mainMenu;
-			m_renderFlags.state		=	RS_renderMainMenu;
-		}
-		else if (m_logicFlags.state == LGS_options)
-		{
-			m_logicFlags.state		=	LGS_inGame;
-			m_renderFlags.state		=	RS_renderMap;
-		}
-	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,320,480,192,64))  // exit button 
-	{
-		m_logicFlags.state	=	LGS_exit;
-		m_renderFlags.state	=	RS_renderGameExit;
-	}
-	/*else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,32,32,192,64))
-	{
-		if (g_grabMode == SDL_GRAB_ON)
-			g_grabMode = SDL_GRAB_OFF;
-		else
-			g_grabMode = SDL_GRAB_ON;
-
-		SDL_WM_GrabInput(g_grabMode);
-	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,96,96,192,64))
-	{
-		if (g_FPSLimit)
-			g_FPSLimit = false;
-		else
-			g_FPSLimit = true;
-	}*/
-}
-
-void	CLogic::CheckInGameClickRelease(const CEventMessage *EventMessage)
-{
-	if (m_logicFlags.npcConversation != NPCC_nothing)
-	{
-		CheckTextBoxClick(EventMessage);
-	}
-}
-
-void	CLogic::CheckTextBoxClick(const CEventMessage *EventMessage)
-{
-	if (m_renderFlags.textBoxState == RTBS_renderTextBox) 
-	{
-		CheckTextSelectionClick(EventMessage);
-	}
-	else if (m_renderFlags.textBoxState == RTBS_renderFirstTextBox)
-	{
-		CheckConversationSelectionClick(EventMessage);
-	}
-}
-
-void	CLogic::CheckConversationSelectionClick(const CEventMessage *EventMessage)
-{
-	int height = m_pEntity->m_VNpc[m_textRenderInfo.selectedNPCIndex].m_NumConversations;
-
-	if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,240,404,height * 20))
-	{
-		m_renderFlags.textBoxState			=	RTBS_renderTextBox;
-		m_textRenderInfo.setTextBox			=	true;
-
-		for (int i = 0; i < height; i++)
-		{
-			if (EventMessage->m_Event.y >= 240+20*i && EventMessage->m_Event.y <= 240+20*(i+1))
-			{
-				// conversation index
-				m_textRenderInfo.selectedConversationIndex = m_pEntity->m_VNpc[m_textRenderInfo.selectedNPCIndex].GetConversationIndex(i);				
-			}
-		}
-
-		// text index
-		m_pEntity->m_VNpc[m_textRenderInfo.selectedNPCIndex].GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
-	}
-}
-
-void	CLogic::CheckTextSelectionClick(const CEventMessage	*EventMessage)
-{
-	if(CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,118,238,404,84))
-	{
-		if (m_logicFlags.npcConversation == NPCC_questTalk)
-		{
-			// yes no selection
-			if (m_pEntity->m_VNpc[m_textRenderInfo.selectedNPCIndex].ConversationSelection(m_textRenderInfo.selectedConversationIndex))
-			{
-				if (EventMessage->m_Event.y >= 260 && EventMessage->m_Event.y <= 280) // yes option
-				{
-					m_textRenderInfo.setTextBox =	true;
-					m_textRenderInfo.chars		=	0;
-					m_pEntity->m_VNpc[m_textRenderInfo.selectedNPCIndex].SetConversationStateYes(m_textRenderInfo.selectedConversationIndex);
-					m_pEntity->m_VNpc[m_textRenderInfo.selectedNPCIndex].GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
-
-					// set the quest to active
-					int questID = m_pEntity->m_VNpc[m_textRenderInfo.selectedNPCIndex].GetQuestID(m_textRenderInfo.selectedConversationIndex);
-					if (questID != -1)
-					{
-						m_pQuest->FindIndex(questID);
-						m_pQuest->SetActiveQuest(true);
-					}
-
-				}
-				else if (EventMessage->m_Event.y > 280 && EventMessage->m_Event.y <= 300) // no option
-				{
-					m_textRenderInfo.setTextBox =	true;
-					m_textRenderInfo.chars		=	0;
-					m_pEntity->m_VNpc[m_textRenderInfo.selectedNPCIndex].SetConversationStateNo(m_textRenderInfo.selectedConversationIndex);
-					m_pEntity->m_VNpc[m_textRenderInfo.selectedNPCIndex].GetTextIndex(m_textRenderInfo.selectedTextIndex,m_textRenderInfo.selectedConversationIndex);
-				}
-			}
-			else  // next textBox
-				m_textRenderInfo.nextTextBox = true;
-		}
-		else if (m_logicFlags.npcConversation == NPCC_commonTalk)
-		{
-			m_textRenderInfo.nextTextBox = true;
-		}
-	}
-}
-
-void	CLogic::CheckMapEditorClickRelease(const CEventMessage *EventMessage)
-{
-	if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,20,WINDOW_HEIGHT,192,64)) // return button
-	{
-		m_logicFlags.state		=	LGS_mainMenu;
-		m_renderFlags.state		=	RS_renderMainMenu;
-	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,210,WINDOW_HEIGHT,192,64)) // all tiles button
-	{
-		m_logicFlags.state		=	LGS_allTiles;
-		m_renderFlags.state		=	RS_renderAllTiles;
-		m_pMap->m_cameraX		=	320;
-		m_pMap->m_cameraY		=	240;
-
-		if (!m_pMap->m_allTilesMapState)
-			m_pMap->InitAllTilesMap();
-	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,400,WINDOW_HEIGHT,192,64)) // save button
-	{
-		m_pMap->SaveMapEditorMap();
-	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,0,0,WINDOW_WIDTH,WINDOW_HEIGHT)) // tile setting
-	{
-		int k = (int)((EventMessage->m_Event.y + m_pMap->m_cameraY-WINDOW_HEIGHT/2)/32);
-		int l = (int)((EventMessage->m_Event.x + m_pMap->m_cameraX-WINDOW_WIDTH/2)/32);
-
-		m_pMap->m_mapEditor[k][l] = m_pMap->m_selectedTile;
-	}
-}
-
-void	CLogic::CheckMapEditorClickPress(const CEventMessage *EventMessage)
-{
-	// if it's pressed but not released we check motion event, because pressed event has x and y of where the click happened
-	// so, while we're holding left mouse click pressed, set the map tile
-	if (CheckPointCollision(EventMessage->m_MotionEvent.x,EventMessage->m_MotionEvent.y,0,0,WINDOW_WIDTH,WINDOW_HEIGHT))
-	{
-		int k		=	(int)((EventMessage->m_MotionEvent.y + m_pMap->m_cameraY-WINDOW_HEIGHT/2)/32);
-		float tempL	=	(float)((EventMessage->m_MotionEvent.x + m_pMap->m_cameraX-WINDOW_WIDTH/2)/32);
-		int	l		=	(int)tempL;
-
-		if (l > tempL)
-			l--;
-
-		m_pMap->m_mapEditor[k][l] = m_pMap->m_selectedTile;
-	}
-}
-
-void	CLogic::CheckAllTilesClick(const CEventMessage *EventMessage)
-{
-	if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,20,WINDOW_HEIGHT,192,64))
-	{
-		m_logicFlags.state		=	LGS_mapEditor;
-		m_renderFlags.state		=	RS_renderMapEditor;
-	}
-	else if (CheckPointCollision(EventMessage->m_Event.x,EventMessage->m_Event.y,0,0,WINDOW_WIDTH,WINDOW_HEIGHT))
-	{
-		//int k = (int)((EventMessage->m_Event.y + m_pMap->m_cameraY-WINDOW_HEIGHT/2)/32);
-		//int l = (int)((EventMessage->m_Event.x + m_pMap->m_cameraX-WINDOW_WIDTH/2)/32);
-
-		int k = EventMessage->m_Event.x / 32;
-		int l = EventMessage->m_Event.y / 32;
-
-		m_pMap->m_selectedTile	=	m_pMap->m_allTilesMap[l][k];
-	}
 }
 
 void	CLogic::PlayerSpellCast(const CEventMessage *EventMessage)

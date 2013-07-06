@@ -76,16 +76,6 @@ private:
 	bool			CheckIfNPCNearby();
 	bool			CheckDistance(int x1,int y1,int x2,int y2,int distanceX,int distanceY);
 
-	void			CheckInGameClickRelease(const CEventMessage *EventMessage);
-	void			CheckTextBoxClick(const CEventMessage *EventMessage);
-	void			CheckConversationSelectionClick(const CEventMessage *EventMessage);
-	void			CheckTextSelectionClick(const CEventMessage *EventMessage);
-	bool			CheckMenuClick(const CEventMessage *EventMessage);
-	void			CheckOptionsClick(const CEventMessage *EventMessage);
-	void			CheckMapEditorClickRelease(const CEventMessage *EventMessage);
-	void			CheckMapEditorClickPress(const CEventMessage *EventMessage);
-	void			CheckAllTilesClick(const CEventMessage *EventMessage);
-
 
 	// cast the spell, if needed, create data needed for rendering and for timer
 	void			PlayerSpellCast(const CEventMessage *EventMessage);
