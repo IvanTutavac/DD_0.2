@@ -25,20 +25,27 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 
 void	CRender::RenderAllTiles(CMap *MapPointer)
 {
-	int	cameraX		=	(int)MapPointer->m_cameraX/32;
-	int	cameraY		=	(int)MapPointer->m_cameraY/32;
+	int cameraX = (int)MapPointer->m_cameraX;
+	int cameraY = (int)MapPointer->m_cameraY;
 
-	int	k =	0, l = 0;
+	int mapX = cameraX - WINDOW_WIDTH/2;
+	int mapY = cameraY - WINDOW_HEIGHT/2;
 
-	for (int i = -7; i < 8; i++)
+	int downX = (mapX/TILE_SIZE)*TILE_SIZE;
+	int downY = (mapY/TILE_SIZE)*TILE_SIZE;
+
+	for (int y = downY-mapY; y < WINDOW_HEIGHT; y+=TILE_SIZE)
 	{
-		for (int j = -10; j < 10; j++)
+		for (int x = downX-mapX; x < WINDOW_WIDTH; x+=TILE_SIZE)
 		{
-			k = j, l = i;
-			k += 10, l += 7;
-			VRenderImage(k*32,l*32,TYPE_TILE,MapPointer->m_allTilesMap[cameraY+i][cameraX+j]);
+			VRenderImage(x,y,TYPE_TILE,MapPointer->m_allTilesMap[mapY/32][mapX/32]);
+			mapX+=TILE_SIZE;
 		}
+		mapY+=TILE_SIZE;
+		mapX = cameraX - WINDOW_WIDTH/2;
 	}
+
+	VClearHUD();
 
 	VRenderButton("Return",20,WINDOW_HEIGHT,98,0,49);
 	VRenderImage(230,WINDOW_HEIGHT,TYPE_TILE,MapPointer->m_selectedTile);
@@ -46,21 +53,27 @@ void	CRender::RenderAllTiles(CMap *MapPointer)
 
 void	CRender::RenderMapEditor(CMap *MapPointer)
 {
-	int cameraX = (int)MapPointer->m_cameraX/32;
-	int cameraY = (int)MapPointer->m_cameraY/32;
+	int cameraX = (int)MapPointer->m_cameraX;
+	int cameraY = (int)MapPointer->m_cameraY;
 
-	int k = 0, l = 0;
+	int mapX = cameraX - WINDOW_WIDTH/2;
+	int mapY = cameraY - WINDOW_HEIGHT/2;
 
-	for (int i = -7; i < 8; i++)
+	int downX = (mapX/TILE_SIZE)*TILE_SIZE;
+	int downY = (mapY/TILE_SIZE)*TILE_SIZE;
+
+	for (int y = downY-mapY; y < WINDOW_HEIGHT; y+=TILE_SIZE)
 	{
-		for (int j = -10; j < 10; j++)
+		for (int x = downX-mapX; x < WINDOW_WIDTH; x+=TILE_SIZE)
 		{
-			k = j, l = i;
-			k += 10, l+=7;
-			VRenderImage(k*32,l*32,TYPE_TILE,MapPointer->m_mapEditor[cameraY+i][cameraX+j]);
-			k = 0, l = 0;
+			VRenderImage(x,y,TYPE_TILE,MapPointer->m_mapEditor[mapY/32][mapX/32]);
+			mapX+=TILE_SIZE;
 		}
+		mapY+=TILE_SIZE;
+		mapX = cameraX - WINDOW_WIDTH/2;
 	}
+
+	VClearHUD();
 
 	VRenderButton("Return",20,WINDOW_HEIGHT,98,0,49);
 	VRenderButton("All tiles",210,WINDOW_HEIGHT,98,0,49);
@@ -75,8 +88,8 @@ void	CRender::RenderMap(CMap *MapPointer)
 	int mapX = cameraX - WINDOW_WIDTH/2;
 	int mapY = cameraY - WINDOW_HEIGHT/2;
 
-	int downX = (mapX/32)*32;
-	int downY = (mapY/32)*32;
+	int downX = (mapX/TILE_SIZE)*TILE_SIZE;
+	int downY = (mapY/TILE_SIZE)*TILE_SIZE;
 
 	for (int y = downY-mapY; y < WINDOW_HEIGHT; y+=TILE_SIZE)
 	{
@@ -89,8 +102,7 @@ void	CRender::RenderMap(CMap *MapPointer)
 		mapX = cameraX - WINDOW_WIDTH/2;
 	}
 
-	cameraX = (int)MapPointer->m_cameraX/32;
-	cameraY = (int)MapPointer->m_cameraY/32;
+
 
 	// m_playerX and m_playerY are map locations, we need window locations
 	int x = (int)(MapPointer->m_playerX - MapPointer->m_cameraX + WINDOW_WIDTH/2);

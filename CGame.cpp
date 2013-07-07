@@ -201,7 +201,6 @@ bool	CGame::Render(double deltaTime)
 	}
 	else if (m_pLogic->m_renderFlags.state == RS_renderAllTiles)
 	{
-		m_pRender->VClearHUD();
 		m_pRender->RenderAllTiles(m_pLogic->m_pMap);
 	}
 	else if (m_pLogic->m_renderFlags.state == RS_renderGameExit)
