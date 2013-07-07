@@ -31,7 +31,7 @@ void	CMovement::Clean()
 
 }
 
-void	CMovement::SpellMovement(CMap *MapPointer,float x,float y,double deltaTime)
+void	CMovement::SpellMovement(CMap *MapPointer,float x/*mouseX*/,float y/*mouseY*/,double deltaTime)
 {
 	if (MapPointer->m_spell.empty())
 		return;
@@ -43,8 +43,8 @@ void	CMovement::SpellMovement(CMap *MapPointer,float x,float y,double deltaTime)
 		// spell casted, calculate where it will be moved
 		if (MapPointer->m_spell[i].state == LS_nothing)
 		{
-			x-= MapPointer->m_playerX;
-			y-= MapPointer->m_playerY;
+			x-= (MapPointer->m_playerX - MapPointer->m_cameraX + WINDOW_WIDTH/2); 
+			y-= (MapPointer->m_playerY - MapPointer->m_cameraY + WINDOW_HEIGHT/2);
 
 			d = sqrt(x*x+y*y);
 

@@ -232,13 +232,9 @@ void	CAction::SetTileSelected(int mouseX,int mouseY,CMap *Map)
 
 void	CAction::SetTileOnMap(int mouseX,int mouseY,CMap *Map)
 {
-	int k		=	(int)((mouseY + Map->m_cameraY-WINDOW_HEIGHT/2)/32);
-	/*float tempL	=	(float)((mouseX + Map->m_cameraX-WINDOW_WIDTH/2.)/32.);
-	int	l		=	(int)tempL;
-
-	if (l > tempL)
-		l--;*/
-	int l = (int)((mouseX + Map->m_cameraX-WINDOW_WIDTH/2)/32);
+	int k	=	(int)((mouseY + Map->m_cameraY-WINDOW_HEIGHT/2)/32);
+	int l	=	(int)((mouseX + Map->m_cameraX-WINDOW_WIDTH/2)/32);
+	
 	Map->m_mapEditor[k][l] = Map->m_selectedTile;
 }
 

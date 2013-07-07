@@ -85,11 +85,16 @@ void	CRender::RenderMap(CMap *MapPointer)
 	int cameraX = (int)MapPointer->m_cameraX;
 	int cameraY = (int)MapPointer->m_cameraY;
 
+	// upper left map location
 	int mapX = cameraX - WINDOW_WIDTH/2;
 	int mapY = cameraY - WINDOW_HEIGHT/2;
 
+	// for the whole tile (top border tiles and left border tiles) to be drawn downX and downY need to be 0 
+	// if it's not zero, we draw a part of it ( x = downX - mapX .... )
 	int downX = (mapX/TILE_SIZE)*TILE_SIZE;
 	int downY = (mapY/TILE_SIZE)*TILE_SIZE;
+
+	// there's no check for if a tile needs to be cut on bottom border ( VClearHUD should clean those tile parts... )
 
 	for (int y = downY-mapY; y < WINDOW_HEIGHT; y+=TILE_SIZE)
 	{
