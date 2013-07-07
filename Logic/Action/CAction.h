@@ -46,7 +46,6 @@ private:
 	void			NextTextBox(_TextRenderInfo &textRenderInfo);
 	void			ConversationSelection(int mouseX,int mouseY,_TextRenderInfo &textRenderInfo,_renderFlags &renderFlags,CEntityManager *Entity);
 	void			SetTileSelected(int mouseX,int mouseY,CMap *Map);
-	void			SetTileOnMapExt(int mouseX,int mouseY,CMap *Map);
 	void			SetTileOnMap(int mouseX,int mouseY,CMap *Map);
 	void			InitAllTiles(CMap *Map);
 

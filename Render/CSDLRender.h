@@ -44,6 +44,7 @@ private:
 	bool	LoadFonts();
 
 	void	RenderImage(int x,int y,SDL_Surface *image,SDL_Surface *surface);
+	void	RenderImage(int x,int y,int cutX,int cutY,SDL_Surface *image,SDL_Surface *surface);
 
 	bool	CheckIfInWindow(int cameraX,int cameraY,int &x,int &y);
 
@@ -51,6 +52,7 @@ protected:
 
 	void	VRenderFPS(int fps) override;
 	void	VRenderImage(int x,int y,const int type,int i) override;
+	void	VRenderImage(int x,int y,int cutX,int cutY,const int type, int i) override;
 
 public:
 

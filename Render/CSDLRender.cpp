@@ -31,6 +31,8 @@
 
 bool	CSDLRender::VInit()
 {
+	SDL_putenv("SDL_VIDEO_CENTERED=1"); // any value will center the window
+
 	m_pWindow	=	NULL;
 
 	if ((m_pWindow = SDL_SetVideoMode(WINDOW_WIDTH,WINDOW_HEIGHT+HUD_HEIGHT,32,SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWACCEL)) == NULL)
@@ -113,6 +115,11 @@ void	CSDLRender::VRenderOptions()
 void	CSDLRender::VRenderImage(int x,int y,const int type,int i)
 {
 	RenderImage(x,y,m_pVImage[type]->m_imageSurface[i],m_pWindow);
+}
+
+void	CSDLRender::VRenderImage(int x,int y,int cutX,int cutY,const int type,int i)
+{
+	RenderImage(x,y,cutX,cutY,m_pVImage[type]->m_imageSurface[i],m_pWindow);
 }
 
 void	CSDLRender::VRenderText(char *text,int x,int y,int r,int g,int b)
@@ -331,6 +338,19 @@ void	CSDLRender::RenderImage(int x,int y,SDL_Surface *image,SDL_Surface *surface
 	tempRect.y = y;
 
 	SDL_BlitSurface(image,0,surface,&tempRect);
+}
+
+void	CSDLRender::RenderImage(int x,int y,int cutX,int cutY,SDL_Surface *image,SDL_Surface *surface)
+{
+	SDL_Rect tempRect;
+	tempRect.x = x;
+	tempRect.y = y;
+
+	SDL_Rect cutRect;
+	cutRect.x = cutX;
+	cutRect.y = cutY;
+
+	SDL_BlitSurface(image,&cutRect,surface,&tempRect);
 }
 
 

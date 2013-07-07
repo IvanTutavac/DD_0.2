@@ -37,6 +37,7 @@ protected:
 	virtual void	VRenderFPS(int fps)=0;
 	// image will be drawn on main window
 	virtual void	VRenderImage(int x,int y,const int type,int i)=0; 
+	virtual void	VRenderImage(int x,int y,int cutX,int cutY,const int type, int i)=0;
 
 public:
 

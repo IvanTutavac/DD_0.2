@@ -1,20 +1,20 @@
 /*
-	(c) Copyright 2013 Ivan Tutavac
+(c) Copyright 2013 Ivan Tutavac
 
-	This file is part of DD 0.2
+This file is part of DD 0.2
 
-    DD 0.2 is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+DD 0.2 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    DD 0.2 is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+DD 0.2 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
@@ -69,22 +69,28 @@ void	CRender::RenderMapEditor(CMap *MapPointer)
 
 void	CRender::RenderMap(CMap *MapPointer)
 {
-	int	cameraX = (int)MapPointer->m_cameraX / 32; // window middle
-	int	cameraY = (int)MapPointer->m_cameraY / 32;
+	int cameraX = (int)MapPointer->m_cameraX;
+	int cameraY = (int)MapPointer->m_cameraY;
 
-	int k = 0, l = 0; // where will the image be drawn if multiplied by 32
-	// [cameraY + i][cameraX + j]  which tile needs to be drawn
+	int mapX = cameraX - WINDOW_WIDTH/2;
+	int mapY = cameraY - WINDOW_HEIGHT/2;
 
-	for (int i = -7; i < 8; i++)
+	int downX = (mapX/32)*32;
+	int downY = (mapY/32)*32;
+
+	for (int y = downY-mapY; y < WINDOW_HEIGHT; y+=TILE_SIZE)
 	{
-		for (int j = -10; j < 10; j++)
+		for (int x = downX-mapX; x < WINDOW_WIDTH; x+=TILE_SIZE)
 		{
-			k = j, l = i;
-			k+=10,l+=7; // we can not use negative numbers
-			VRenderImage(k*32,l*32,TYPE_TILE,MapPointer->m_map[cameraY+i][cameraX+j]);
-			k = 0, l = 0;
+			VRenderImage(x,y,TYPE_TILE,MapPointer->m_map[mapY/32][mapX/32]);
+			mapX+=TILE_SIZE;
 		}
+		mapY+=TILE_SIZE;
+		mapX = cameraX - WINDOW_WIDTH/2;
 	}
+
+	cameraX = (int)MapPointer->m_cameraX/32;
+	cameraY = (int)MapPointer->m_cameraY/32;
 
 	// m_playerX and m_playerY are map locations, we need window locations
 	int x = (int)(MapPointer->m_playerX - MapPointer->m_cameraX + WINDOW_WIDTH/2);
@@ -99,7 +105,7 @@ void	CRender::RenderMap(CMap *MapPointer)
 		y = (int)MapPointer->m_closeEnemyXY[i].y;
 		if (CheckIfInWindow((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
 			VRenderImage(x,y,TYPE_ENEMY,MapPointer->m_closeEnemyXY[i].imgID);
-			/* You can not use ->m_imageSurface[i] for image that needs to be drawn, because there can be more than one*/
+		/* You can not use ->m_imageSurface[i] for image that needs to be drawn, because there can be more than one*/
 	}
 
 	for (size_t i = 0; i < MapPointer->m_npcXY.size(); i++)
@@ -124,8 +130,8 @@ void	CRender::RenderHUD(int fps,int hp,int mp)
 	VRenderFPS(fps);
 	VRenderText("HP:",20,490,98,0,49);
 	VRenderValue(hp,60,490,98,0,49);
-	VRenderText("MP:",20,520,98,0,49);
-	VRenderValue(mp,60,520,98,0,49);
+	VRenderText("MP:",20,510,98,0,49);
+	VRenderValue(mp,60,510,98,0,49);
 }
 
 void	CRender::SetTextBox(std::string text)

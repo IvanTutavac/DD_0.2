@@ -82,10 +82,6 @@ bool	CAction::ReadMouseMessage(CMouseMessage *Message,CMap *Map,CQuestManager *Q
 		{
 			SetTileSelected(Message->x,Message->y,Map);
 		}
-		else if (Message->m_message == MouseMessage::setTileOnMapExt)
-		{
-			SetTileOnMapExt(Message->x,Message->y,Map);
-		}
 		else if (Message->m_message == MouseMessage::setTileOnMap)
 		{
 			SetTileOnMap(Message->x,Message->y,Map);
@@ -234,23 +230,15 @@ void	CAction::SetTileSelected(int mouseX,int mouseY,CMap *Map)
 	Map->m_selectedTile = Map->m_allTilesMap[l][k];
 }
 
-void	CAction::SetTileOnMapExt(int mouseX,int mouseY,CMap *Map)
+void	CAction::SetTileOnMap(int mouseX,int mouseY,CMap *Map)
 {
 	int k		=	(int)((mouseY + Map->m_cameraY-WINDOW_HEIGHT/2)/32);
-	float tempL	=	(float)((mouseX + Map->m_cameraX-WINDOW_WIDTH/2)/32);
+	/*float tempL	=	(float)((mouseX + Map->m_cameraX-WINDOW_WIDTH/2.)/32.);
 	int	l		=	(int)tempL;
 
 	if (l > tempL)
-		l--;
-
-	Map->m_mapEditor[k][l] = Map->m_selectedTile;
-}
-
-void	CAction::SetTileOnMap(int mouseX,int mouseY,CMap *Map)
-{
-	int k = (int)((mouseY + Map->m_cameraY-WINDOW_HEIGHT/2)/32);
+		l--;*/
 	int l = (int)((mouseX + Map->m_cameraX-WINDOW_WIDTH/2)/32);
-
 	Map->m_mapEditor[k][l] = Map->m_selectedTile;
 }
 

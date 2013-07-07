@@ -159,7 +159,7 @@ void	CMouse::MapEditorClickPress(int mouseX,int mouseY)
 	// so, while we're holding left mouse click pressed, set the map tile
 	if (CheckClick(mouseX,mouseY,0,0,WINDOW_WIDTH,WINDOW_HEIGHT))
 	{
-		m_pMessage->m_message = MouseMessage::setTileOnMapExt;
+		m_pMessage->m_message = MouseMessage::setTileOnMap;
 		m_pMessage->x = mouseX;
 		m_pMessage->y = mouseY;
 	}

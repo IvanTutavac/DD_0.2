@@ -30,8 +30,7 @@ enum class MouseMessage
 	textCommonSelection,
 	conversationSelection,
 	setTileSelected,
-	setTileOnMapExt, // extended version for press
-	setTileOnMap, // normal version for release
+	setTileOnMap, 
 	initAllTiles,
 	saveMapEditorMap
 };
