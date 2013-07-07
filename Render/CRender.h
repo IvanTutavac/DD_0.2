@@ -31,8 +31,13 @@ protected:
 
 	std::string		m_text;
 
-	bool	CRender::CheckIfInWindow(int cameraX,int cameraY,int &x,int &y);
-
+	// will only return true if the whole entity is in the window
+	// x and y will be updated for window drawing, so use tempX and tempY for them ( mapX != windowX)
+	bool			CheckIfInWindow(int cameraX,int cameraY,int &x,int &y);
+	// allows entities not to be fully drawn ( if a half is visible, that half will be drawn...)
+	// x and y will be updated for window drawing, so use tempX and tempY for them ( mapX != windowX)
+	// tempX and tempY used for input must no be transformed into Window locations, the method already does it
+	bool			CheckIfInWindowEx(int cameraX,int cameraY,int &x,int &y);
 
 	virtual void	VRenderFPS(int fps)=0;
 	// image will be drawn on main window

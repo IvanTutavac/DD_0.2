@@ -110,17 +110,18 @@ void	CRender::RenderMap(CMap *MapPointer)
 
 
 	// m_playerX and m_playerY are map locations, we need window locations
-	int x = (int)(MapPointer->m_playerX - MapPointer->m_cameraX + WINDOW_WIDTH/2);
-	int y = (int)(MapPointer->m_playerY - MapPointer->m_cameraY + WINDOW_HEIGHT/2);
+	int x = (int)(MapPointer->m_playerX); //- MapPointer->m_cameraX + WINDOW_WIDTH/2);
+	int y = (int)(MapPointer->m_playerY); //- MapPointer->m_cameraY + WINDOW_HEIGHT/2);
 
-	if (x >= 0 && y >= 0 && x <= WINDOW_WIDTH - TILE_SIZE && y <= WINDOW_HEIGHT - TILE_SIZE) // do not let player be rendered onto bottom screen
+	//if (x >= 0 && y >= 0 && x <= WINDOW_WIDTH - TILE_SIZE && y <= WINDOW_HEIGHT - TILE_SIZE) // do not let player be rendered onto bottom screen
+	if (CheckIfInWindowEx((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))	
 		VRenderImage(x,y,TYPE_PLAYER,0); // render player
 
 	for (size_t i = 0; i < MapPointer->m_closeEnemyXY.size(); i++)
 	{
 		x = (int)MapPointer->m_closeEnemyXY[i].x;
 		y = (int)MapPointer->m_closeEnemyXY[i].y;
-		if (CheckIfInWindow((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
+		if (CheckIfInWindowEx((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
 			VRenderImage(x,y,TYPE_ENEMY,MapPointer->m_closeEnemyXY[i].imgID);
 		/* You can not use ->m_imageSurface[i] for image that needs to be drawn, because there can be more than one*/
 	}
@@ -129,7 +130,7 @@ void	CRender::RenderMap(CMap *MapPointer)
 	{
 		x = (int)MapPointer->m_npcXY[i].x;
 		y = (int)MapPointer->m_npcXY[i].y;
-		if (CheckIfInWindow((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
+		if (CheckIfInWindowEx((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
 			VRenderImage(x,y,TYPE_NPC,MapPointer->m_npcXY[i].imgID);
 	}
 
@@ -137,7 +138,7 @@ void	CRender::RenderMap(CMap *MapPointer)
 	{
 		x = (int)MapPointer->m_spell[i].x;
 		y = (int)MapPointer->m_spell[i].y;
-		if (CheckIfInWindow((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
+		if (CheckIfInWindowEx((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
 			VRenderImage(x,y,TYPE_SPELL,MapPointer->m_spell[i].imgID);
 	}
 }
@@ -173,4 +174,43 @@ bool	CRender::CheckIfInWindow(int cameraX,int cameraY,int &x,int &y)
 	x-= (cameraX - WINDOW_WIDTH/2);
 	y-= (cameraY - WINDOW_HEIGHT/2);
 	return true;
+}
+
+bool	CRender::CheckIfInWindowEx(int cameraX,int cameraY,int &x,int &y)
+{
+	// get window locationss
+	x = x - cameraX + WINDOW_WIDTH/2;
+	y = y - cameraY + WINDOW_HEIGHT/2;
+
+	// do not allow the entity to be drawn outside of map
+	if (cameraX <= WINDOW_WIDTH/2)
+	{
+		if (x < (cameraX - WINDOW_WIDTH/2))
+			return false;
+	}
+
+	if (cameraY <= WINDOW_HEIGHT/2)
+	{
+		if (y < (cameraY - WINDOW_HEIGHT/2))
+			return	false;
+	}
+
+	if (cameraX >= (MAP_WIDTH - WINDOW_WIDTH/2))
+	{
+		if (x > (cameraX + WINDOW_WIDTH/2))
+			return	false;
+	}
+
+	if (cameraY >= (MAP_HEIGHT - WINDOW_HEIGHT/2))
+	{
+		if (y > (cameraY + WINDOW_HEIGHT/2))
+			return	false;
+	}
+
+	// entity in window, let it be drawn
+
+	int tempX = x - cameraX - WINDOW_WIDTH/2;
+	int tempY = y - cameraY - WINDOW_HEIGHT/2;
+
+	return	true;
 }
