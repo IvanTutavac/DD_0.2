@@ -18,7 +18,8 @@
 */
 
 #pragma once
-#include "SDL.h"
 
-extern SDL_GrabMode g_grabMode;
+extern bool g_grabMode;
 extern bool	g_FPSLimit;
+extern int  g_windowX;
+extern int  g_windowY;

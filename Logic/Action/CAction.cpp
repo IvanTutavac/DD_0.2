@@ -24,10 +24,11 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 #include "..\Entity\CEntityManager.h"
 #include "..\Entity\CNPC.h"
 #include "..\Quest\CQuestManager.h"
+#include "SDL.h"
 
 bool	CAction::Init()
 {
-	if (g_grabMode == SDL_GRAB_OFF)
+	if (g_grabMode == false)
 	{
 		m_moveCamera = false;
 	}
@@ -65,6 +66,14 @@ bool	CAction::ReadMouseMessage(CMouseMessage *Message,CMap *Map,CQuestManager *Q
 		else if (Message->m_message == MouseMessage::changeGrabMode)
 		{
 			ChangeGrabMode();
+		}
+		else if (Message->m_message == MouseMessage::changeResolution1024x768)
+		{
+			ChangeResolution(1024,768);
+		}
+		else if (Message->m_message == MouseMessage::changeResolution640x480)
+		{
+			ChangeResolution(640,480);
 		}
 		else if (Message->m_message == MouseMessage::textQuestSelection)
 		{
@@ -124,18 +133,18 @@ bool	CAction::InitMap(CMap *Map)
 
 void	CAction::ChangeGrabMode()
 {
-	if (g_grabMode == SDL_GRAB_ON)
+	if (g_grabMode == true)
 	{
 		m_moveCamera = false;
-		g_grabMode = SDL_GRAB_OFF;
+		g_grabMode = false;
 	}
 	else
 	{
 		m_moveCamera = true;
-		g_grabMode = SDL_GRAB_ON;
+		g_grabMode = true;
 	}
 
-	SDL_WM_GrabInput(g_grabMode);
+	//SDL_SetWindowGrab(g_grabMode);
 }
 
 void	CAction::ChangeFPSLock()
@@ -148,6 +157,18 @@ void	CAction::ChangeFPSLock()
 	{
 		g_FPSLimit = true;
 	}
+}
+
+void	CAction::ChangeResolution(int x,int y)
+{
+	if (x == g_windowX && y == g_windowY)
+		return;
+
+	g_windowX = x;
+	g_windowY = y;
+	WINDOW_WIDTH = x;
+	WINDOW_HEIGHT = y;
+
 }
 
 bool	CAction::isCameraEnabled()

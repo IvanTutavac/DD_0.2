@@ -13,16 +13,3 @@ Entities loaded
 Logic init finished
 Window...
 TTF_Init ...
-Tiles loaded
-Enemy images loaded
-Player images loaded
-Menu images loaded
-NPC images loaded
-Spell images loaded
-Images loaded
-Font loaded
-Render init finished
-Event init finished
-Game Init finished...
-Game Run finished...
-Game Clean finshed...

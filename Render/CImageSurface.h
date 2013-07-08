@@ -26,52 +26,54 @@ class CImageSurface
 {
 protected:
 	int	N;
+
 public:
 
 	virtual ~CImageSurface(){}
 
 	std::vector<SDL_Surface*>	m_imageSurface; // contains images
-
-	virtual	int		VLoadAll()=0;
+	std::vector<SDL_Texture*> m_pVTexture;
+	virtual	int		VLoadAll(SDL_Renderer *m_pRenderer)=0;
 	bool			DeleteAll();
 	int				Return();
 
 	SDL_Surface		*LoadPNGImage(char *name);
 	SDL_Surface		*LoadPNGImage(char *name,bool alpha);
+	SDL_Texture		*LoadTexture(char *name,SDL_Renderer *m_pRenderer);
 };
 
 class  CTileImageSurface : public CImageSurface
 {
 public:
-	int		VLoadAll() override;
+	int		VLoadAll(SDL_Renderer *m_pRenderer) override;
 };
 
 class  CEnemyImageSurface : public CImageSurface
 {
 public:
-	int		VLoadAll() override;
+	int		VLoadAll(SDL_Renderer *m_pRenderer) override;
 };
 
 class CPlayerImageSurface : public CImageSurface
 {
 public:
-	int		VLoadAll() override;
+	int		VLoadAll(SDL_Renderer *m_pRenderer) override;
 };
 
 class  CMenuImageSurface : public CImageSurface
 {
 public:
-	int		VLoadAll() override;
+	int		VLoadAll(SDL_Renderer *m_pRenderer) override;
 };
 
 class CNPCImageSurface : public CImageSurface
 {
 public:
-	int		VLoadAll() override;
+	int		VLoadAll(SDL_Renderer *m_pRenderer) override;
 };
 
 class CSpellImageSurface : public CImageSurface
 {
 public:
-	int		VLoadAll() override;
+	int		VLoadAll(SDL_Renderer *m_pRenderer) override;
 };

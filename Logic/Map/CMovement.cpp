@@ -112,14 +112,14 @@ void	CMovement::CameraMovement(int mouseX,int mouseY,float &cameraX,float &camer
 	}
 
 	if (cameraX > MAP_WIDTH - WINDOW_WIDTH/2)
-		cameraX = MAP_WIDTH - WINDOW_WIDTH/2;	
+		cameraX = MAP_WIDTH - WINDOW_WIDTH/2.f;	
 	else if (cameraX < WINDOW_WIDTH/2)
-		cameraX = WINDOW_WIDTH/2;
+		cameraX = WINDOW_WIDTH/2.f;
 
 	if (cameraY < WINDOW_HEIGHT/2)
-		cameraY = WINDOW_HEIGHT/2;
+		cameraY = WINDOW_HEIGHT/2.f;
 	else if (cameraY > MAP_HEIGHT - WINDOW_HEIGHT/2)
-		cameraY = MAP_HEIGHT - WINDOW_HEIGHT/2;
+		cameraY = MAP_HEIGHT - WINDOW_HEIGHT/2.f;
 }
 
 void	CMovement::MoveEntity(int leftRight,int upDown,float &x,float &y,float speed,double deltaTime)

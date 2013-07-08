@@ -30,12 +30,19 @@ bool	CImageSurface::DeleteAll()
 {
 	for( std::vector<SDL_Surface*>::iterator it = m_imageSurface.begin(); it!=m_imageSurface.end(); ++it)
 		SDL_FreeSurface(*it);
+
+	for (size_t i = 0; i < m_pVTexture.size(); i++)
+	{
+		SDL_DestroyTexture(m_pVTexture[i]);
+	}
+
 	return	true;
 }
 
 int		CImageSurface::Return()
 {
-	if (m_imageSurface.back() == NULL)
+	//if (m_imageSurface.back() == NULL)
+	if (m_pVTexture.back() == NULL)
 	{
 		Log(std::to_string(N)+".img failed to load");
 		return N;
@@ -53,7 +60,7 @@ SDL_Surface	*CImageSurface::LoadPNGImage(char *name)
 	if (!temp)
 		return	NULL;
 
-	image	=	SDL_DisplayFormat(temp);
+	//image	=	SDL_DisplayFormat(temp);
 
 	SDL_FreeSurface(temp);
 
@@ -69,35 +76,60 @@ SDL_Surface	*CImageSurface::LoadPNGImage(char *name,bool alpha)
 	if (!temp)
 		return	NULL;
 
-	if (alpha)
-		image	=	SDL_DisplayFormatAlpha(temp);
-	else
-		image	=	SDL_DisplayFormat(temp);
+	//if (alpha)
+		//image	=	SDL_DisplayFormatAlpha(temp);
+	//else
+		//image	=	SDL_DisplayFormat(temp);
 
 	SDL_FreeSurface(temp);
 
 	return	image;
 }
 
+SDL_Texture *CImageSurface::LoadTexture(char *name,SDL_Renderer *m_pRenderer)
+{
+	SDL_Surface *surface = NULL;
+	SDL_Texture *texture = NULL;
+
+	surface = IMG_Load(name);
+
+	if (!surface)
+		return	NULL;
+
+	texture = SDL_CreateTextureFromSurface(m_pRenderer,surface);
+
+	if (texture == 0)
+		return	NULL;
+
+	SDL_FreeSurface(surface);
+
+	return	texture;
+}
+
+
+
 /*-----------------------------
 		CTileImageSurface
 -----------------------------*/
 
-int	CTileImageSurface::VLoadAll()
+int	CTileImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 {
 	N = 0;
 	char	a[14] = "",c[14]="",b[]="img/";
-	SDL_Surface	*tempImage = NULL;
+	//SDL_Surface	*tempImage = NULL;
+	SDL_Texture *tempTexture = NULL;
 	for (int i = TILE_NUMBER_START; i<=TILE_NUMBER_FINISH;i++)
 	{
 		strcpy_s(c,b);
 		_itoa_s(i,a,10);
 		strcat_s(c,a);
 		strcat_s(c,".png");
-		m_imageSurface.push_back(LoadPNGImage(c)); 
+		m_pVTexture.push_back(LoadTexture(c,m_pRenderer));
+		//m_imageSurface.push_back(LoadPNGImage(c)); 
 		if (N == 1)
 		{
-			if (m_imageSurface[1] == NULL)
+			//if (m_imageSurface[1] == NULL)
+			if (m_pVTexture[1] == NULL)
 			{
 				Log(std::to_string(N)+".img failed to load");
 				return 0;
@@ -115,10 +147,11 @@ int	CTileImageSurface::VLoadAll()
 		CEnemyImageSurface
 -----------------------------*/
 
-int	CEnemyImageSurface::VLoadAll()
+int	CEnemyImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 {
 	N = 4000;
-	m_imageSurface.push_back(LoadPNGImage("img/4000.png",true));
+	m_pVTexture.push_back(LoadTexture("img/4000.png",m_pRenderer));
+	//m_imageSurface.push_back(LoadPNGImage("img/4000.png",true));
 	if (Return() != 1)
 		return	N;
 
@@ -129,12 +162,14 @@ int	CEnemyImageSurface::VLoadAll()
 		CPlayerImageSurface
 -----------------------------*/
 
-int	CPlayerImageSurface::VLoadAll()
+int	CPlayerImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 {
 	N = 950;
-	m_imageSurface.push_back(LoadPNGImage("img/950.png",true));
+	m_pVTexture.push_back(LoadTexture("img/950.png",m_pRenderer));
+	//m_imageSurface.push_back(LoadPNGImage("img/950.png",true));
 	if (Return() != 1)
 		return N;
+
 	return	1;
 }
 
@@ -142,16 +177,19 @@ int	CPlayerImageSurface::VLoadAll()
 		CMenuImageSurface
 -----------------------------*/
 
-int	CMenuImageSurface::VLoadAll()
+int	CMenuImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 {
 	N = 1000;
-	m_imageSurface.push_back(LoadPNGImage("img/1000.png"));
+	m_pVTexture.push_back(LoadTexture("img/1000.png",m_pRenderer));
+	//m_imageSurface.push_back(LoadPNGImage("img/1000.png"));
 	if (Return() != 1)
 		return N;
-	m_imageSurface.push_back(LoadPNGImage("img/1001.png"));
+	m_pVTexture.push_back(LoadTexture("img/1001.png",m_pRenderer));
+	//m_imageSurface.push_back(LoadPNGImage("img/1001.png"));
 	if (Return() != 1)
 		return N;
-	m_imageSurface.push_back(LoadPNGImage("img/1002.png"));
+	m_pVTexture.push_back(LoadTexture("img/1002.png",m_pRenderer));
+	//m_imageSurface.push_back(LoadPNGImage("img/1002.png"));
 	if (Return() != 1)
 		return N;
 	
@@ -163,10 +201,11 @@ int	CMenuImageSurface::VLoadAll()
 		CNPCSurface
 -----------------------------*/
 
-int	CNPCImageSurface::VLoadAll()
+int	CNPCImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 {
 	N = 2000;
-	m_imageSurface.push_back(LoadPNGImage("img/2000.png",true));
+	m_pVTexture.push_back(LoadTexture("img/2000.png",m_pRenderer));
+	//m_imageSurface.push_back(LoadPNGImage("img/2000.png",true));
 	if (Return() != 1)
 		return N;
 
@@ -177,13 +216,15 @@ int	CNPCImageSurface::VLoadAll()
 		CSpellSurface
 -----------------------------*/
 
-int	CSpellImageSurface::VLoadAll()
+int	CSpellImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 {
 	N = 3000;
-	m_imageSurface.push_back(LoadPNGImage("img/3000.png",true));
+	m_pVTexture.push_back(LoadTexture("img/3000.png",m_pRenderer));
+	//m_imageSurface.push_back(LoadPNGImage("img/3000.png",true));
 	if (Return() != 1)
 		return N;
-	m_imageSurface.push_back(LoadPNGImage("img/3001.png",true));
+	m_pVTexture.push_back(LoadTexture("img/3001.png",m_pRenderer));
+	//m_imageSurface.push_back(LoadPNGImage("img/3001.png",true));
 	if (Return() != 1)
 		return N;
 

@@ -41,6 +41,7 @@ private:
 	// ReadMouseMessage calls these
 	void			ChangeFPSLock();
 	void			ChangeGrabMode();
+	void			ChangeResolution(int x,int y);
 	void			TextQuestSelection(int mouseX,int mouseY,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo);
 	void			YesNoSelection(int mouseX,int mouseY,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo);
 	void			NextTextBox(_TextRenderInfo &textRenderInfo);

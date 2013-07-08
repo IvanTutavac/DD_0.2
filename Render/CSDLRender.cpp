@@ -31,23 +31,29 @@
 
 bool	CSDLRender::VInit()
 {
-	SDL_putenv("SDL_VIDEO_CENTERED=1"); // any value will center the window
+	//SDL_putenv("SDL_VIDEO_CENTERED=1"); // any value will center the window
 
 	m_pWindow	=	NULL;
 
-	if ((m_pWindow = SDL_SetVideoMode(WINDOW_WIDTH,WINDOW_HEIGHT+HUD_HEIGHT,32,SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWACCEL)) == NULL)
+	//if ((m_pWindow = SDL_SetVideoMode(WINDOW_WIDTH,WINDOW_HEIGHT+HUD_HEIGHT,32,SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWACCEL)) == NULL)
+		//return	false;
+	m_pWindow = SDL_CreateWindow(APP_NAME,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,WINDOW_WIDTH,WINDOW_HEIGHT,SDL_WINDOW_SHOWN);
+
+	if (m_pWindow == NULL)
 		return	false;
 
 	Log("Window...");
+
+	m_pRenderer = SDL_CreateRenderer(m_pWindow,-1,SDL_RENDERER_ACCELERATED);
 
 	if (TTF_Init() == -1) // font init
 		return	false;
 	Log("TTF_Init ...");
 
-	if (g_grabMode)
-		SDL_WM_GrabInput(SDL_GRAB_ON);
-	else
-		SDL_WM_GrabInput(SDL_GRAB_OFF);
+	//if (g_grabMode)
+		//SDL_SetWindowGrab(m_pWindow,(SDL_bool)g_grabMode);
+	//else
+	SDL_SetWindowGrab(m_pWindow,(SDL_bool)g_grabMode);
 
 	if (!LoadClasses())
 		return	false;
@@ -65,6 +71,9 @@ bool	CSDLRender::VInit()
 
 void	CSDLRender::VClean()
 {
+	SDL_DestroyRenderer(m_pRenderer);
+	SDL_DestroyWindow(m_pWindow);
+
 	for (size_t i = 0; i < m_pVImage.size(); i++)
 	{
 		m_pVImage[i]->DeleteAll();
@@ -83,20 +92,23 @@ void	CSDLRender::VClearWindow()
 
 void	CSDLRender::VClearHUD()
 {
-	SDL_FillRect(m_pWindow,&m_clearHUDRect,SDL_MapRGB(m_pWindow->format,0,0,0));
+	SDL_RenderFillRect(m_pRenderer,&m_clearHUDRect);
+	//SDL_RenderDrawRect(m_pRenderer,&m_clearHUDRect);
+	//SDL_FillRect(m_pWindow,&m_clearHUDRect,SDL_MapRGB(m_pWindow->format,0,0,0));
 	//RenderImage(0,480,m_pMenuSurface->m_imageSurface[2],m_pWindow);
 }
 
 void	CSDLRender::VUpdateWindow()
 {
-	SDL_Flip(m_pWindow);
+	SDL_RenderPresent(m_pRenderer);
+	//SDL_Flip(m_pWindow);
 }
 
 void	CSDLRender::VRenderOptions()
 {
 	VRenderButton("Grab mode:",32,32,25,25,112);
 
-	if (g_grabMode == SDL_GRAB_ON)
+	if (g_grabMode == true)
 		VRenderText("Yes",230,57,25,25,112);
 	else
 		VRenderText("No",230,57,25,25,112);
@@ -108,18 +120,22 @@ void	CSDLRender::VRenderOptions()
 	else
 		VRenderText("No",230,121,25,25,112);
 
-	VRenderButton("Return",128,480,25,25,112);
-	VRenderButton("Exit",320,480,25,25,112);
+	VRenderButton("640 x 480",32,160,25,25,112);
+	VRenderButton("1024 x 768",32,224,25,25,112);
+
+	VRenderButton("Return",128,WINDOW_HEIGHT,25,25,112);
+	VRenderButton("Exit",320,WINDOW_HEIGHT,25,25,112);
 }
 
 void	CSDLRender::VRenderImage(int x,int y,const int type,int i)
 {
-	RenderImage(x,y,m_pVImage[type]->m_imageSurface[i],m_pWindow);
+	RenderImage(x,y,m_pVImage[type]->m_pVTexture[i]);
+	//RenderImage(x,y,m_VImage[type].m_imageSurface[i],m_pWindow);
 }
 
 void	CSDLRender::VRenderImage(int x,int y,int cutX,int cutY,const int type,int i)
 {
-	RenderImage(x,y,cutX,cutY,m_pVImage[type]->m_imageSurface[i],m_pWindow);
+	//RenderImage(x,y,cutX,cutY,m_VImage[type]->m_imageSurface[i],m_pWindow);
 }
 
 void	CSDLRender::VRenderText(char *text,int x,int y,int r,int g,int b)
@@ -131,7 +147,7 @@ void	CSDLRender::VRenderText(char *text,int x,int y,int r,int g,int b)
 
 	tempSurface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
 
-	RenderImage(x,y,tempSurface,m_pWindow);
+	RenderImage(x,y,tempSurface);//,m_pWindow);
 
 	SDL_FreeSurface(tempSurface);
 	tempSurface = NULL;
@@ -150,7 +166,7 @@ void	CSDLRender::VRenderFPS(int fps)
 
 	tempSurface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
 
-	RenderImage(WINDOW_WIDTH-8-tempSurface->w,WINDOW_HEIGHT,tempSurface,m_pWindow);
+	RenderImage(WINDOW_WIDTH-8-tempSurface->w,WINDOW_HEIGHT,tempSurface);//,m_pWindow);
 
 	SDL_FreeSurface(tempSurface);
 	tempSurface = NULL;
@@ -169,7 +185,7 @@ void	CSDLRender::VRenderValue(int value,int x,int y,int r,int g,int b)
 
 	surface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
 
-	RenderImage(x,y,surface,m_pWindow);
+	RenderImage(x,y,surface);//,m_pWindow);
 
 	SDL_FreeSurface(surface);
 	surface = NULL;
@@ -188,8 +204,8 @@ void	CSDLRender::VRenderButton(char *text,int x,int y,int r,int g,int b)
 	int k = (x + m_pVImage[TYPE_MENU]->m_imageSurface[1]->w / 2) - surface->w/2;
 	int l = (y + m_pVImage[TYPE_MENU]->m_imageSurface[1]->h / 2) - surface->h/2;
 
-	RenderImage(x,y,m_pVImage[TYPE_MENU]->m_imageSurface[1],m_pWindow); // render button
-	RenderImage(k,l,surface,m_pWindow); // render text
+	RenderImage(x,y,m_pVImage[TYPE_MENU]->m_imageSurface[1]);//,m_pWindow); // render button
+	RenderImage(k,l,surface);//,m_pWindow); // render text
 
 	SDL_FreeSurface(surface);
 	surface = NULL;
@@ -230,7 +246,8 @@ bool	CSDLRender::VRenderTextBox(unsigned int &chars,bool &next,bool first)
 	char *word = strtok_s(tempText," ",&context);
 	int	x = 120, y = 240;
 
-	SDL_FillRect(m_pWindow,&m_clearTextBoxRect,SDL_MapRGB(m_pWindow->format,255,255,255));
+	SDL_RenderFillRect(m_pRenderer,&m_clearTextBoxRect);
+	//SDL_FillRect(m_pWindow,&m_clearTextBoxRect,SDL_MapRGB(m_pWindow->format,255,255,255));
 
 	while (true)
 	{
@@ -256,7 +273,7 @@ bool	CSDLRender::VRenderTextBox(unsigned int &chars,bool &next,bool first)
 
 		if (draw)
 		{
-			RenderImage(x,y,surface,m_pWindow);
+			RenderImage(x,y,surface);//,m_pWindow);
 			x+=surface->w+8;
 		}
 
@@ -288,27 +305,27 @@ bool	CSDLRender::LoadClasses()
 	CImageSurface	*m_pNPCSurface		=	DD_NEW	CNPCImageSurface;
 	CImageSurface	*m_pSpellSurface	=	DD_NEW	CSpellImageSurface;
 
-	if (m_pTileSurface->VLoadAll() != 1) // tile 1 will return 0 if it failed to load
+	if (m_pTileSurface->VLoadAll(m_pRenderer) != 1) // tile 1 will return 0 if it failed to load
 		return	false;
 	Log("Tiles loaded");
 
-	if (m_pEnemySurface->VLoadAll() != 1)
+	if (m_pEnemySurface->VLoadAll(m_pRenderer) != 1)
 		return false;
 	Log("Enemy images loaded");
 
-	if (m_pPlayerSurface->VLoadAll() != 1)
+	if (m_pPlayerSurface->VLoadAll(m_pRenderer) != 1)
 		return false;
 	Log("Player images loaded");
 
-	if (m_pMenuSurface->VLoadAll() != 1)
+	if (m_pMenuSurface->VLoadAll(m_pRenderer) != 1)
 		return	false;
 	Log("Menu images loaded");
 
-	if (m_pNPCSurface->VLoadAll() != 1)
+	if (m_pNPCSurface->VLoadAll(m_pRenderer) != 1)
 		return	false;
 	Log("NPC images loaded");
 
-	if (m_pSpellSurface->VLoadAll() != 1)
+	if (m_pSpellSurface->VLoadAll(m_pRenderer) != 1)
 		return	false;
 	Log("Spell images loaded");
 
@@ -329,6 +346,29 @@ bool	CSDLRender::LoadFonts()
 	if (!m_pHUDFont)
 		return	false;
 	return	true;
+}
+
+void	CSDLRender::RenderImage(int x,int y,SDL_Texture *texture)
+{
+	SDL_Rect	tempRect;
+	tempRect.x = x;
+	tempRect.y = y;
+
+	SDL_RenderCopy(m_pRenderer,texture,NULL,&tempRect);
+}
+
+void	CSDLRender::RenderImage(int x,int y,SDL_Surface *surface)
+{
+	SDL_Texture *texture = NULL;
+	SDL_Rect	tempRect;
+
+	texture = SDL_CreateTextureFromSurface(m_pRenderer,surface);
+
+	tempRect.x = x;
+	tempRect.y = y;
+
+	SDL_RenderCopy(m_pRenderer,texture,NULL,&tempRect);
+	SDL_DestroyTexture(texture);
 }
 
 void	CSDLRender::RenderImage(int x,int y,SDL_Surface *image,SDL_Surface *surface)

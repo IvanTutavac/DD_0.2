@@ -1,3 +1,2 @@
 Data loaded
 Quests loaded
-Quests deleted

@@ -21,17 +21,20 @@
 #include "CRender.h"
 #include "SDL.h"
 #include <SDL_ttf.h>
+#include "CImageSurface.h"
 #include <vector>
 
-class CImageSurface;
+//class CImageSurface;
 
 class CSDLRender : public CRender
 {
 
 private:
 
-	SDL_Surface		*m_pWindow;
+	//SDL_Surface		*m_pWindow;
 
+	SDL_Renderer	*m_pRenderer;
+	SDL_Window		*m_pWindow;
 	TTF_Font		*m_pHUDFont;
 	
 	std::vector<CImageSurface*> m_pVImage;
@@ -43,6 +46,9 @@ private:
 	bool	LoadClasses();
 	bool	LoadFonts();
 
+	void	RenderImage(int x,int y,SDL_Texture *texture);
+	// a texture will be created from the surface and then rendered
+	void	RenderImage(int x,int y,SDL_Surface *surface);
 	void	RenderImage(int x,int y,SDL_Surface *image,SDL_Surface *surface);
 	void	RenderImage(int x,int y,int cutX,int cutY,SDL_Surface *image,SDL_Surface *surface);
 

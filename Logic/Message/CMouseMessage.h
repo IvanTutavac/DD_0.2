@@ -26,6 +26,8 @@ enum class MouseMessage
 	initMapEditor,
 	changeGrabMode,
 	changeFPSLock,
+	changeResolution640x480,
+	changeResolution1024x768,
 	textQuestSelection,
 	textCommonSelection,
 	conversationSelection,

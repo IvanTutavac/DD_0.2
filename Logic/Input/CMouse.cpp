@@ -88,9 +88,17 @@ void	CMouse::OptionsClick(int mouseX,int mouseY,_logicFlags &logicFlags,_renderF
 	{
 		m_pMessage->m_message = MouseMessage::changeGrabMode;
 	}
-	else if (CheckClick(mouseX,mouseY,96,96,192,64))
+	else if (CheckClick(mouseX,mouseY,32,96,192,64))
 	{
 		m_pMessage->m_message = MouseMessage::changeFPSLock;
+	}
+	else if (CheckClick(mouseX,mouseY,32,160,192,64))
+	{
+		m_pMessage->m_message = MouseMessage::changeResolution640x480;
+	}
+	else if (CheckClick(mouseX,mouseY,32,224,192,64))
+	{
+		m_pMessage->m_message = MouseMessage::changeResolution1024x768;
 	}
 }
 

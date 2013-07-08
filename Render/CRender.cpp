@@ -146,10 +146,10 @@ void	CRender::RenderMap(CMap *MapPointer)
 void	CRender::RenderHUD(int fps,int hp,int mp)
 {
 	VRenderFPS(fps);
-	VRenderText("HP:",20,490,98,0,49);
-	VRenderValue(hp,60,490,98,0,49);
-	VRenderText("MP:",20,510,98,0,49);
-	VRenderValue(mp,60,510,98,0,49);
+	VRenderText("HP:",20,WINDOW_HEIGHT+10,98,0,49);
+	VRenderValue(hp,60,WINDOW_HEIGHT+10,98,0,49);
+	VRenderText("MP:",20,WINDOW_HEIGHT+30,98,0,49);
+	VRenderValue(mp,60,WINDOW_HEIGHT+30,98,0,49);
 }
 
 void	CRender::SetTextBox(std::string text)
@@ -178,7 +178,7 @@ bool	CRender::CheckIfInWindow(int cameraX,int cameraY,int &x,int &y)
 
 bool	CRender::CheckIfInWindowEx(int cameraX,int cameraY,int &x,int &y)
 {
-	// get window locationss
+	// get window locations
 	x = x - cameraX + WINDOW_WIDTH/2;
 	y = y - cameraY + WINDOW_HEIGHT/2;
 

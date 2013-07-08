@@ -35,11 +35,16 @@
 #include "Logic\CConversation.h"
 
 // default configuration
-SDL_GrabMode	g_grabMode	=	SDL_GRAB_ON;
+bool			g_grabMode	=	true;
 bool			g_FPSLimit	=	true;
+int				g_windowX	=	640;
+int				g_windowY	=	480;
 
 bool	CGame::Init()
 {
+	WINDOW_WIDTH = g_windowX;
+	WINDOW_HEIGHT = g_windowY;
+
 	Log("Game Init started");
 
 	if (SDL_Init(SDL_INIT_VIDEO) == -1)
@@ -220,16 +225,16 @@ void	CGame::RenderHUD(double deltaTime)
 
 	if (m_pLogic->m_renderFlags.renderTalkMessage)
 	{
-		m_pRender->VRenderText("Press F to talk",240,480,102,0,153);
+		m_pRender->VRenderText("Press F to talk",WINDOW_WIDTH/3,WINDOW_HEIGHT,102,0,153);
 	}
 
 	// for testing
-	m_pRender->VRenderValue((int)m_pLogic->m_pMap->m_cameraX,590,500,98,0,49);
-	m_pRender->VRenderValue((int)m_pLogic->m_pMap->m_cameraY,590,520,98,0,49);
-	m_pRender->VRenderValue((int)m_pLogic->m_pMap->m_playerX,530,500,98,0,49);
-	m_pRender->VRenderValue((int)m_pLogic->m_pMap->m_playerY,530,520,98,0,49);
-	m_pRender->VRenderValue(m_pEventMessage->m_MotionEvent.x,470,500,98,0,49);
-	m_pRender->VRenderValue(m_pEventMessage->m_MotionEvent.y,470,520,98,0,49);
+	m_pRender->VRenderValue((int)m_pLogic->m_pMap->m_cameraX,590,WINDOW_HEIGHT+20,98,0,49);
+	m_pRender->VRenderValue((int)m_pLogic->m_pMap->m_cameraY,590,WINDOW_HEIGHT+40,98,0,49);
+	m_pRender->VRenderValue((int)m_pLogic->m_pMap->m_playerX,530,WINDOW_HEIGHT+20,98,0,49);
+	m_pRender->VRenderValue((int)m_pLogic->m_pMap->m_playerY,530,WINDOW_HEIGHT+40,98,0,49);
+	m_pRender->VRenderValue(m_pEventMessage->m_MotionEvent.x,470,WINDOW_HEIGHT+20,98,0,49);
+	m_pRender->VRenderValue(m_pEventMessage->m_MotionEvent.y,470,WINDOW_HEIGHT+40,98,0,49);
 }
 
 
