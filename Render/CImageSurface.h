@@ -31,7 +31,7 @@ public:
 
 	virtual ~CImageSurface(){}
 
-	std::vector<SDL_Surface*>	m_imageSurface; // contains images
+	//std::vector<SDL_Surface*>	m_imageSurface; // contains images
 	std::vector<SDL_Texture*> m_pVTexture;
 	virtual	int		VLoadAll(SDL_Renderer *m_pRenderer)=0;
 	bool			DeleteAll();

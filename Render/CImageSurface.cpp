@@ -28,8 +28,8 @@
 
 bool	CImageSurface::DeleteAll()
 {
-	for( std::vector<SDL_Surface*>::iterator it = m_imageSurface.begin(); it!=m_imageSurface.end(); ++it)
-		SDL_FreeSurface(*it);
+	//for( std::vector<SDL_Surface*>::iterator it = m_imageSurface.begin(); it!=m_imageSurface.end(); ++it)
+		//SDL_FreeSurface(*it);
 
 	for (size_t i = 0; i < m_pVTexture.size(); i++)
 	{
@@ -90,14 +90,14 @@ SDL_Texture *CImageSurface::LoadTexture(char *name,SDL_Renderer *m_pRenderer)
 {
 	SDL_Surface *surface = NULL;
 	SDL_Texture *texture = NULL;
-
+	
 	surface = IMG_Load(name);
 
 	if (!surface)
 		return	NULL;
 
 	texture = SDL_CreateTextureFromSurface(m_pRenderer,surface);
-
+	
 	if (texture == 0)
 		return	NULL;
 
@@ -117,7 +117,7 @@ int	CTileImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 	N = 0;
 	char	a[14] = "",c[14]="",b[]="img/";
 	//SDL_Surface	*tempImage = NULL;
-	SDL_Texture *tempTexture = NULL;
+	//SDL_Texture *tempTexture = NULL;
 	for (int i = TILE_NUMBER_START; i<=TILE_NUMBER_FINISH;i++)
 	{
 		strcpy_s(c,b);

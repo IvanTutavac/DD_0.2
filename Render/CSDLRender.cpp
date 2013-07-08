@@ -196,18 +196,19 @@ void	CSDLRender::VRenderButton(char *text,int x,int y,int r,int g,int b)
 	SDL_Color	fontColor;
 	fontColor.r = r, fontColor.g = g, fontColor.b = b;
 
-	SDL_Surface *surface = NULL;
+	SDL_Surface *surface = DD_NEW SDL_Surface;
 
 	surface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
-
 	// the button needs to have the text centered
-	int k = (x + m_pVImage[TYPE_MENU]->m_imageSurface[1]->w / 2) - surface->w/2;
-	int l = (y + m_pVImage[TYPE_MENU]->m_imageSurface[1]->h / 2) - surface->h/2;
+	int k = (x + 192/*m_pVImage[TYPE_MENU]->m_imageSurface[1]->w / 2)*/ - surface->w/2);
+	int l = (y + 192/*m_pVImage[TYPE_MENU]->m_imageSurface[1]->h / 2) */- surface->h/2);
 
-	RenderImage(x,y,m_pVImage[TYPE_MENU]->m_imageSurface[1]);//,m_pWindow); // render button
-	RenderImage(k,l,surface);//,m_pWindow); // render text
-
+	RenderImage(x,y,m_pVImage[TYPE_MENU]->m_pVTexture[1]);//m_imageSurface[1],m_pWindow); // render button
+	//RenderImage(k,l,surface);//,m_pWindow); // render text
+	SDL_Texture *texture = SDL_CreateTextureFromSurface(m_pRenderer,surface);
+	RenderImage(k,l,texture);
 	SDL_FreeSurface(surface);
+	SDL_DestroyTexture(texture);
 	surface = NULL;
 }
 
