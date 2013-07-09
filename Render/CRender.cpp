@@ -38,7 +38,7 @@ void	CRender::RenderAllTiles(CMap *MapPointer)
 	{
 		for (int x = downX-mapX; x < WINDOW_WIDTH; x+=TILE_SIZE)
 		{
-			VRenderImage(x,y,TYPE_TILE,MapPointer->m_allTilesMap[mapY/32][mapX/32]);
+			VRenderImage(x,y,TILE_SIZE,TILE_SIZE,TYPE_TILE,MapPointer->m_allTilesMap[mapY/32][mapX/32]);
 			mapX+=TILE_SIZE;
 		}
 		mapY+=TILE_SIZE;
@@ -48,7 +48,7 @@ void	CRender::RenderAllTiles(CMap *MapPointer)
 	VClearHUD();
 
 	VRenderButton("Return",20,WINDOW_HEIGHT,98,0,49);
-	VRenderImage(230,WINDOW_HEIGHT,TYPE_TILE,MapPointer->m_selectedTile);
+	VRenderImage(230,WINDOW_HEIGHT,TILE_SIZE,TILE_SIZE,TYPE_TILE,MapPointer->m_selectedTile);
 }
 
 void	CRender::RenderMapEditor(CMap *MapPointer)
@@ -66,7 +66,7 @@ void	CRender::RenderMapEditor(CMap *MapPointer)
 	{
 		for (int x = downX-mapX; x < WINDOW_WIDTH; x+=TILE_SIZE)
 		{
-			VRenderImage(x,y,TYPE_TILE,MapPointer->m_mapEditor[mapY/32][mapX/32]);
+			VRenderImage(x,y,TILE_SIZE,TILE_SIZE,TYPE_TILE,MapPointer->m_mapEditor[mapY/32][mapX/32]);
 			mapX+=TILE_SIZE;
 		}
 		mapY+=TILE_SIZE;
@@ -100,7 +100,7 @@ void	CRender::RenderMap(CMap *MapPointer)
 	{
 		for (int x = downX-mapX; x < WINDOW_WIDTH; x+=TILE_SIZE)
 		{
-			VRenderImage(x,y,TYPE_TILE,MapPointer->m_map[mapY/32][mapX/32]);
+			VRenderImage(x,y,TILE_SIZE,TILE_SIZE,TYPE_TILE,MapPointer->m_map[mapY/32][mapX/32]);
 			mapX+=TILE_SIZE;
 		}
 		mapY+=TILE_SIZE;
@@ -115,14 +115,14 @@ void	CRender::RenderMap(CMap *MapPointer)
 
 	//if (x >= 0 && y >= 0 && x <= WINDOW_WIDTH - TILE_SIZE && y <= WINDOW_HEIGHT - TILE_SIZE) // do not let player be rendered onto bottom screen
 	if (CheckIfInWindowEx((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))	
-		VRenderImage(x,y,TYPE_PLAYER,0); // render player
+		VRenderImage(x,y,TILE_SIZE,TILE_SIZE,TYPE_PLAYER,0); // render player
 
 	for (size_t i = 0; i < MapPointer->m_closeEnemyXY.size(); i++)
 	{
 		x = (int)MapPointer->m_closeEnemyXY[i].x;
 		y = (int)MapPointer->m_closeEnemyXY[i].y;
 		if (CheckIfInWindowEx((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
-			VRenderImage(x,y,TYPE_ENEMY,MapPointer->m_closeEnemyXY[i].imgID);
+			VRenderImage(x,y,TILE_SIZE,TILE_SIZE,TYPE_ENEMY,MapPointer->m_closeEnemyXY[i].imgID);
 		/* You can not use ->m_imageSurface[i] for image that needs to be drawn, because there can be more than one*/
 	}
 
@@ -131,7 +131,7 @@ void	CRender::RenderMap(CMap *MapPointer)
 		x = (int)MapPointer->m_npcXY[i].x;
 		y = (int)MapPointer->m_npcXY[i].y;
 		if (CheckIfInWindowEx((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
-			VRenderImage(x,y,TYPE_NPC,MapPointer->m_npcXY[i].imgID);
+			VRenderImage(x,y,TILE_SIZE,TILE_SIZE,TYPE_NPC,MapPointer->m_npcXY[i].imgID);
 	}
 
 	for (size_t i = 0; i < MapPointer->m_spell.size(); i++)
@@ -139,7 +139,7 @@ void	CRender::RenderMap(CMap *MapPointer)
 		x = (int)MapPointer->m_spell[i].x;
 		y = (int)MapPointer->m_spell[i].y;
 		if (CheckIfInWindowEx((int)MapPointer->m_cameraX,(int)MapPointer->m_cameraY,x,y))
-			VRenderImage(x,y,TYPE_SPELL,MapPointer->m_spell[i].imgID);
+			VRenderImage(x,y,TILE_SIZE,TILE_SIZE,TYPE_SPELL,MapPointer->m_spell[i].imgID);
 	}
 }
 

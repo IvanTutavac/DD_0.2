@@ -46,9 +46,9 @@ private:
 	bool	LoadClasses();
 	bool	LoadFonts();
 
-	void	RenderImage(int x,int y,SDL_Texture *texture);
+	void	RenderImage(int x,int y,int w,int h,SDL_Texture *texture);
 	// a texture will be created from the surface and then rendered
-	void	RenderImage(int x,int y,SDL_Surface *surface);
+	void	RenderImage(int x,int y,int w,int h,SDL_Surface *surface);
 	void	RenderImage(int x,int y,SDL_Surface *image,SDL_Surface *surface);
 	void	RenderImage(int x,int y,int cutX,int cutY,SDL_Surface *image,SDL_Surface *surface);
 
@@ -57,8 +57,8 @@ private:
 protected:
 
 	void	VRenderFPS(int fps) override;
-	void	VRenderImage(int x,int y,const int type,int i) override;
-	void	VRenderImage(int x,int y,int cutX,int cutY,const int type, int i) override;
+	void	VRenderImage(int x,int y,int w,int h,const int type,int i) override;
+	//void	VRenderImage(int x,int y,int cutX,int cutY,const int type, int i) override;
 
 public:
 

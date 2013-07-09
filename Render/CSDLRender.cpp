@@ -37,7 +37,7 @@ bool	CSDLRender::VInit()
 
 	//if ((m_pWindow = SDL_SetVideoMode(WINDOW_WIDTH,WINDOW_HEIGHT+HUD_HEIGHT,32,SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWACCEL)) == NULL)
 		//return	false;
-	m_pWindow = SDL_CreateWindow(APP_NAME,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,WINDOW_WIDTH,WINDOW_HEIGHT,SDL_WINDOW_SHOWN);
+	m_pWindow = SDL_CreateWindow(APP_NAME,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,WINDOW_WIDTH,WINDOW_HEIGHT+HUD_HEIGHT,SDL_WINDOW_SHOWN);
 
 	if (m_pWindow == NULL)
 		return	false;
@@ -87,7 +87,8 @@ void	CSDLRender::VClean()
 
 void	CSDLRender::VClearWindow()
 {
-	VRenderImage(0,0,TYPE_MENU,0);
+	SDL_RenderClear(m_pRenderer);
+	//VRenderImage(0,0,WINDOW_WIDTH,WINDOW_HEIGHT,TYPE_MENU,0);
 }
 
 void	CSDLRender::VClearHUD()
@@ -127,16 +128,16 @@ void	CSDLRender::VRenderOptions()
 	VRenderButton("Exit",320,WINDOW_HEIGHT,25,25,112);
 }
 
-void	CSDLRender::VRenderImage(int x,int y,const int type,int i)
+void	CSDLRender::VRenderImage(int x,int y,int w,int h,const int type,int i)
 {
-	RenderImage(x,y,m_pVImage[type]->m_pVTexture[i]);
+	RenderImage(x,y,w,h,m_pVImage[type]->m_pVTexture[i]);
 	//RenderImage(x,y,m_VImage[type].m_imageSurface[i],m_pWindow);
 }
 
-void	CSDLRender::VRenderImage(int x,int y,int cutX,int cutY,const int type,int i)
+/*void	CSDLRender::VRenderImage(int x,int y,int cutX,int cutY,const int type,int i)
 {
 	//RenderImage(x,y,cutX,cutY,m_VImage[type]->m_imageSurface[i],m_pWindow);
-}
+}*/
 
 void	CSDLRender::VRenderText(char *text,int x,int y,int r,int g,int b)
 {
@@ -147,7 +148,7 @@ void	CSDLRender::VRenderText(char *text,int x,int y,int r,int g,int b)
 
 	tempSurface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
 
-	RenderImage(x,y,tempSurface);//,m_pWindow);
+	RenderImage(x,y,tempSurface->w,tempSurface->h,tempSurface);//,m_pWindow);
 
 	SDL_FreeSurface(tempSurface);
 	tempSurface = NULL;
@@ -166,7 +167,7 @@ void	CSDLRender::VRenderFPS(int fps)
 
 	tempSurface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
 
-	RenderImage(WINDOW_WIDTH-8-tempSurface->w,WINDOW_HEIGHT,tempSurface);//,m_pWindow);
+	RenderImage(WINDOW_WIDTH-8-tempSurface->w,WINDOW_HEIGHT,tempSurface->w,tempSurface->h,tempSurface);//,m_pWindow);
 
 	SDL_FreeSurface(tempSurface);
 	tempSurface = NULL;
@@ -185,7 +186,7 @@ void	CSDLRender::VRenderValue(int value,int x,int y,int r,int g,int b)
 
 	surface = TTF_RenderText_Solid(m_pHUDFont,text,fontColor);
 
-	RenderImage(x,y,surface);//,m_pWindow);
+	RenderImage(x,y,surface->w,surface->h,surface);//,m_pWindow);
 
 	SDL_FreeSurface(surface);
 	surface = NULL;
@@ -205,10 +206,10 @@ void	CSDLRender::VRenderButton(char *text,int x,int y,int r,int g,int b)
 	//the button needs to have the text centered
 	int k = (x + 192/*m_pVImage[TYPE_MENU]->m_imageSurface[1]->w / 2)*/ - surface->w/2);
 	int l = (y + 192/*m_pVImage[TYPE_MENU]->m_imageSurface[1]->h / 2) */- surface->h/2);
-	RenderImage(x,y,m_pVImage[TYPE_MENU]->m_pVTexture[1]);//m_imageSurface[1],m_pWindow); // render button
+	RenderImage(x,y,surface->w,surface->h,m_pVImage[TYPE_MENU]->m_pVTexture[1]);//m_imageSurface[1],m_pWindow); // render button
 	//RenderImage(k,l,surface);//,m_pWindow); // render text
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(m_pRenderer,surface);//recast);
-	RenderImage(k,l,texture);
+	RenderImage(k,l,surface->w,surface->h,texture);
 	//surface->refcount++;
 	SDL_DestroyTexture(texture);
 	//SDL_FreeSurface(recast);
@@ -279,7 +280,7 @@ bool	CSDLRender::VRenderTextBox(unsigned int &chars,bool &next,bool first)
 
 		if (draw)
 		{
-			RenderImage(x,y,surface);//,m_pWindow);
+			RenderImage(x,y,surface->w,surface->h,surface);//,m_pWindow);
 			x+=surface->w+8;
 		}
 
@@ -354,16 +355,18 @@ bool	CSDLRender::LoadFonts()
 	return	true;
 }
 
-void	CSDLRender::RenderImage(int x,int y,SDL_Texture *texture)
+void	CSDLRender::RenderImage(int x,int y,int w,int h,SDL_Texture *texture)
 {
 	SDL_Rect	tempRect;
 	tempRect.x = x;
 	tempRect.y = y;
+	tempRect.w = w;
+	tempRect.h = h;
 
 	SDL_RenderCopy(m_pRenderer,texture,NULL,&tempRect);
 }
 
-void	CSDLRender::RenderImage(int x,int y,SDL_Surface *surface)
+void	CSDLRender::RenderImage(int x,int y,int w,int h,SDL_Surface *surface)
 {
 	SDL_Texture *texture = NULL;
 	SDL_Rect	tempRect;
@@ -372,6 +375,8 @@ void	CSDLRender::RenderImage(int x,int y,SDL_Surface *surface)
 
 	tempRect.x = x;
 	tempRect.y = y;
+	tempRect.w = w;
+	tempRect.h = h;
 
 	SDL_RenderCopy(m_pRenderer,texture,NULL,&tempRect);
 	SDL_DestroyTexture(texture);
