@@ -84,10 +84,10 @@
     <ClCompile Include="Logic\Input\CMouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\Message\CMouseMessage.cpp">
+    <ClCompile Include="Logic\Action\CAction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\Action\CAction.cpp">
+    <ClCompile Include="Logic\Message\CMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -170,10 +170,10 @@
     <ClInclude Include="Logic\Input\CMouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\Message\CMouseMessage.h">
+    <ClInclude Include="Logic\Action\CAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\Action\CAction.h">
+    <ClInclude Include="Logic\Message\CMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

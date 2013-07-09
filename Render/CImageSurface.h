@@ -22,6 +22,12 @@
 #include "SDL.h"
 #include <vector>
 
+struct _texture
+{
+	int w,h;
+	SDL_Texture *texture;
+};
+
 class CImageSurface
 {
 protected:
@@ -32,14 +38,15 @@ public:
 	virtual ~CImageSurface(){}
 
 	//std::vector<SDL_Surface*>	m_imageSurface; // contains images
-	std::vector<SDL_Texture*> m_pVTexture;
+	std::vector<_texture>	m_vTexture;
 	virtual	int		VLoadAll(SDL_Renderer *m_pRenderer)=0;
 	bool			DeleteAll();
 	int				Return();
 
 	SDL_Surface		*LoadPNGImage(char *name);
 	SDL_Surface		*LoadPNGImage(char *name,bool alpha);
-	SDL_Texture		*LoadTexture(char *name,SDL_Renderer *m_pRenderer);
+	SDL_Texture		*LoadTexture(char *name,SDL_Renderer *Renderer);
+	void			CreateTexture(char *name,SDL_Renderer *Renderer);
 };
 
 class  CTileImageSurface : public CImageSurface

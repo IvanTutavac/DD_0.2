@@ -33,12 +33,16 @@
 #include "Logic\Entity\CPlayer.h"
 #include "Logic\Entity\CNPC.h"
 #include "Logic\CConversation.h"
+#include "Logic\Input\CMouse.h"
+
 
 // default configuration
 bool			g_grabMode	=	true;
 bool			g_FPSLimit	=	true;
 int				g_windowX	=	640;
 int				g_windowY	=	480;
+int				WINDOW_WIDTH = g_windowX;
+int				WINDOW_HEIGHT = g_windowY;
 
 bool	CGame::Init()
 {
@@ -171,6 +175,9 @@ bool	CGame::Logic(double deltaTime)
 
 		m_pLogic->m_textRenderInfo.setTextBox = false;
 	}
+
+	m_pRender->VReadMessage(m_pLogic->m_pMouse->m_pMessage);
+
 	return	true;
 }
 

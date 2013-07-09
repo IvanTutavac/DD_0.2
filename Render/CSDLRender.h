@@ -53,12 +53,16 @@ private:
 	void	RenderImage(int x,int y,int cutX,int cutY,SDL_Surface *image,SDL_Surface *surface);
 
 	bool	CheckIfInWindow(int cameraX,int cameraY,int &x,int &y);
+	void	UpdateClearHUDRect();
 
 protected:
 
 	void	VRenderFPS(int fps) override;
 	void	VRenderImage(int x,int y,int w,int h,const int type,int i) override;
 	//void	VRenderImage(int x,int y,int cutX,int cutY,const int type, int i) override;
+
+	// h and w will be read from m_vTexture
+	void	VRenderImage(int x,int y,const int type,int i) override;
 
 public:
 
@@ -77,5 +81,6 @@ public:
 	
 	// will return false if there's no more text to render, logic reads the result 
 	bool	VRenderTextBox(unsigned int &words,bool &next,bool first) override;
+	void	VReadMessage(CMessage *Message) override;
 
 };

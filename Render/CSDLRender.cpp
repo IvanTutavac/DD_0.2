@@ -21,6 +21,7 @@
 #include "..\Log.h"
 #include "CSDLRender.h"
 #include "CImageSurface.h"
+#include "..\Logic\Message\CMessage.h"
 //#include "..\Logic\CMap.h"
 #include "..\const.h"
 #include "..\configuration.h"
@@ -63,7 +64,8 @@ bool	CSDLRender::VInit()
 		return	false;
 	Log("Font loaded");
 
-	m_clearHUDRect.x = 0, m_clearHUDRect.y = WINDOW_HEIGHT,m_clearHUDRect.w = WINDOW_WIDTH,m_clearHUDRect.h = HUD_HEIGHT;
+	UpdateClearHUDRect();
+
 	m_clearTextBoxRect.x = 118,m_clearTextBoxRect.y = 238,m_clearTextBoxRect.w = 404,m_clearTextBoxRect.h = 84;
 
 	return	true;
@@ -85,6 +87,27 @@ void	CSDLRender::VClean()
 	TTF_Quit();
 }
 
+void	CSDLRender::UpdateClearHUDRect()
+{
+	m_clearHUDRect.x = 0, m_clearHUDRect.y = WINDOW_HEIGHT,m_clearHUDRect.w = WINDOW_WIDTH,m_clearHUDRect.h = HUD_HEIGHT;
+}
+
+void	CSDLRender::VReadMessage(CMessage *Message)
+{
+	if (Message->m_renderMessage == RenderMessage::changeGrabMode)
+	{
+		SDL_SetWindowGrab(m_pWindow,(SDL_bool)g_grabMode);
+	}
+	else if (Message->m_renderMessage == RenderMessage::resizeWindow)
+	{
+		UpdateClearHUDRect();
+		SDL_SetWindowSize(m_pWindow,WINDOW_WIDTH,WINDOW_HEIGHT+HUD_HEIGHT);
+		SDL_SetWindowPosition(m_pWindow,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED);
+	}
+
+	Message->m_renderMessage = RenderMessage::nothing;
+}
+
 void	CSDLRender::VClearWindow()
 {
 	SDL_RenderClear(m_pRenderer);
@@ -94,7 +117,6 @@ void	CSDLRender::VClearWindow()
 void	CSDLRender::VClearHUD()
 {
 	SDL_RenderFillRect(m_pRenderer,&m_clearHUDRect);
-	//SDL_RenderDrawRect(m_pRenderer,&m_clearHUDRect);
 	//SDL_FillRect(m_pWindow,&m_clearHUDRect,SDL_MapRGB(m_pWindow->format,0,0,0));
 	//RenderImage(0,480,m_pMenuSurface->m_imageSurface[2],m_pWindow);
 }
@@ -122,7 +144,8 @@ void	CSDLRender::VRenderOptions()
 		VRenderText("No",230,121,25,25,112);
 
 	VRenderButton("640 x 480",32,160,25,25,112);
-	VRenderButton("1024 x 768",32,224,25,25,112);
+	VRenderButton("800 x 600",32,224,25,25,112);
+	VRenderButton("1024 x 768",32,288,25,25,112);
 
 	VRenderButton("Return",128,WINDOW_HEIGHT,25,25,112);
 	VRenderButton("Exit",320,WINDOW_HEIGHT,25,25,112);
@@ -130,8 +153,13 @@ void	CSDLRender::VRenderOptions()
 
 void	CSDLRender::VRenderImage(int x,int y,int w,int h,const int type,int i)
 {
-	RenderImage(x,y,w,h,m_pVImage[type]->m_pVTexture[i]);
+	RenderImage(x,y,w,h,m_pVImage[type]->m_vTexture[i].texture);
 	//RenderImage(x,y,m_VImage[type].m_imageSurface[i],m_pWindow);
+}
+
+void	CSDLRender::VRenderImage(int x,int y,const int type,int i)
+{
+	RenderImage(x,y,m_pVImage[type]->m_vTexture[i].w,m_pVImage[type]->m_vTexture[i].h,m_pVImage[type]->m_vTexture[i].texture);
 }
 
 /*void	CSDLRender::VRenderImage(int x,int y,int cutX,int cutY,const int type,int i)
@@ -204,9 +232,11 @@ void	CSDLRender::VRenderButton(char *text,int x,int y,int r,int g,int b)
 	//SDL_Surface *recast = SDL_CreateRGBSurface( 0, surface->w, surface->h, 24, 0, 0, 0, 0 );
 	//SDL_BlitSurface(surface,NULL,recast,NULL);
 	//the button needs to have the text centered
-	int k = (x + 192/2/*m_pVImage[TYPE_MENU]->m_imageSurface[1]->w / 2)*/ - surface->w/2);
-	int l = (y + 32/*m_pVImage[TYPE_MENU]->m_imageSurface[1]->h / 2) */- surface->h/2);
-	RenderImage(x,y,192,64,m_pVImage[TYPE_MENU]->m_pVTexture[1]);//m_imageSurface[1],m_pWindow); // render button
+	int h = m_pVImage[TYPE_MENU]->m_vTexture[1].h;
+	int w = m_pVImage[TYPE_MENU]->m_vTexture[1].w;
+	int k = (x + w/2 - surface->w/2);
+	int l = (y + h/2 - surface->h/2);
+	RenderImage(x,y,w,h,m_pVImage[TYPE_MENU]->m_vTexture[1].texture);//m_imageSurface[1],m_pWindow); // render button
 	//RenderImage(k,l,surface);//,m_pWindow); // render text
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(m_pRenderer,surface);//recast);
 	RenderImage(k,l,surface->w,surface->h,texture);

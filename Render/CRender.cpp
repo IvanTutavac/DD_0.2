@@ -100,7 +100,7 @@ void	CRender::RenderMap(CMap *MapPointer)
 	{
 		for (int x = downX-mapX; x < WINDOW_WIDTH; x+=TILE_SIZE)
 		{
-			VRenderImage(x,y,TILE_SIZE,TILE_SIZE,TYPE_TILE,MapPointer->m_map[mapY/32][mapX/32]);
+			VRenderImage(x,y,TYPE_TILE,MapPointer->m_map[mapY/32][mapX/32]);
 			mapX+=TILE_SIZE;
 		}
 		mapY+=TILE_SIZE;
@@ -159,10 +159,10 @@ void	CRender::SetTextBox(std::string text)
 
 void	CRender::RenderMainMenu()
 {
-	VRenderButton("New game",224,144,25,23,112);
-	VRenderButton("Map editor",224,208,25,25,112);
-	VRenderButton("Options",224,272,25,25,112);
-	VRenderButton("Exit",224,336,25,23,112);
+	VRenderButton("New game",WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144-64*3,25,23,112);
+	VRenderButton("Map editor",WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144-64*2,25,25,112);
+	VRenderButton("Options",WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144-64,25,25,112);
+	VRenderButton("Exit",WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144,25,23,112);
 }
 
 bool	CRender::CheckIfInWindow(int cameraX,int cameraY,int &x,int &y)

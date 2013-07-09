@@ -19,12 +19,13 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "CAction.h"
 #include "..\Map\CMap.h"
-#include "..\Message\CMouseMessage.h"
+#include "..\Message\CMessage.h"
 #include "..\..\configuration.h"
 #include "..\Entity\CEntityManager.h"
 #include "..\Entity\CNPC.h"
 #include "..\Quest\CQuestManager.h"
-#include "SDL.h"
+#include "..\..\const.h"
+//#include "SDL.h"
 
 bool	CAction::Init()
 {
@@ -45,68 +46,72 @@ void	CAction::Clean()
 
 }
 
-bool	CAction::ReadMouseMessage(CMouseMessage *Message,CMap *Map,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo,_renderFlags &renderFlags)
+bool	CAction::ReadMouseMessage(CMessage *Message,CMap *Map,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo,_renderFlags &renderFlags)
 {
 	bool	returnValue = true;
 
-	if (Message->m_message != MouseMessage::nothing)
+	if (Message->m_mouseMessage != MouseMessage::nothing)
 	{
-		if (Message->m_message == MouseMessage::initMap)
+		if (Message->m_mouseMessage == MouseMessage::initMap)
 		{
 			InitMap(Map);
 		}
-		else if (Message->m_message == MouseMessage::initMapEditor)
+		else if (Message->m_mouseMessage == MouseMessage::initMapEditor)
 		{
 			InitMapEditor(Map);
 		}
-		else if (Message->m_message == MouseMessage::changeFPSLock)
+		else if (Message->m_mouseMessage == MouseMessage::changeFPSLock)
 		{
 			ChangeFPSLock();
 		}
-		else if (Message->m_message == MouseMessage::changeGrabMode)
+		else if (Message->m_mouseMessage == MouseMessage::changeGrabMode)
 		{
-			ChangeGrabMode();
+			ChangeGrabMode(Message);
 		}
-		else if (Message->m_message == MouseMessage::changeResolution1024x768)
+		else if (Message->m_mouseMessage == MouseMessage::changeResolution1024x768)
 		{
-			ChangeResolution(1024,768);
+			ChangeResolution(Message,1024,768);
 		}
-		else if (Message->m_message == MouseMessage::changeResolution640x480)
+		else if (Message->m_mouseMessage == MouseMessage::changeResolution800x600)
 		{
-			ChangeResolution(640,480);
+			ChangeResolution(Message,800,600);
 		}
-		else if (Message->m_message == MouseMessage::textQuestSelection)
+		else if (Message->m_mouseMessage == MouseMessage::changeResolution640x480)
+		{
+			ChangeResolution(Message,640,480);
+		}
+		else if (Message->m_mouseMessage == MouseMessage::textQuestSelection)
 		{
 			TextQuestSelection(Message->x,Message->y,Quest,Entity,textRenderInfo);
 		}
-		else if (Message->m_message == MouseMessage::textCommonSelection)
+		else if (Message->m_mouseMessage == MouseMessage::textCommonSelection)
 		{
 			NextTextBox(textRenderInfo);
 		}
-		else if (Message->m_message == MouseMessage::conversationSelection)
+		else if (Message->m_mouseMessage == MouseMessage::conversationSelection)
 		{
 			ConversationSelection(Message->x,Message->y,textRenderInfo,renderFlags,Entity);
 		}
-		else if (Message->m_message == MouseMessage::setTileSelected)
+		else if (Message->m_mouseMessage == MouseMessage::setTileSelected)
 		{
 			SetTileSelected(Message->x,Message->y,Map);
 		}
-		else if (Message->m_message == MouseMessage::setTileOnMap)
+		else if (Message->m_mouseMessage == MouseMessage::setTileOnMap)
 		{
 			SetTileOnMap(Message->x,Message->y,Map);
 		}
-		else if (Message->m_message == MouseMessage::saveMapEditorMap)
+		else if (Message->m_mouseMessage == MouseMessage::saveMapEditorMap)
 		{
 			Map->SaveMapEditorMap();
 		}
-		else if (Message->m_message == MouseMessage::initAllTiles)
+		else if (Message->m_mouseMessage == MouseMessage::initAllTiles)
 		{
 			InitAllTiles(Map);
 		}
 	}
 
 	// message was dealt with, reset it
-	Message->m_message = MouseMessage::nothing;
+	Message->m_mouseMessage = MouseMessage::nothing;
 
 	return	returnValue;
 }
@@ -131,7 +136,7 @@ bool	CAction::InitMap(CMap *Map)
 	return	true;
 }
 
-void	CAction::ChangeGrabMode()
+void	CAction::ChangeGrabMode(CMessage *Message)
 {
 	if (g_grabMode == true)
 	{
@@ -144,6 +149,7 @@ void	CAction::ChangeGrabMode()
 		g_grabMode = true;
 	}
 
+	Message->m_renderMessage = RenderMessage::changeGrabMode;
 	//SDL_SetWindowGrab(g_grabMode);
 }
 
@@ -159,7 +165,7 @@ void	CAction::ChangeFPSLock()
 	}
 }
 
-void	CAction::ChangeResolution(int x,int y)
+void	CAction::ChangeResolution(CMessage *Message,int x,int y)
 {
 	if (x == g_windowX && y == g_windowY)
 		return;
@@ -169,6 +175,7 @@ void	CAction::ChangeResolution(int x,int y)
 	WINDOW_WIDTH = x;
 	WINDOW_HEIGHT = y;
 
+	Message->m_renderMessage = RenderMessage::resizeWindow;
 }
 
 bool	CAction::isCameraEnabled()

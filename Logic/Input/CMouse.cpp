@@ -18,13 +18,13 @@
 */
 
 #include "CMouse.h"
-#include "..\Message\CMouseMessage.h"
+#include "..\Message\CMessage.h"
 #include "..\..\debug.h"
 #include "..\..\const.h"
 
 bool	CMouse::Init()
 {
-	m_pMessage = DD_NEW CMouseMessage;
+	m_pMessage = DD_NEW CMessage;
 
 	if (!m_pMessage->Init())
 		return	false;
@@ -40,24 +40,24 @@ void	CMouse::Clean()
 
 void	CMouse::MenuCLick(int mouseX,int mouseY,_logicFlags &logicFlags,_renderFlags &renderFlags)
 {
-	if (CheckClick(mouseX,mouseY,224,144,192,64)) // new game button
+	if (CheckClick(mouseX,mouseY,WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144-64*3,192,64)) // new game button
 	{
 		logicFlags.state		=	LGS_inGame;
 		renderFlags.state		=	RS_renderMap;
-		m_pMessage->m_message	=	MouseMessage::initMap;
+		m_pMessage->m_mouseMessage	=	MouseMessage::initMap;
 	}
-	else if (CheckClick(mouseX,mouseY,224,208,192,64)) // map editor button 
+	else if (CheckClick(mouseX,mouseY,WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144-64*2,192,64)) // map editor button 
 	{
 		logicFlags.state		=	LGS_mapEditor;
 		renderFlags.state		=	RS_renderMapEditor;
-		m_pMessage->m_message	=	MouseMessage::initMapEditor;
+		m_pMessage->m_mouseMessage	=	MouseMessage::initMapEditor;
 	}
-	else if (CheckClick(mouseX,mouseY,224,272,192,64)) // options button 
+	else if (CheckClick(mouseX,mouseY,WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144-64,192,64)) // options button 
 	{
 		logicFlags.state		=	LGS_mainOptions;
 		renderFlags.state		=	RS_renderOptions;
 	}
-	else if (CheckClick(mouseX,mouseY,224,336,192,64)) // exit button 
+	else if (CheckClick(mouseX,mouseY,WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144,192,64)) // exit button 
 	{
 		logicFlags.state		=	LGS_exit;
 		renderFlags.state		=	RS_renderGameExit;
@@ -66,7 +66,7 @@ void	CMouse::MenuCLick(int mouseX,int mouseY,_logicFlags &logicFlags,_renderFlag
 
 void	CMouse::OptionsClick(int mouseX,int mouseY,_logicFlags &logicFlags,_renderFlags &renderFlags)
 {
-	if (CheckClick(mouseX,mouseY,128,480,192,64)) // return button 
+	if (CheckClick(mouseX,mouseY,128,WINDOW_HEIGHT,192,64)) // return button 
 	{
 		if (logicFlags.state == LGS_mainOptions)
 		{
@@ -79,26 +79,30 @@ void	CMouse::OptionsClick(int mouseX,int mouseY,_logicFlags &logicFlags,_renderF
 			renderFlags.state		=	RS_renderMap;
 		}
 	}
-	else if (CheckClick(mouseX,mouseY,320,480,192,64))  // exit button 
+	else if (CheckClick(mouseX,mouseY,320,WINDOW_HEIGHT,192,64))  // exit button 
 	{
 		logicFlags.state	=	LGS_exit;
 		renderFlags.state	=	RS_renderGameExit;
 	}
 	else if (CheckClick(mouseX,mouseY,32,32,192,64))
 	{
-		m_pMessage->m_message = MouseMessage::changeGrabMode;
+		m_pMessage->m_mouseMessage = MouseMessage::changeGrabMode;
 	}
 	else if (CheckClick(mouseX,mouseY,32,96,192,64))
 	{
-		m_pMessage->m_message = MouseMessage::changeFPSLock;
+		m_pMessage->m_mouseMessage = MouseMessage::changeFPSLock;
 	}
 	else if (CheckClick(mouseX,mouseY,32,160,192,64))
 	{
-		m_pMessage->m_message = MouseMessage::changeResolution640x480;
+		m_pMessage->m_mouseMessage = MouseMessage::changeResolution640x480;
 	}
 	else if (CheckClick(mouseX,mouseY,32,224,192,64))
 	{
-		m_pMessage->m_message = MouseMessage::changeResolution1024x768;
+		m_pMessage->m_mouseMessage = MouseMessage::changeResolution800x600;
+	}
+	else if (CheckClick(mouseX,mouseY,32,288,192,64))
+	{
+		m_pMessage->m_mouseMessage = MouseMessage::changeResolution1024x768;
 	}
 }
 
@@ -128,20 +132,20 @@ void	CMouse::TextSelectionClick(int mouseX,int mouseY,_logicFlags &logicFlags,_r
 	{
 		if (logicFlags.npcConversation == NPCC_questTalk)
 		{
-			m_pMessage->m_message = MouseMessage::textQuestSelection;
+			m_pMessage->m_mouseMessage = MouseMessage::textQuestSelection;
 			m_pMessage->x = mouseX;
 			m_pMessage->y = mouseY;
 		}
 		else if (logicFlags.npcConversation == NPCC_commonTalk)
 		{
-			m_pMessage->m_message = MouseMessage::textCommonSelection;
+			m_pMessage->m_mouseMessage = MouseMessage::textCommonSelection;
 		}
 	}
 }
 
 void	CMouse::ConversationSelectionClick(int mouseX,int mouseY,_logicFlags &logicFlags,_renderFlags &renderFlags)
 {
-	m_pMessage->m_message = MouseMessage::conversationSelection;
+	m_pMessage->m_mouseMessage = MouseMessage::conversationSelection;
 	m_pMessage->x = mouseX;
 	m_pMessage->y = mouseY;
 }
@@ -155,7 +159,7 @@ void	CMouse::MapEditorAllTilesClick(int mouseX,int mouseY,_logicFlags &logicFlag
 	}
 	else if (CheckClick(mouseX,mouseY,0,0,WINDOW_WIDTH,WINDOW_HEIGHT)) // tile clicked on window
 	{
-		m_pMessage->m_message = MouseMessage::setTileSelected;
+		m_pMessage->m_mouseMessage = MouseMessage::setTileSelected;
 		m_pMessage->x = mouseX;
 		m_pMessage->y = mouseY;
 	}
@@ -167,7 +171,7 @@ void	CMouse::MapEditorClickPress(int mouseX,int mouseY)
 	// so, while we're holding left mouse click pressed, set the map tile
 	if (CheckClick(mouseX,mouseY,0,0,WINDOW_WIDTH,WINDOW_HEIGHT))
 	{
-		m_pMessage->m_message = MouseMessage::setTileOnMap;
+		m_pMessage->m_mouseMessage = MouseMessage::setTileOnMap;
 		m_pMessage->x = mouseX;
 		m_pMessage->y = mouseY;
 	}
@@ -184,16 +188,16 @@ void	CMouse::MapEditorClickRelease(int mouseX,int mouseY,_logicFlags &logicFlags
 	{
 		logicFlags.state		=	LGS_allTiles;
 		renderFlags.state		=	RS_renderAllTiles;
-		m_pMessage->m_message	=	MouseMessage::initAllTiles;
+		m_pMessage->m_mouseMessage	=	MouseMessage::initAllTiles;
 		
 	}
 	else if (CheckClick(mouseX,mouseY,400,WINDOW_HEIGHT,192,64)) // save button
 	{
-		m_pMessage->m_message	=	MouseMessage::saveMapEditorMap;
+		m_pMessage->m_mouseMessage	=	MouseMessage::saveMapEditorMap;
 	}
 	else if (CheckClick(mouseX,mouseY,0,0,WINDOW_WIDTH,WINDOW_HEIGHT)) // tile setting
 	{
-		m_pMessage->m_message	=	MouseMessage::setTileOnMap;
+		m_pMessage->m_mouseMessage	=	MouseMessage::setTileOnMap;
 		m_pMessage->x = mouseX;
 		m_pMessage->y = mouseY;
 	}

@@ -21,7 +21,7 @@
 
 #include "..\dataStructs.h"
 
-class CMouseMessage;
+class CMessage;
 
 /*
 this class checks for mouse clicks, reads the game state and updates m_pMessage and logic data ( logicFlags, renderFlags...)
@@ -39,7 +39,7 @@ private:
 
 public:
 
-	CMouseMessage *m_pMessage;
+	CMessage *m_pMessage;
 
 	bool	Init();
 	void	Clean();

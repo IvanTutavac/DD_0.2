@@ -20,8 +20,8 @@
 #pragma	once
 
 static const	char* APP_NAME			=	"DD 0.2";
-static	int	WINDOW_WIDTH		=	640;
-static	int	WINDOW_HEIGHT		=	480;
+extern	int	WINDOW_WIDTH;
+extern	int	WINDOW_HEIGHT;
 const	int	HUD_HEIGHT			=	64;
 const	int TILE_NUMBER_FINISH	=	2; // last tile img number
 const	int TILE_NUMBER_START	=	0; // first tile img number

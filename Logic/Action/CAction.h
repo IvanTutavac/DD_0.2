@@ -21,7 +21,7 @@
 
 #include "..\dataStructs.h"
 
-class CMouseMessage;
+class CMessage;
 class CMap;
 class CQuestManager;
 class CEntityManager;
@@ -40,8 +40,8 @@ private:
 
 	// ReadMouseMessage calls these
 	void			ChangeFPSLock();
-	void			ChangeGrabMode();
-	void			ChangeResolution(int x,int y);
+	void			ChangeGrabMode(CMessage *Message);
+	void			ChangeResolution(CMessage *Message,int x,int y);
 	void			TextQuestSelection(int mouseX,int mouseY,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo);
 	void			YesNoSelection(int mouseX,int mouseY,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo);
 	void			NextTextBox(_TextRenderInfo &textRenderInfo);
@@ -55,7 +55,7 @@ public:
 	bool	Init();
 	void	Clean();
 
-	bool	ReadMouseMessage(CMouseMessage *Message,CMap *Map,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo,_renderFlags &renderFlags);
+	bool	ReadMouseMessage(CMessage *Message,CMap *Map,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo,_renderFlags &renderFlags);
 
 	// grab mode affects camera
 	bool	isCameraEnabled();

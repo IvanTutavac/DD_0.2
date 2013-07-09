@@ -38,7 +38,6 @@ private:
 	CQuestManager	*m_pQuest;
 	CMovement		*m_pMovement;
 	CCollision		*m_pCollision;
-	CMouse			*m_pMouse;
 	CAction			*m_pAction;
 
 	_lockFlags		m_lockFlags;
@@ -92,6 +91,7 @@ public:
 	_TextRenderInfo m_textRenderInfo;
 	_renderFlags	m_renderFlags;
 
+	CMouse			*m_pMouse;
 	CMap			*m_pMap;
 	CEntityManager  *m_pEntity;
 	CSpell			*m_pSpell;

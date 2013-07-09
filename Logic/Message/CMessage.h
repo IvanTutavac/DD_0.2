@@ -27,6 +27,7 @@ enum class MouseMessage
 	changeGrabMode,
 	changeFPSLock,
 	changeResolution640x480,
+	changeResolution800x600,
 	changeResolution1024x768,
 	textQuestSelection,
 	textCommonSelection,
@@ -37,14 +38,23 @@ enum class MouseMessage
 	saveMapEditorMap
 };
 
-class CMouseMessage
+enum class RenderMessage
+{
+	nothing,
+	resizeWindow,
+	changeGrabMode
+};
+
+class CMessage
 {
 
 private:
 
 public:
 
-	MouseMessage m_message;
+	MouseMessage	m_mouseMessage;
+	RenderMessage	m_renderMessage;
+	
 	int	x,y;
 
 	bool	Init();

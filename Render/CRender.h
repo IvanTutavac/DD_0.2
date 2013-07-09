@@ -21,6 +21,7 @@
 #include <string>
 
 class CMap;
+class CMessage;
 
 class CRender
 {
@@ -40,6 +41,7 @@ protected:
 	bool			CheckIfInWindowEx(int cameraX,int cameraY,int &x,int &y);
 
 	virtual void	VRenderFPS(int fps)=0;
+	virtual void	VRenderImage(int x,int y,const int type,int i)=0;
 	// image will be drawn on main window
 	virtual void	VRenderImage(int x,int y,int w,int h,const int type,int i)=0; 
 	//virtual void	VRenderImage(int x,int y,int cutX,int cutY,const int type, int i)=0;
@@ -59,6 +61,7 @@ public:
 	virtual void	VRenderValue(int value,int x,int y,int r,int g,int b)=0;
 	virtual void	VRenderButton(char *text,int x,int y,int r,int g,int b)=0;
 	virtual bool	VRenderTextBox(unsigned int &words,bool &next,bool first)=0;
+	virtual void	VReadMessage(CMessage *Message)=0;
 
 	void	RenderMap(CMap *MapPointer);
 	void	RenderMapEditor(CMap *MapPointer);

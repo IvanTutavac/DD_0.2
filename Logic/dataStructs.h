@@ -136,3 +136,5 @@ struct _TextRenderInfo
 	unsigned int	chars;
 };
 
+
+

@@ -31,9 +31,9 @@ bool	CImageSurface::DeleteAll()
 	//for( std::vector<SDL_Surface*>::iterator it = m_imageSurface.begin(); it!=m_imageSurface.end(); ++it)
 		//SDL_FreeSurface(*it);
 
-	for (size_t i = 0; i < m_pVTexture.size(); i++)
+	for (size_t i = 0; i < m_vTexture.size(); i++)
 	{
-		SDL_DestroyTexture(m_pVTexture[i]);
+		SDL_DestroyTexture(m_vTexture[i].texture);
 	}
 
 	return	true;
@@ -42,7 +42,7 @@ bool	CImageSurface::DeleteAll()
 int		CImageSurface::Return()
 {
 	//if (m_imageSurface.back() == NULL)
-	if (m_pVTexture.back() == NULL)
+	if (m_vTexture.back().texture == NULL)
 	{
 		Log(std::to_string(N)+".img failed to load");
 		return N;
@@ -86,7 +86,7 @@ SDL_Surface	*CImageSurface::LoadPNGImage(char *name,bool alpha)
 	return	image;
 }
 
-SDL_Texture *CImageSurface::LoadTexture(char *name,SDL_Renderer *m_pRenderer)
+SDL_Texture *CImageSurface::LoadTexture(char *name,SDL_Renderer *Renderer)
 {
 	SDL_Surface *surface = NULL;
 	SDL_Texture *texture = NULL;
@@ -96,7 +96,7 @@ SDL_Texture *CImageSurface::LoadTexture(char *name,SDL_Renderer *m_pRenderer)
 	if (!surface)
 		return	NULL;
 
-	texture = SDL_CreateTextureFromSurface(m_pRenderer,surface);
+	texture = SDL_CreateTextureFromSurface(Renderer,surface);
 	
 	if (texture == 0)
 		return	NULL;
@@ -106,6 +106,28 @@ SDL_Texture *CImageSurface::LoadTexture(char *name,SDL_Renderer *m_pRenderer)
 	return	texture;
 }
 
+void	CImageSurface::CreateTexture(char *name,SDL_Renderer *Renderer)
+{
+	SDL_Surface *surface = NULL;
+
+	surface = IMG_Load(name);
+
+	if (surface == NULL)
+		return;
+
+	_texture texture;
+
+	texture.w = surface->w;
+	texture.h = surface->h;
+	texture.texture = SDL_CreateTextureFromSurface(Renderer,surface);
+
+	if (texture.texture == NULL)
+		return;
+
+	m_vTexture.push_back(texture);
+
+	SDL_FreeSurface(surface);
+}
 
 
 /*-----------------------------
@@ -124,12 +146,13 @@ int	CTileImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 		_itoa_s(i,a,10);
 		strcat_s(c,a);
 		strcat_s(c,".png");
-		m_pVTexture.push_back(LoadTexture(c,m_pRenderer));
+		CreateTexture(c,m_pRenderer);
+		//m_pVTexture.push_back(LoadTexture(c,m_pRenderer));
 		//m_imageSurface.push_back(LoadPNGImage(c)); 
 		if (N == 1)
 		{
 			//if (m_imageSurface[1] == NULL)
-			if (m_pVTexture[1] == NULL)
+			if (m_vTexture[1].texture == NULL)
 			{
 				Log(std::to_string(N)+".img failed to load");
 				return 0;
@@ -150,7 +173,8 @@ int	CTileImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 int	CEnemyImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 {
 	N = 4000;
-	m_pVTexture.push_back(LoadTexture("img/4000.png",m_pRenderer));
+	CreateTexture("img/4000.png",m_pRenderer);
+	//m_pVTexture.push_back(LoadTexture("img/4000.png",m_pRenderer));
 	//m_imageSurface.push_back(LoadPNGImage("img/4000.png",true));
 	if (Return() != 1)
 		return	N;
@@ -165,7 +189,8 @@ int	CEnemyImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 int	CPlayerImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 {
 	N = 950;
-	m_pVTexture.push_back(LoadTexture("img/950.png",m_pRenderer));
+	CreateTexture("img/950.png",m_pRenderer);
+	//m_pVTexture.push_back(LoadTexture("img/950.png",m_pRenderer));
 	//m_imageSurface.push_back(LoadPNGImage("img/950.png",true));
 	if (Return() != 1)
 		return N;
@@ -180,15 +205,18 @@ int	CPlayerImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 int	CMenuImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 {
 	N = 1000;
-	m_pVTexture.push_back(LoadTexture("img/1000.png",m_pRenderer));
+	CreateTexture("img/1000.png",m_pRenderer);
+	//m_pVTexture.push_back(LoadTexture("img/1000.png",m_pRenderer));
 	//m_imageSurface.push_back(LoadPNGImage("img/1000.png"));
 	if (Return() != 1)
 		return N;
-	m_pVTexture.push_back(LoadTexture("img/1001.png",m_pRenderer));
+	CreateTexture("img/1001.png",m_pRenderer);
+	//m_pVTexture.push_back(LoadTexture("img/1001.png",m_pRenderer));
 	//m_imageSurface.push_back(LoadPNGImage("img/1001.png"));
 	if (Return() != 1)
 		return N;
-	m_pVTexture.push_back(LoadTexture("img/1002.png",m_pRenderer));
+	CreateTexture("img/1002.png",m_pRenderer);
+	//m_pVTexture.push_back(LoadTexture("img/1002.png",m_pRenderer));
 	//m_imageSurface.push_back(LoadPNGImage("img/1002.png"));
 	if (Return() != 1)
 		return N;
@@ -204,7 +232,8 @@ int	CMenuImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 int	CNPCImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 {
 	N = 2000;
-	m_pVTexture.push_back(LoadTexture("img/2000.png",m_pRenderer));
+	CreateTexture("img/2000.png",m_pRenderer);
+	//m_pVTexture.push_back(LoadTexture("img/2000.png",m_pRenderer));
 	//m_imageSurface.push_back(LoadPNGImage("img/2000.png",true));
 	if (Return() != 1)
 		return N;
@@ -219,11 +248,13 @@ int	CNPCImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 int	CSpellImageSurface::VLoadAll(SDL_Renderer *m_pRenderer)
 {
 	N = 3000;
-	m_pVTexture.push_back(LoadTexture("img/3000.png",m_pRenderer));
+	CreateTexture("img/3000.png",m_pRenderer);
+	//m_pVTexture.push_back(LoadTexture("img/3000.png",m_pRenderer));
 	//m_imageSurface.push_back(LoadPNGImage("img/3000.png",true));
 	if (Return() != 1)
 		return N;
-	m_pVTexture.push_back(LoadTexture("img/3001.png",m_pRenderer));
+	CreateTexture("img/3001.png",m_pRenderer);
+	//m_pVTexture.push_back(LoadTexture("img/3001.png",m_pRenderer));
 	//m_imageSurface.push_back(LoadPNGImage("img/3001.png",true));
 	if (Return() != 1)
 		return N;

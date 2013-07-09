@@ -17,17 +17,18 @@
     along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CMouseMessage.h"
+#include "CMessage.h"
 
-bool	CMouseMessage::Init()
+bool	CMessage::Init()
 {
-	m_message = MouseMessage::nothing;
+	m_mouseMessage	= MouseMessage::nothing;
+	m_renderMessage = RenderMessage::nothing;
 	x = 0, y = 0;
 
 	return	true;
 }
 
-void	CMouseMessage::Clean()
+void	CMessage::Clean()
 {
 
 }
