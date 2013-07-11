@@ -26,8 +26,9 @@ class CTimer;
 struct _EntitySpell
 {
 	int		index; // CSpell->m_VAllSpells[index]
+	int		lvl;
 	double	duration; // cooldown
-	double  tempDuration; // used to resetB duration
+	double  tempDuration; // used to reset duration
 	bool	casted;
 };
 

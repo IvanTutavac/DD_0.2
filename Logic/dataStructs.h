@@ -19,6 +19,8 @@
 
 #pragma once
 
+const int SPELL_LVL_LIMIT = 2;
+
 enum SpellType
 {
 	ST_hpRemoval,
@@ -26,10 +28,8 @@ enum SpellType
 	ST_stun
 };
 
-struct _spell
+struct _spellData
 {
-	int		ID;  // spell number, also img spell number... used to set _location.imgID 
-	char	name[20];
 	int		value; // used for dmg, heal and so on
 	int		value1;
 	int		value2;
@@ -38,10 +38,19 @@ struct _spell
 	double	cd; // cooldown, reduced by deltaTime... when <= 0 we can cast a new spell
 	double	tempCD; // used to restore cd
 	int		speed;
-	bool	moving; // used to check whether a spell will move
-	bool	casted; // whether we can cast a spell that has cd > 0 ( has not yet been casted )
 	int		n; // number of entities the spell will affect
 	int		range; // can be used for aoe range, movement range ...
+	int		skillPoints; // skill points needed to acquire the spell
+};
+
+struct _spell
+{
+	int		ID;  // spell number, also img spell number... used to set _location.imgID 
+	char	name[20];
+	bool	moving; // used to check whether a spell will move
+	bool	casted; // whether we can cast a spell that has cd > 0 ( has not yet been casted )
+
+	_spellData spell[SPELL_LVL_LIMIT]; // _EntitySpell.lvl 
 
 	SpellType	type; // use ST_
 };

@@ -45,11 +45,11 @@ public:
 	// _spell[index].duration
 	//_spell[index].speed
 	// parent  EntityID, -1 for player, everything else is EnemyID
-	void	SetupSpellMap(CMap *MapPointer,int id,float x,float y,double duration,int speed,int parent);
+	void	SetupSpellMap(CMap *MapPointer,int id,float x,float y,double duration,int speed,int lvl,int parent);
 
 	// m_VAllSpells[index]
-	void	CastSpell(int index,int &hp,int &mp);
+	void	CastSpell(int index,int lvl,int &hp,int &mp);
 	
 	// m_VAllSpells[index]
-	void	SpellHit(int index,int &hp,int &mp);
+	void	SpellHit(int index,int lvl,int &hp,int &mp);
 };

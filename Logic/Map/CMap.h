@@ -36,13 +36,14 @@ struct _location
 	int speed; 
 };
 
-struct _location1
+struct _location1 // used for spells
 {
 	float x,y;
 	float tempX,tempY;
 	int ID;
 	int imgID; // which img represents the entity
-	int	parent; // who has used the spell, -1 for player, everything else enemy
+	int	parent; // who has used the spell, -1 for player, everything else enemy 
+	int lvl;
 	int speed; 
 	LocationState state;  // use LS_
 	double duration; // for how long will the object last

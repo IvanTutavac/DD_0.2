@@ -40,7 +40,7 @@ private:
 
 public:
 
-	std::vector<CEnemy> m_VEnemyList; // enemies which can be available 
+	std::vector<CEnemy> m_VEnemyList; // available enemies
 	std::vector<CEnemy> m_VEnemy; // enemies on map
 	std::vector<CEnemy> m_VCloseEnemy; // enemies near you
 
@@ -48,9 +48,9 @@ public:
 
 	CPlayer			*m_pPlayer;
 
-	bool	Init(CSpell *SpellPointer);
+	bool	Init(CSpell *Spell);
 	void	Clean();
 
 	// put enemies on map
-	bool	SetMapEnemy(CMap *MapPointer);
+	bool	SetMapEnemy(CMap *Map);
 };

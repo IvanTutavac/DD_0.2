@@ -29,9 +29,14 @@ private:
 	std::vector<int>	m_VActiveQuests;
 	std::vector<int>	m_VCompletedQuests;
 
+	int		m_skillPoints;
+
 public:
 
 	bool	Init();
 	void	Clean();
 
+	int		GetSkillPoints();
+	void	SetSkillPoints(int value);
+	void	ReduceSkillPoints(int value);
 };

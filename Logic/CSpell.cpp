@@ -26,38 +26,67 @@ bool	CSpell::Init()
 	m_IDLimit			=	999999;
 
 	_spell	dummySpell;
-	dummySpell.cost = 10;
+
+	dummySpell.spell[0].duration		=	3;
+	dummySpell.spell[0].value			=	25;
+	dummySpell.spell[0].value1			=	0;
+	dummySpell.spell[0].value2			=	0;
+	dummySpell.spell[0].cd				=	1;
+	dummySpell.spell[0].tempCD			=	dummySpell.spell[0].cd;
+	dummySpell.spell[0].speed			=	300;
+	dummySpell.spell[0].n				=	1;
+	dummySpell.spell[0].range			=	0;
+	dummySpell.spell[0].cost			=	10;
+	dummySpell.spell[0].skillPoints		=	1;
+
+	dummySpell.spell[1].duration		=	3;
+	dummySpell.spell[1].value			=	30;
+	dummySpell.spell[1].value1			=	0;
+	dummySpell.spell[1].value2			=	0;
+	dummySpell.spell[1].cd				=	1;
+	dummySpell.spell[1].tempCD			=	dummySpell.spell[0].cd;
+	dummySpell.spell[1].speed			=	320;
+	dummySpell.spell[1].n				=	1;
+	dummySpell.spell[1].range			=	0;
+	dummySpell.spell[1].cost			=	10;
+	dummySpell.spell[1].skillPoints		=	1;
+
 	dummySpell.type = ST_hpRemoval;
-	dummySpell.duration = 3;
-	dummySpell.value = 25;
-	dummySpell.value1 = 0;
-	dummySpell.value2 = 0;
 	dummySpell.moving = true;
 	dummySpell.casted = false;
 	dummySpell.ID = 0;
-	dummySpell.cd = 1;
-	dummySpell.tempCD = dummySpell.cd;
-	dummySpell.speed = 300;
-	dummySpell.n = 1;
-	dummySpell.range = 0;
 	strcpy_s(dummySpell.name,"Fire");
 
 	m_VAllSpells.push_back(dummySpell);
 
-	dummySpell.cost	=	0;
+	dummySpell.spell[0].cost			=	0;
+	dummySpell.spell[0].duration		=	2;
+	dummySpell.spell[0].value			=	25;
+	dummySpell.spell[0].value1			=	0;
+	dummySpell.spell[0].value2			=	0;
+	dummySpell.spell[0].cd				=	1;
+	dummySpell.spell[0].tempCD			=	dummySpell.spell[0].cd;
+	dummySpell.spell[0].speed			=	450;
+	dummySpell.spell[0].n				=	1;
+	dummySpell.spell[0].range			=	0;
+	dummySpell.spell[0].skillPoints		=	1;
+
+	dummySpell.spell[1].cost			=	0;
+	dummySpell.spell[1].duration		=	2.1;
+	dummySpell.spell[1].value			=	30;
+	dummySpell.spell[1].value1			=	0;
+	dummySpell.spell[1].value2			=	0;
+	dummySpell.spell[1].cd				=	1;
+	dummySpell.spell[1].tempCD			=	dummySpell.spell[0].cd;
+	dummySpell.spell[1].speed			=	470;
+	dummySpell.spell[1].n				=	1;
+	dummySpell.spell[1].range			=	0;
+	dummySpell.spell[1].skillPoints		=	1;
+
 	dummySpell.type = ST_hpRemoval;
-	dummySpell.duration = 2;
-	dummySpell.value = 25;
-	dummySpell.value1 = 0;
-	dummySpell.value2 = 0;
 	dummySpell.moving = true;
 	dummySpell.casted = false;
 	dummySpell.ID = 1;
-	dummySpell.cd = 1;
-	dummySpell.tempCD = dummySpell.cd;
-	dummySpell.speed = 450;
-	dummySpell.n = 1;
-	dummySpell.range = 0;
 	strcpy_s(dummySpell.name,"Bolt");
 
 	m_VAllSpells.push_back(dummySpell);
@@ -70,34 +99,35 @@ void	CSpell::Clean()
 
 }
 
-void	CSpell::CastSpell(int index,int &hp,int &mp)
+void	CSpell::CastSpell(int index,int lvl,int &hp,int &mp)
 {
 	if (m_VAllSpells[index].type == ST_hpHeal)
 	{
-		hp += m_VAllSpells[index].value;
+		hp += m_VAllSpells[index].spell[lvl].value;
 	}
 
-	mp -= m_VAllSpells[index].cost;
+	mp -= m_VAllSpells[index].spell[lvl].cost;
 }
 
-void	CSpell::SpellHit(int index,int &hp,int &mp)
+void	CSpell::SpellHit(int index,int lvl,int &hp,int &mp)
 {
 	if (m_VAllSpells[index].type == ST_hpRemoval)
 	{
-		hp -= m_VAllSpells[index].value;
+		hp -= m_VAllSpells[index].spell[lvl].value;
 	}
 }
 
-void	CSpell::SetupSpellMap(CMap *MapPointer,int id,float x,float y,double duration,int speed,int parent)
+void	CSpell::SetupSpellMap(CMap *MapPointer,int id,float x,float y,double duration,int speed,int lvl,int parent)
 {
 	_location1		newSpell;
 	newSpell.x			=	x;
 	newSpell.y			=	y;
 	newSpell.imgID		=	id;
+	newSpell.lvl		=	lvl;
 	newSpell.parent		=	parent;
 	newSpell.speed		=	speed;
 	newSpell.state		=	LS_nothing;
-	newSpell.duration	= duration;
+	newSpell.duration	=	duration;
 
 	MapPointer->m_spell.push_back(newSpell); 
 

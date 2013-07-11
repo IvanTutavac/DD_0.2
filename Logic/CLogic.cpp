@@ -452,10 +452,15 @@ void	CLogic::PlayerSpellCast(const CEventMessage *EventMessage)
 	{    
 		// EventMessage->m_Event.Event is spell index if check above was true	
 		int k = EventMessage->m_Event.Event;
+
+		if (k >= (int)m_pEntity->m_pPlayer->m_spell.size()) // there's no spell in the slot
+			return;
+
 		int index = m_pEntity->m_pPlayer->m_spell[k].index;
 		int l = m_pSpell->m_VAllSpells[index].ID;
+		int lvl = m_pEntity->m_pPlayer->m_spell[index].lvl;
 
-		if (m_pEntity->m_pPlayer->GetMP() < m_pSpell->m_VAllSpells[index].cost)
+		if (m_pEntity->m_pPlayer->GetMP() < m_pSpell->m_VAllSpells[index].spell[lvl].cost)
 			return;
 
 		bool castAllowed = m_pEntity->m_pPlayer->CheckSpellCD(k);
@@ -465,14 +470,14 @@ void	CLogic::PlayerSpellCast(const CEventMessage *EventMessage)
 			int hp = m_pEntity->m_pPlayer->GetHP();
 			int mp = m_pEntity->m_pPlayer->GetMP();
 			
-			m_pSpell->CastSpell(index,hp,mp);
+			m_pSpell->CastSpell(index,lvl,hp,mp);
 
 			m_pEntity->m_pPlayer->SetHP(hp);
 			m_pEntity->m_pPlayer->SetMP(mp);
 
 			if (m_pSpell->m_VAllSpells[index].moving)
 			{
-				m_pSpell->SetupSpellMap(m_pMap,l,m_pMap->m_playerX,m_pMap->m_playerY,m_pEntity->m_pPlayer->m_spell[k].duration,(int)m_pSpell->m_VAllSpells[index].speed,-1);
+				m_pSpell->SetupSpellMap(m_pMap,l,m_pMap->m_playerX,m_pMap->m_playerY,m_pSpell->m_VAllSpells[index].spell[lvl].duration,(int)m_pSpell->m_VAllSpells[index].spell[lvl].speed,lvl,-1);
 			}
 		}
 	}

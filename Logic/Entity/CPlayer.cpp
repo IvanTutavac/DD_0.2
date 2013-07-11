@@ -23,10 +23,27 @@ bool	CPlayer::Init()
 {
 	if (!this->InitEntity())
 		return	false;
+
+
 	return	true;
 }
 
 void	CPlayer::Clean()
 {
 	this->CleanEntity();
+}
+
+int		CPlayer::GetSkillPoints()
+{
+	return	m_skillPoints;
+}
+
+void	CPlayer::SetSkillPoints(int value)
+{
+	m_skillPoints = value;
+}
+
+void	CPlayer::ReduceSkillPoints(int value)
+{
+	m_skillPoints -= value;
 }

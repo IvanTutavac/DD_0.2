@@ -37,7 +37,7 @@ struct _enemy
 };
 #pragma pack()
 
-bool	CEntityManager::Init(CSpell *SpellPointer)
+bool	CEntityManager::Init(CSpell *Spell)
 {
 	Log("Entities...");
 
@@ -48,16 +48,18 @@ bool	CEntityManager::Init(CSpell *SpellPointer)
 	// make a limit for 5 spells !
 
 	_EntitySpell temp;
-	temp.duration	=	SpellPointer->m_VAllSpells[0].cd;
+	temp.duration	=	Spell->m_VAllSpells[0].spell[0].cd;
 	temp.index		=	0;
+	temp.lvl		=	0;
 	temp.casted		=	false;
 	temp.tempDuration = temp.duration;
 
 	m_pPlayer->m_VSpell.push_back(temp);
 	m_pPlayer->m_spell.push_back(temp);
 
-	temp.duration	= SpellPointer->m_VAllSpells[1].cd;
-	temp.index		= 1;
+	temp.duration	=	Spell->m_VAllSpells[1].spell[0].cd;
+	temp.index		=	1;
+	temp.lvl		=	0;
 	temp.casted		=	false;
 	temp.tempDuration = temp.duration;
 
@@ -66,6 +68,7 @@ bool	CEntityManager::Init(CSpell *SpellPointer)
 
 	m_pPlayer->SetHP(50);
 	m_pPlayer->SetMP(50);
+	m_pPlayer->SetSkillPoints(3);
 
 	if (!m_pPlayer->Init())
 		return	false;
@@ -167,7 +170,7 @@ bool	CEntityManager::LoadEnemies()
 	return	true;
 }
 
-bool	CEntityManager::SetMapEnemy(CMap *MapPointer)
+bool	CEntityManager::SetMapEnemy(CMap *Map)
 {
 	// fali provjera dal je uniqueEnemyID > m_IDLimit
 	// trebalo bi citati iz datoteka koji neprijatelj je na kojoj lokaciji mape
@@ -190,7 +193,7 @@ bool	CEntityManager::SetMapEnemy(CMap *MapPointer)
 	temp.imgID = m_VCloseEnemy.back().GetTypeID();
 	temp.x = 32*2,temp.y = 32*7;
 
-	MapPointer->m_closeEnemyXY.push_back(temp);
+	Map->m_closeEnemyXY.push_back(temp);
 
 	CEnemy Enemy1;
 
@@ -209,7 +212,7 @@ bool	CEntityManager::SetMapEnemy(CMap *MapPointer)
 	temp.imgID = m_VCloseEnemy.back().GetTypeID();
 	temp.x = 32*15,temp.y = 32*3;
 
-	MapPointer->m_closeEnemyXY.push_back(temp);
+	Map->m_closeEnemyXY.push_back(temp);
 
 
 	return	true;

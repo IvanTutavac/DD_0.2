@@ -51,7 +51,7 @@ void	CCollision::SpellCollision(CMap *MapPointer,CEntityManager *EntityPointer,C
 				int hp = EntityPointer->m_pPlayer->GetHP();
 				int mp = EntityPointer->m_pPlayer->GetMP();
 
-				SpellPointer->SpellHit(MapPointer->m_spell[i].imgID,hp,mp);
+				SpellPointer->SpellHit(MapPointer->m_spell[i].imgID,MapPointer->m_spell[i].lvl,hp,mp);
 				
 				EntityPointer->m_pPlayer->SetHP(hp);
 				EntityPointer->m_pPlayer->SetMP(mp);
@@ -71,7 +71,10 @@ void	CCollision::SpellCollision(CMap *MapPointer,CEntityManager *EntityPointer,C
 				int hp = EntityPointer->m_VCloseEnemy[j].GetHP();
 				int mp = EntityPointer->m_VCloseEnemy[j].GetMP();
 
-				SpellPointer->SpellHit(MapPointer->m_spell[i].imgID,hp,mp);
+				if (MapPointer->m_spell[i].parent == -1)
+				{   // spell casted by player
+					SpellPointer->SpellHit(MapPointer->m_spell[i].imgID,MapPointer->m_spell[i].lvl,hp,mp);
+				}
 
 				EntityPointer->m_VCloseEnemy[j].SetHP(hp);
 				EntityPointer->m_VCloseEnemy[j].SetMP(mp);
