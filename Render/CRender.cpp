@@ -208,7 +208,8 @@ bool	CRender::CheckIfInWindowEx(int cameraX,int cameraY,int &x,int &y)
 	}
 
 	// entity in window, let it be drawn
-
+	// koji vrag ? uopce ne manipulira s x i y a radi !?????
+	// provjeriti !
 	int tempX = x - cameraX - WINDOW_WIDTH/2;
 	int tempY = y - cameraY - WINDOW_HEIGHT/2;
 

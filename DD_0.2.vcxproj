@@ -89,6 +89,9 @@
     <ClCompile Include="Logic\Action\CAction.cpp" />
     <ClCompile Include="Logic\CSpell.cpp" />
     <ClCompile Include="Logic\Entity\CEntityManager.cpp" />
+    <ClCompile Include="Logic\GUI\CGUI.cpp" />
+    <ClCompile Include="Logic\GUI\CButton.cpp" />
+    <ClCompile Include="Logic\GUI\CWindow.cpp" />
     <ClCompile Include="Logic\Input\CMouse.cpp" />
     <ClCompile Include="Logic\Map\CCollision.cpp" />
     <ClCompile Include="Logic\CConversation.cpp" />
@@ -103,7 +106,7 @@
     <ClCompile Include="Logic\Quest\CQuest.cpp" />
     <ClCompile Include="Logic\Quest\CQuestManager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Render\CImageSurface.cpp" />
+    <ClCompile Include="Render\CImage.cpp" />
     <ClCompile Include="Render\CRender.cpp" />
     <ClCompile Include="Render\CSDLRender.cpp" />
   </ItemGroup>
@@ -119,6 +122,10 @@
     <ClInclude Include="Logic\Action\CAction.h" />
     <ClInclude Include="Logic\CSpell.h" />
     <ClInclude Include="Logic\Entity\CEntityManager.h" />
+    <ClInclude Include="Logic\GUI\CGUI.h" />
+    <ClInclude Include="Logic\GUI\CButton.h" />
+    <ClInclude Include="Logic\GUI\CWindow.h" />
+    <ClInclude Include="Logic\GUI\GUIStructs.h" />
     <ClInclude Include="Logic\Input\CMouse.h" />
     <ClInclude Include="Logic\Map\CCollision.h" />
     <ClInclude Include="Logic\CConversation.h" />
@@ -133,7 +140,7 @@
     <ClInclude Include="Logic\Quest\CQuest.h" />
     <ClInclude Include="Logic\dataStructs.h" />
     <ClInclude Include="Logic\Quest\CQuestManager.h" />
-    <ClInclude Include="Render\CImageSurface.h" />
+    <ClInclude Include="Render\CImage.h" />
     <ClInclude Include="Render\CSDLRender.h" />
     <ClInclude Include="Render\CRender.h" />
   </ItemGroup>

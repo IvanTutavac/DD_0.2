@@ -23,11 +23,21 @@
 
 class CConversation;
 
+enum class NPCType
+{
+	common,
+	shop,
+	quest,
+	spells
+};
+
 class CNPC
 {
 private:
 
 public:
+
+	NPCType		m_type;
 
 	std::vector<CConversation*>	m_VConversation;
 

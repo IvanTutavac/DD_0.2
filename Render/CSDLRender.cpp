@@ -20,7 +20,7 @@
 #include "..\debug.h"
 #include "..\Log.h"
 #include "CSDLRender.h"
-#include "CImageSurface.h"
+#include "CImage.h"
 #include "..\Logic\Message\CMessage.h"
 //#include "..\Logic\CMap.h"
 #include "..\const.h"
@@ -56,7 +56,7 @@ bool	CSDLRender::VInit()
 	//else
 	SDL_SetWindowGrab(m_pWindow,(SDL_bool)g_grabMode);
 
-	if (!LoadClasses())
+	if (!LoadImages())
 		return	false;
 	Log("Images loaded");
 
@@ -76,10 +76,9 @@ void	CSDLRender::VClean()
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
 
-	for (size_t i = 0; i < m_pVImage.size(); i++)
+	for (size_t i = 0; i < m_vImage.size(); i++)
 	{
-		m_pVImage[i]->DeleteAll();
-		DD_DELETE(m_pVImage[i]);
+		m_vImage[i].Clean();
 	}
 	
 	TTF_CloseFont(m_pHUDFont);
@@ -153,13 +152,13 @@ void	CSDLRender::VRenderOptions()
 
 void	CSDLRender::VRenderImage(int x,int y,int w,int h,const int type,int i)
 {
-	RenderImage(x,y,w,h,m_pVImage[type]->m_vTexture[i].texture);
+	RenderImage(x,y,w,h,m_vImage[type].m_vTexture[i].texture);
 	//RenderImage(x,y,m_VImage[type].m_imageSurface[i],m_pWindow);
 }
 
 void	CSDLRender::VRenderImage(int x,int y,const int type,int i)
 {
-	RenderImage(x,y,m_pVImage[type]->m_vTexture[i].w,m_pVImage[type]->m_vTexture[i].h,m_pVImage[type]->m_vTexture[i].texture);
+	RenderImage(x,y,m_vImage[type].m_vTexture[i].w,m_vImage[type].m_vTexture[i].h,m_vImage[type].m_vTexture[i].texture);
 }
 
 /*void	CSDLRender::VRenderImage(int x,int y,int cutX,int cutY,const int type,int i)
@@ -232,11 +231,11 @@ void	CSDLRender::VRenderButton(char *text,int x,int y,int r,int g,int b)
 	//SDL_Surface *recast = SDL_CreateRGBSurface( 0, surface->w, surface->h, 24, 0, 0, 0, 0 );
 	//SDL_BlitSurface(surface,NULL,recast,NULL);
 	//the button needs to have the text centered
-	int h = m_pVImage[TYPE_MENU]->m_vTexture[1].h;
-	int w = m_pVImage[TYPE_MENU]->m_vTexture[1].w;
+	int h = m_vImage[TYPE_MENU].m_vTexture[1].h;
+	int w = m_vImage[TYPE_MENU].m_vTexture[1].w;
 	int k = (x + w/2 - surface->w/2);
 	int l = (y + h/2 - surface->h/2);
-	RenderImage(x,y,w,h,m_pVImage[TYPE_MENU]->m_vTexture[1].texture);//m_imageSurface[1],m_pWindow); // render button
+	RenderImage(x,y,w,h,m_vImage[TYPE_MENU].m_vTexture[1].texture);//m_imageSurface[1],m_pWindow); // render button
 	//RenderImage(k,l,surface);//,m_pWindow); // render text
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(m_pRenderer,surface);//recast);
 	RenderImage(k,l,surface->w,surface->h,texture);
@@ -333,45 +332,45 @@ bool	CSDLRender::VRenderTextBox(unsigned int &chars,bool &next,bool first)
 
 // rest
 
-bool	CSDLRender::LoadClasses()
+bool	CSDLRender::LoadImages()
 {
-	CImageSurface	*m_pTileSurface		=	DD_NEW	CTileImageSurface;
-	CImageSurface	*m_pEnemySurface	=	DD_NEW	CEnemyImageSurface;
-	CImageSurface	*m_pPlayerSurface	=	DD_NEW	CPlayerImageSurface;
-	CImageSurface	*m_pMenuSurface		=	DD_NEW	CMenuImageSurface;
-	CImageSurface	*m_pNPCSurface		=	DD_NEW	CNPCImageSurface;
-	CImageSurface	*m_pSpellSurface	=	DD_NEW	CSpellImageSurface;
+	CImage	tileImage;
+	CImage	enemyImage;
+	CImage	playerImage;
+	CImage	menuImage; 
+	CImage	NPCImage;
+	CImage	spellImage; 
 
-	if (m_pTileSurface->VLoadAll(m_pRenderer) != 1) // tile 1 will return 0 if it failed to load
+	if (tileImage.Init(m_pRenderer,0,2) == false)	
 		return	false;
 	Log("Tiles loaded");
 
-	if (m_pEnemySurface->VLoadAll(m_pRenderer) != 1)
+	if (enemyImage.Init(m_pRenderer,4000,4000) == false)
 		return false;
 	Log("Enemy images loaded");
 
-	if (m_pPlayerSurface->VLoadAll(m_pRenderer) != 1)
+	if (playerImage.Init(m_pRenderer,950,950) == false)
 		return false;
 	Log("Player images loaded");
 
-	if (m_pMenuSurface->VLoadAll(m_pRenderer) != 1)
+	if (menuImage.Init(m_pRenderer,1000,1002) == false)
 		return	false;
 	Log("Menu images loaded");
 
-	if (m_pNPCSurface->VLoadAll(m_pRenderer) != 1)
+	if (NPCImage.Init(m_pRenderer,2000,2000) == false)
 		return	false;
 	Log("NPC images loaded");
 
-	if (m_pSpellSurface->VLoadAll(m_pRenderer) != 1)
+	if (spellImage.Init(m_pRenderer,3000,3001) == false)
 		return	false;
 	Log("Spell images loaded");
 
-	m_pVImage.push_back(m_pTileSurface);
-	m_pVImage.push_back(m_pEnemySurface);
-	m_pVImage.push_back(m_pPlayerSurface);
-	m_pVImage.push_back(m_pMenuSurface);
-	m_pVImage.push_back(m_pNPCSurface);
-	m_pVImage.push_back(m_pSpellSurface);
+	m_vImage.push_back(tileImage);
+	m_vImage.push_back(enemyImage);
+	m_vImage.push_back(playerImage);
+	m_vImage.push_back(menuImage);
+	m_vImage.push_back(NPCImage);
+	m_vImage.push_back(spellImage);
 
 	return	true;
 }
@@ -409,7 +408,7 @@ void	CSDLRender::RenderImage(int x,int y,int w,int h,SDL_Surface *surface)
 	tempRect.h = h;
 
 	SDL_RenderCopy(m_pRenderer,texture,NULL,&tempRect);
-	SDL_DestroyTexture(texture);
+	SDL_DestroyTexture(texture); 
 }
 
 void	CSDLRender::RenderImage(int x,int y,SDL_Surface *image,SDL_Surface *surface)

@@ -93,12 +93,16 @@ bool	CNPC::Init()
 
 	m_conversation = "Default razgovor";
 
+	m_type = NPCType::quest;
+
 	return	true;
 }
 
 bool	CNPC::Init(std::string text)
 {
 	m_conversation = text;
+
+	m_type = NPCType::common;
 
 	return	true;
 }

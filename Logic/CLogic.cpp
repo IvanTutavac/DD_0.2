@@ -76,7 +76,7 @@ bool	CLogic::Init()
 	m_pEntity		=	DD_NEW CEntityManager;
 	m_pSpell		=	DD_NEW CSpell;
 	m_pMouse		=	DD_NEW CMouse;
-	m_pAction		=	DD_NEW CAction;
+	m_pAction			=	DD_NEW CAction;
 
 	if (!m_pMap->Init())
 		return	false;
@@ -222,7 +222,7 @@ void	CLogic::Movement(const CEventMessage *EventMessage)
 	if (m_lockFlags.cameraMovement)
 		return;
 
-	if (!m_lockFlags.cameraMovement && m_pAction->isCameraEnabled()  && EventMessage->m_MotionEvent.Event == ME_moved)
+	if (!m_lockFlags.cameraMovement && m_pAction->isCameraEnabled()/*conversation, menus should lock the camera*/  && EventMessage->m_MotionEvent.Event == ME_moved)
 	{
 		if (m_logicFlags.state == LGS_inGame || m_logicFlags.state == LGS_allTiles || m_logicFlags.state == LGS_mapEditor)
 		{

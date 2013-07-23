@@ -21,9 +21,6 @@
     <ClCompile Include="Events\CEventMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Render\CImageSurface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Render\CSDLRender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -84,10 +81,22 @@
     <ClCompile Include="Logic\Input\CMouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\Message\CMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Logic\Action\CAction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Logic\Message\CMessage.cpp">
+    <ClCompile Include="Logic\GUI\CGUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\GUI\CButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\GUI\CWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\CImage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,9 +105,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Events\CEventMessage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\CImageSurface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Render\CSDLRender.h">
@@ -170,10 +176,25 @@
     <ClInclude Include="Logic\Input\CMouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\Message\CMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Logic\Action\CAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Logic\Message\CMessage.h">
+    <ClInclude Include="Logic\GUI\CGUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\GUI\GUIStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\GUI\CButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logic\GUI\CWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\CImage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

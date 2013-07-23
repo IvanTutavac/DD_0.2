@@ -21,7 +21,7 @@
 #include "CRender.h"
 #include "SDL.h"
 #include <SDL_ttf.h>
-#include "CImageSurface.h"
+#include "CImage.h"
 #include <vector>
 
 //class CImageSurface;
@@ -37,13 +37,13 @@ private:
 	SDL_Window		*m_pWindow;
 	TTF_Font		*m_pHUDFont;
 	
-	std::vector<CImageSurface*> m_pVImage;
+	std::vector<CImage> m_vImage;
 
 	SDL_Rect		m_clearHUDRect;
 	SDL_Rect		m_clearTextBoxRect;
 
 
-	bool	LoadClasses();
+	bool	LoadImages();
 	bool	LoadFonts();
 
 	void	RenderImage(int x,int y,int w,int h,SDL_Texture *texture);

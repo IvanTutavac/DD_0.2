@@ -18,10 +18,25 @@
 */
 
 #pragma once
-#include <fstream>
-#include <string>
 
-void	Log(std::string	text);
-void	Log(std::string fileName,std::string text);
-void	CleanLogFile();
-void	CleanLogFile(std::string fileName);
+#include "GUIStructs.h"
+
+class CWindow;
+
+class CGUI
+{
+
+private:
+
+	CWindow	*m_pMenu;
+	CWindow *m_pOptions;
+	CWindow	*m_pInGame;
+
+public:
+
+	bool	Init();
+	void	Clean();
+
+	void	CheckClick(char key,int mouseX,int mouseY,ClickType clickType);
+	void	CreateSpellList(void* data);
+};

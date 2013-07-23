@@ -18,10 +18,30 @@
 */
 
 #pragma once
-#include <fstream>
-#include <string>
 
-void	Log(std::string	text);
-void	Log(std::string fileName,std::string text);
-void	CleanLogFile();
-void	CleanLogFile(std::string fileName);
+enum class ClickType
+{
+	pressedLeft,
+	releasedLeft,
+	pressedRight,
+	releasedRight
+};
+
+enum class Action
+{
+	nothing,
+	startGame,
+	lodaGame,
+	quitGame,
+	optionsInGame,
+	optionsMainMenu
+};
+
+enum class WindowType
+{
+	mainMenu,
+	optionsInGame,
+	options,
+	loadGame,
+	inGame
+};

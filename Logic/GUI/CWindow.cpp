@@ -17,11 +17,13 @@
     along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-#include <fstream>
-#include <string>
+#include "CWindow.h"
 
-void	Log(std::string	text);
-void	Log(std::string fileName,std::string text);
-void	CleanLogFile();
-void	CleanLogFile(std::string fileName);
+bool	CWindow::Init(WindowType type)
+{
+	return	true;
+}
+
+void	CWindow::Clean()
+{
+}

@@ -233,20 +233,23 @@ void	CAction::ConversationSelection(int mouseX,int mouseY,_TextRenderInfo &textR
 
 	if (CheckClick(mouseX,mouseY,118,240,404,height * 20))
 	{
-		renderFlags.textBoxState			=	RTBS_renderTextBox;
-		textRenderInfo.setTextBox			=	true;
-
-		for (int i = 0; i < height; i++)
+		if (Entity->m_VNpc[textRenderInfo.selectedNPCIndex].m_type == NPCType::quest)
 		{
-			if (mouseY >= 240+20*i && mouseY <= 240+20*(i+1))
-			{
-				// conversation index
-				textRenderInfo.selectedConversationIndex = Entity->m_VNpc[textRenderInfo.selectedNPCIndex].GetConversationIndex(i);				
-			}
-		}
+			renderFlags.textBoxState			=	RTBS_renderTextBox;
+			textRenderInfo.setTextBox			=	true;
 
-		// text index
-		Entity->m_VNpc[textRenderInfo.selectedNPCIndex].GetTextIndex(textRenderInfo.selectedTextIndex,textRenderInfo.selectedConversationIndex);
+			for (int i = 0; i < height; i++)
+			{
+				if (mouseY >= 240+20*i && mouseY <= 240+20*(i+1))
+				{
+					// conversation index
+					textRenderInfo.selectedConversationIndex = Entity->m_VNpc[textRenderInfo.selectedNPCIndex].GetConversationIndex(i);				
+				}
+			}
+
+			// text index
+			Entity->m_VNpc[textRenderInfo.selectedNPCIndex].GetTextIndex(textRenderInfo.selectedTextIndex,textRenderInfo.selectedConversationIndex);
+		}
 	}
 }
 
@@ -262,7 +265,7 @@ void	CAction::SetTileOnMap(int mouseX,int mouseY,CMap *Map)
 {
 	int k	=	(int)((mouseY + Map->m_cameraY-WINDOW_HEIGHT/2)/32);
 	int l	=	(int)((mouseX + Map->m_cameraX-WINDOW_WIDTH/2)/32);
-	
+
 	Map->m_mapEditor[k][l] = Map->m_selectedTile;
 }
 
