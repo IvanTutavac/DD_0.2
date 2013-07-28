@@ -197,5 +197,8 @@
     <ClInclude Include="Render\CImage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\GUI\CGUIRenderData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

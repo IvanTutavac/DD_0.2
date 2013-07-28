@@ -31,10 +31,10 @@ enum class Action
 {
 	nothing,
 	startGame,
-	lodaGame,
+	loadGame,
 	quitGame,
-	optionsInGame,
-	optionsMainMenu
+	options,
+	startMapEditor
 };
 
 enum class WindowType

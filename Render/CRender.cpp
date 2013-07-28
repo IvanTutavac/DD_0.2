@@ -20,6 +20,7 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "CRender.h"
+#include "..\Logic\GUI\CGUIRenderData.h"
 #include "..\Logic\Map\CMap.h"
 #include "..\const.h"
 
@@ -157,8 +158,15 @@ void	CRender::SetTextBox(std::string text)
 	m_text = text;
 }
 
-void	CRender::RenderMainMenu()
+void	CRender::RenderMainMenu(CGUIRenderData *Data)
 {
+	for (int i = 0; i  < Data->m_textDataLimit; i++)
+	{
+		VRenderButton(Data->m_textData[i].text,Data->m_textData[i].x,Data->m_textData[i].y,25,23,112);
+	}
+
+	return;
+	
 	VRenderButton("New game",WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144-64*3,25,23,112);
 	VRenderButton("Map editor",WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144-64*2,25,25,112);
 	VRenderButton("Options",WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144-64,25,25,112);
@@ -181,7 +189,7 @@ bool	CRender::CheckIfInWindowEx(int cameraX,int cameraY,int &x,int &y)
 	// get window locations
 	x = x - cameraX + WINDOW_WIDTH/2;
 	y = y - cameraY + WINDOW_HEIGHT/2;
-
+	
 	// do not allow the entity to be drawn outside of map
 	if (cameraX <= WINDOW_WIDTH/2)
 	{
@@ -208,10 +216,6 @@ bool	CRender::CheckIfInWindowEx(int cameraX,int cameraY,int &x,int &y)
 	}
 
 	// entity in window, let it be drawn
-	// koji vrag ? uopce ne manipulira s x i y a radi !?????
-	// provjeriti !
-	int tempX = x - cameraX - WINDOW_WIDTH/2;
-	int tempY = y - cameraY - WINDOW_HEIGHT/2;
 
 	return	true;
 }

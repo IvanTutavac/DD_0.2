@@ -31,6 +31,8 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 #include "Entity\CNPC.h"
 #include "Input\CMouse.h"
 #include "Action\CAction.h"
+#include "GUI\CGUI.h"
+#include "GUI\CWindow.h"
 #include "CSpell.h"
 #include "../CTimer.h"
 //#include "../configuration.h"
@@ -76,7 +78,8 @@ bool	CLogic::Init()
 	m_pEntity		=	DD_NEW CEntityManager;
 	m_pSpell		=	DD_NEW CSpell;
 	m_pMouse		=	DD_NEW CMouse;
-	m_pAction			=	DD_NEW CAction;
+	m_pAction		=	DD_NEW CAction;
+	m_pGUI			=	DD_NEW CGUI;
 
 	if (!m_pMap->Init())
 		return	false;
@@ -105,6 +108,10 @@ bool	CLogic::Init()
 	if (!m_pEntity->Init(m_pSpell))
 		return	false;
 	Log("Entities loaded");
+
+	if (!m_pGUI->Init())
+		return	false;
+	Log("GUI loaded");
 
 	m_pEntity->SetMapEnemy(m_pMap);
 
@@ -144,6 +151,9 @@ void	CLogic::Clean()
 
 	m_pSpell->Clean();
 	DD_DELETE(m_pSpell);
+
+	m_pGUI->Clean();
+	DD_DELETE(m_pGUI);
 }
 
 void	CLogic::InitFlags()
@@ -293,6 +303,9 @@ void	CLogic::Collision()
 	m_pCollision->SpellCollision(m_pMap,m_pEntity,m_pSpell);
 }
 
+// delete it later !!!!!!!!!!!
+#include "Message\CMessage.h"
+
 bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
 {
 	if (m_logicFlags.state == LGS_intro)
@@ -302,7 +315,31 @@ bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
 	{
 		if (EventMessage->m_Event.Event == AE_ReleasedLeftClick)
 		{
-			m_pMouse->MenuCLick(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
+			//m_pMouse->MenuCLick(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
+			m_pGUI->m_pMainMenu->CheckClick(EventMessage->m_Event.x,EventMessage->m_Event.y,ClickType::releasedLeft);
+
+			if (m_pGUI->m_pMainMenu->m_action == Action::options)
+			{
+				m_logicFlags.state		=	LGS_mainOptions;
+				m_renderFlags.state		=	RS_renderOptions;
+			}
+			else if (m_pGUI->m_pMainMenu->m_action == Action::startGame)
+			{
+				m_logicFlags.state		=	LGS_inGame;
+				m_renderFlags.state		=	RS_renderMap;
+				m_pMouse->m_pMessage->m_mouseMessage = MouseMessage::initMap;
+			}
+			else if (m_pGUI->m_pMainMenu->m_action == Action::startMapEditor)
+			{
+				m_logicFlags.state		=	LGS_mapEditor;
+				m_renderFlags.state		=	RS_renderMapEditor;
+				m_pMouse->m_pMessage->m_mouseMessage = MouseMessage::initMapEditor;
+			}
+			else if (m_pGUI->m_pMainMenu->m_action == Action::quitGame)
+			{
+				m_logicFlags.state		=	LGS_exit;
+				m_renderFlags.state		=	RS_renderGameExit;
+			}
 		}
 	}
 	else if (m_logicFlags.state == LGS_mainOptions || m_logicFlags.state == LGS_options)

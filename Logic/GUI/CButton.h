@@ -25,6 +25,7 @@ class CButton
 private:
 
 	int		m_x,m_y,m_w,m_h;
+	char	m_name[32];
 
 	Action	m_onReleaseLeft;
 	Action  m_onPressLeft;
@@ -35,16 +36,22 @@ private:
 
 public:
 
-	CButton();
+	CButton(char *name,int x_,int y_,int w_,int h_);
 
 	Action	m_action;
 
 	// if the widget was clicked the m_action will be set 
-	void	CheckIfClicked(int mouseX,int mouseY,ClickType clickType);
+	bool	CheckIfClicked(int mouseX,int mouseY,ClickType clickType);
 	
 	void	SetMouse(Action lefClick,Action leftRelease,Action rightClick, Action rightRelease);
 	void	SetOnPressLeft(Action action);
 	void	SetOnReleaseLeft(Action action);
 	void	SetOnPressRight(Action action);
 	void	SetOnReleaseRight(Action action);
+
+	int		GetX();
+	int		GetY();
+	int		GetW();
+	int		GetH();
+	char*	GetName();
 };

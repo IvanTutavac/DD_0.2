@@ -34,7 +34,8 @@
 #include "Logic\Entity\CNPC.h"
 #include "Logic\CConversation.h"
 #include "Logic\Input\CMouse.h"
-
+#include "Logic\GUI\CGUI.h"
+#include "Logic\GUI\CWindow.h"
 
 // default configuration
 bool			g_grabMode	=	true;
@@ -186,7 +187,7 @@ bool	CGame::Render(double deltaTime)
 	if (m_pLogic->m_renderFlags.state == RS_renderMainMenu)
 	{
 		m_pRender->VClearWindow();
-		m_pRender->RenderMainMenu();
+		m_pRender->RenderMainMenu(m_pLogic->m_pGUI->m_pMainMenu->m_renderData);
 	}
 	else if (m_pLogic->m_renderFlags.state == RS_renderOptions)
 	{

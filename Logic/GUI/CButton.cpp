@@ -18,10 +18,13 @@
 */
 
 #include "CButton.h"
+#include <string>
 
-CButton::CButton()
+CButton::CButton(char *name,int x_,int y_,int w_,int h_)
 {
-	m_x = 0, m_y = 0, m_w = 0, m_h = 0;
+	m_x = x_, m_y = y_, m_w = w_, m_h = h_;
+
+	strcpy_s(m_name,name);
 
 	m_onReleaseLeft		=	Action::nothing;
 	m_onPressLeft		=	Action::nothing;
@@ -60,27 +63,37 @@ void	CButton::SetMouse(Action leftClick,Action leftRelease,Action rightClick,Act
 	m_onReleaseRight	=	rightRelease;
 }
 
-void	CButton::CheckIfClicked(int mouseX,int mouseY,ClickType clickType)
+bool	CButton::CheckIfClicked(int mouseX,int mouseY,ClickType clickType)
 {
 	if (CheckClick(mouseX,mouseY,m_x,m_y,m_w,m_h))
 	{
 		if (clickType == ClickType::pressedLeft)
 		{
 			m_action = m_onPressLeft;
+			
+			return true;
 		}
 		else if (clickType == ClickType::releasedLeft)
 		{
 			m_action = m_onReleaseLeft;
+			
+			return true;
 		}
 		else if (clickType == ClickType::pressedRight)
 		{
 			m_action = m_onPressRight;
+			
+			return true;
 		}
 		else if (clickType == ClickType::releasedRight)
 		{
 			m_action = m_onReleaseRight;
+			
+			return	true;
 		}
 	}
+
+	return	false;
 }
 
 bool	CButton::CheckClick(int x1,int y1,int x2,int y2,int w2,int h2)
@@ -89,4 +102,29 @@ bool	CButton::CheckClick(int x1,int y1,int x2,int y2,int w2,int h2)
 		return	true;
 
 	return	false;
+}
+
+int		CButton::GetX()
+{
+	return	m_x;
+}
+
+int		CButton::GetY()
+{
+	return	m_y;
+}
+
+int		CButton::GetH()
+{
+	return	m_h;
+}
+
+int		CButton::GetW()
+{
+	return	m_w;
+}
+
+char*	CButton::GetName()
+{
+	return	m_name;
 }

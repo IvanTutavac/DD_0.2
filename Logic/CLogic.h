@@ -29,6 +29,7 @@ class CSpell;
 class CQuestManager;
 class CMouse;
 class CAction;
+class CGUI;
 
 class CLogic
 {
@@ -95,6 +96,7 @@ public:
 	CMap			*m_pMap;
 	CEntityManager  *m_pEntity;
 	CSpell			*m_pSpell;
+	CGUI			*m_pGUI;
 
 	bool			Init();
 	void			Clean();

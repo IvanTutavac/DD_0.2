@@ -124,6 +124,7 @@
     <ClInclude Include="Logic\Entity\CEntityManager.h" />
     <ClInclude Include="Logic\GUI\CGUI.h" />
     <ClInclude Include="Logic\GUI\CButton.h" />
+    <ClInclude Include="Logic\GUI\CGUIRenderData.h" />
     <ClInclude Include="Logic\GUI\CWindow.h" />
     <ClInclude Include="Logic\GUI\GUIStructs.h" />
     <ClInclude Include="Logic\Input\CMouse.h" />

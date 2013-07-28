@@ -18,14 +18,29 @@
 */
 
 #include "CButton.h"
+#include <vector>
+
+class CGUIRenderData;
 
 class CWindow
 {
-
 private:
+
+	std::vector<CButton> m_button;
+
+	bool	InitOptionsWindow();
+	bool	InitMainMenu();
+
+	void	SetRenderButtonData();
 
 public:
 
+	CGUIRenderData *m_renderData;
+	Action	m_action; // check click sets it
+
 	bool	Init(WindowType type);
 	void	Clean();
+
+	void	CheckClick(int mouseX,int mouseY,ClickType clickType);
+
 };

@@ -17,38 +17,44 @@
     along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CGUI.h"
-#include "CWindow.h"
-#include "..\..\debug.h"
+#pragma once
 
-bool	CGUI::Init()
+const	int DATA_I = 32;
+
+struct _valueData
 {
-	m_pMainMenu	=	DD_NEW CWindow;
-	m_pOptions	=	DD_NEW CWindow;
-	m_pInGame	=	DD_NEW CWindow;
+	int value;
+	int	x,y,w,h;
+};
 
-	if (!m_pMainMenu->Init(WindowType::mainMenu))
-		return	false;
-
-	if (!m_pOptions->Init(WindowType::options))
-		return	false;
-
-	if (!m_pInGame->Init(WindowType::inGame))
-		return	false;
-
-	return	true;
-}
-
-void	CGUI::Clean()
+struct _textData
 {
-	m_pMainMenu->Clean();
-	m_pOptions->Clean();
-	m_pInGame->Clean();
-	
-	DD_DELETE(m_pMainMenu);
-	DD_DELETE(m_pOptions);
-	DD_DELETE(m_pInGame);
-}
+	char *text;
+	int	x,y,w,h;
+};
 
+struct _boxData
+{
+	int	img;
+	int	x,y,h,w;
+};
 
+// render reads this class 
+// CGUI fills it with data
+class CGUIRenderData
+{
+private:
 
+public:
+
+	_valueData	m_valueData[DATA_I];
+	_textData	m_textData[DATA_I];
+	_boxData	m_boxData[DATA_I];
+
+	// upper limit
+	// for (int i = 0; i < m_valueDataLimit)
+	//	m_valueData[i].
+	int			m_valueDataLimit;
+	int			m_textDataLimit;
+	int			m_boxDataLimit;
+};

@@ -10,6 +10,7 @@ Player loaded
 Enemies loaded
 Npc loaded
 Entities loaded
+GUI loaded
 Logic init finished
 Window...
 TTF_Init ...

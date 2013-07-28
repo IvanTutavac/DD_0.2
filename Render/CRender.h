@@ -22,6 +22,7 @@
 
 class CMap;
 class CMessage;
+class CGUIRenderData;
 
 class CRender
 {
@@ -66,7 +67,7 @@ public:
 	void	RenderMap(CMap *MapPointer);
 	void	RenderMapEditor(CMap *MapPointer);
 	void	RenderAllTiles(CMap *MapPointer);
-	void    RenderMainMenu();
+	void    RenderMainMenu(CGUIRenderData *Data);
 	void	SetTextBox(std::string text);
 	void	RenderHUD(int fps,int hp,int mp);
 

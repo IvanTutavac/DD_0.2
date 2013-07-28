@@ -26,9 +26,9 @@ class CWindow;
 class CGUI
 {
 
-private:
+public:
 
-	CWindow	*m_pMenu;
+	CWindow	*m_pMainMenu;
 	CWindow *m_pOptions;
 	CWindow	*m_pInGame;
 
@@ -36,7 +36,5 @@ public:
 
 	bool	Init();
 	void	Clean();
-
-	void	CheckClick(char key,int mouseX,int mouseY,ClickType clickType);
-	void	CreateSpellList(void* data);
+	
 };
