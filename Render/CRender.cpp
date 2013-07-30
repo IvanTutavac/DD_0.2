@@ -23,6 +23,7 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 #include "..\Logic\GUI\CGUIRenderData.h"
 #include "..\Logic\Map\CMap.h"
 #include "..\const.h"
+#include "..\configuration.h"
 
 void	CRender::RenderAllTiles(CMap *MapPointer)
 {
@@ -158,15 +159,48 @@ void	CRender::SetTextBox(std::string text)
 	m_text = text;
 }
 
-void	CRender::RenderMainMenu(CGUIRenderData *Data)
+void	CRender::RenderOptions()
+{
+	VRenderButton("Grab mode:",32,32,25,25,112);
+
+	if (g_grabMode == true)
+		VRenderText("Yes",230,57,25,25,112);
+	else
+		VRenderText("No",230,57,25,25,112);
+
+	VRenderButton("Limit FPS:",32,96,25,25,112);
+
+	if (g_FPSLimit)
+		VRenderText("Yes",230,121,25,25,112);
+	else
+		VRenderText("No",230,121,25,25,112);
+
+	VRenderButton("640 x 480",32,160,25,25,112);
+	VRenderButton("800 x 600",32,224,25,25,112);
+	VRenderButton("1024 x 768",32,288,25,25,112);
+
+	VRenderButton("Return",128,WINDOW_HEIGHT,25,25,112);
+	VRenderButton("Exit",320,WINDOW_HEIGHT,25,25,112);
+}
+
+void	CRender::RenderButtons(CGUIRenderData *Data)
 {
 	for (int i = 0; i  < Data->m_textDataLimit; i++)
 	{
 		VRenderButton(Data->m_textData[i].text,Data->m_textData[i].x,Data->m_textData[i].y,25,23,112);
 	}
+}
 
-	return;
-	
+void	CRender::RenderStringData(CGUIRenderData *Data)
+{
+	for (int i = 0; i < Data->m_stringDataLimit; i++)
+	{
+		VRenderText(Data->m_stringData[i].text->c_str(),Data->m_stringData[i].x,Data->m_stringData[i].y,25,25,112);
+	}
+}
+
+void	CRender::RenderMainMenu()
+{	
 	VRenderButton("New game",WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144-64*3,25,23,112);
 	VRenderButton("Map editor",WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144-64*2,25,25,112);
 	VRenderButton("Options",WINDOW_WIDTH/2-96,WINDOW_HEIGHT-144-64,25,25,112);

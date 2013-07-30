@@ -57,8 +57,7 @@ public:
 
 	virtual void	VUpdateWindow()=0;
 
-	virtual void	VRenderOptions()=0;
-	virtual void	VRenderText(char *text,int x,int y,int r,int  g,int b)=0;
+	virtual void	VRenderText(const char *text,int x,int y,int r,int  g,int b)=0;
 	virtual void	VRenderValue(int value,int x,int y,int r,int g,int b)=0;
 	virtual void	VRenderButton(char *text,int x,int y,int r,int g,int b)=0;
 	virtual bool	VRenderTextBox(unsigned int &words,bool &next,bool first)=0;
@@ -67,7 +66,10 @@ public:
 	void	RenderMap(CMap *MapPointer);
 	void	RenderMapEditor(CMap *MapPointer);
 	void	RenderAllTiles(CMap *MapPointer);
-	void    RenderMainMenu(CGUIRenderData *Data);
+	void	RenderOptions();
+	void	RenderButtons(CGUIRenderData *Data);
+	void	RenderStringData(CGUIRenderData *Data);
+	void    RenderMainMenu();
 	void	SetTextBox(std::string text);
 	void	RenderHUD(int fps,int hp,int mp);
 

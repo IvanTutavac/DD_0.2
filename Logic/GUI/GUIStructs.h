@@ -34,7 +34,13 @@ enum class Action
 	loadGame,
 	quitGame,
 	options,
-	startMapEditor
+	startMapEditor,
+	checkGrabMode,
+	checkFPSLimit,
+	changeRes640x480,
+	changeRes800x600,
+	changeRes1024x768,
+	startMainMenu
 };
 
 enum class WindowType

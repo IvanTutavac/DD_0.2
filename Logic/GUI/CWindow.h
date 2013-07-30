@@ -18,6 +18,7 @@
 */
 
 #include "CButton.h"
+#include "CTextBox.h"
 #include <vector>
 
 class CGUIRenderData;
@@ -26,21 +27,26 @@ class CWindow
 {
 private:
 
+	WindowType	m_type;
+
 	std::vector<CButton> m_button;
+	std::vector<CTextBox> m_textBox;
 
 	bool	InitOptionsWindow();
+	void	UpdateOptionsData();
 	bool	InitMainMenu();
 
-	void	SetRenderButtonData();
+	void	SetRenderTextData(bool button);
+	void	SetRenderStringData(bool textBox);
 
 public:
 
 	CGUIRenderData *m_renderData;
 	Action	m_action; // check click sets it
 
+	void	UpdateData(WindowType type);
 	bool	Init(WindowType type);
 	void	Clean();
 
 	void	CheckClick(int mouseX,int mouseY,ClickType clickType);
-
 };

@@ -17,9 +17,23 @@
     along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include <string>
 
-extern bool g_grabMode;
-extern bool	g_FPSLimit;
-extern int  g_windowX;
-extern int  g_windowY;
+class CTextBox
+{
+private:
+
+	std::string m_text;
+	int	m_x,m_y,m_w,m_h;
+
+public:
+
+	CTextBox(std::string text,int x,int y,int w,int h);
+
+	std::string* GetText();
+	void	SetText(std::string text);
+	int		GetX();
+	int		GetY();
+	int		GetW();
+	int		GetH();
+};

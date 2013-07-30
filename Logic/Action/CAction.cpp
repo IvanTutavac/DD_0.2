@@ -116,6 +116,37 @@ bool	CAction::ReadMouseMessage(CMessage *Message,CMap *Map,CQuestManager *Quest,
 	return	returnValue;
 }
 
+bool	CAction::ReadGUIClick(CMap *Map,Action &action,_logicFlags &logicFlags,_renderFlags &renderFlags)
+{
+	if (action == Action::startGame)
+	{
+		if (!StartGame(logicFlags,renderFlags,Map))
+			return	false;
+	}
+	else if (action == Action::loadGame)
+	{
+		if (!LoadGame(logicFlags,renderFlags,Map))
+			return	false;
+	}
+	else if (action == Action::options)
+	{
+		StartMenuOptions(logicFlags,renderFlags);
+	}
+	else if (action == Action::quitGame)
+	{
+		QuitGame(logicFlags,renderFlags);
+	}
+	else if (action == Action::startMapEditor)
+	{
+		if (!StartMapEditor(logicFlags,renderFlags,Map))
+			return	false;
+	}
+
+	action = Action::nothing;
+
+	return	true;
+}
+
 bool	CAction::InitMapEditor(CMap *Map)
 {
 	Map->m_cameraX = 320;
@@ -278,6 +309,43 @@ void	CAction::InitAllTiles(CMap *Map)
 	{
 		Map->InitAllTilesMap();
 	}
+}
+
+bool	CAction::StartGame(_logicFlags &logicFlags,_renderFlags &renderFlags,CMap *Map)
+{
+	logicFlags.state	=	LGS_inGame;
+	renderFlags.state	=	RS_renderMap;
+
+	if (!InitMap(Map))
+		return	false;
+	return	true;
+}
+
+bool	CAction::StartMapEditor(_logicFlags &logicFlags,_renderFlags &renderFlags,CMap *Map)
+{
+	logicFlags.state	=	LGS_mapEditor;
+	renderFlags.state	=	RS_renderMapEditor;
+
+	if (!InitMapEditor(Map))
+		return	false;
+	return	true;
+}
+
+void	CAction::StartMenuOptions(_logicFlags &logicFlags,_renderFlags &renderFlags)
+{
+	logicFlags.state	=	LGS_mainOptions;
+	renderFlags.state	=	RS_renderOptions;
+}
+
+void	CAction::QuitGame(_logicFlags &logicFlags,_renderFlags &renderFlags)
+{
+	logicFlags.state	=	LGS_exit;
+	renderFlags.state	=	RS_renderGameExit;
+}
+
+bool	CAction::LoadGame(_logicFlags &logicFlags,_renderFlags &renderFlags,CMap *Map)
+{
+	return	true;
 }
 
 bool	CAction::CheckClick(int x1,int y1,int x2,int y2,int w2,int h2)

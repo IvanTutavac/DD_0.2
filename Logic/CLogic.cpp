@@ -317,28 +317,8 @@ bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
 		{
 			//m_pMouse->MenuCLick(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
 			m_pGUI->m_pMainMenu->CheckClick(EventMessage->m_Event.x,EventMessage->m_Event.y,ClickType::releasedLeft);
-
-			if (m_pGUI->m_pMainMenu->m_action == Action::options)
 			{
-				m_logicFlags.state		=	LGS_mainOptions;
-				m_renderFlags.state		=	RS_renderOptions;
-			}
-			else if (m_pGUI->m_pMainMenu->m_action == Action::startGame)
-			{
-				m_logicFlags.state		=	LGS_inGame;
-				m_renderFlags.state		=	RS_renderMap;
-				m_pMouse->m_pMessage->m_mouseMessage = MouseMessage::initMap;
-			}
-			else if (m_pGUI->m_pMainMenu->m_action == Action::startMapEditor)
-			{
-				m_logicFlags.state		=	LGS_mapEditor;
-				m_renderFlags.state		=	RS_renderMapEditor;
-				m_pMouse->m_pMessage->m_mouseMessage = MouseMessage::initMapEditor;
-			}
-			else if (m_pGUI->m_pMainMenu->m_action == Action::quitGame)
-			{
-				m_logicFlags.state		=	LGS_exit;
-				m_renderFlags.state		=	RS_renderGameExit;
+				m_action	=	m_pGUI->m_pMainMenu->m_action;
 			}
 		}
 	}
@@ -395,6 +375,10 @@ void	CLogic::CheckPlayerInput(const CEventMessage *EventMessage)
 
 bool	CLogic::Action()
 {
+	if (!m_pAction->ReadGUIClick(m_pMap,m_action,m_logicFlags,m_renderFlags))
+	{
+		return	false;
+	}
 	if (!m_pAction->ReadMouseMessage(m_pMouse->m_pMessage,m_pMap,m_pQuest,m_pEntity,m_textRenderInfo,m_renderFlags))
 	{
 		return	false;

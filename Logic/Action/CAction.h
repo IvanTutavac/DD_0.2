@@ -20,6 +20,7 @@
 #pragma once
 
 #include "..\dataStructs.h"
+#include "..\GUI\GUIStructs.h"
 
 class CMessage;
 class CMap;
@@ -38,7 +39,6 @@ private:
 
 	bool			CheckClick(int x1,int y1,int x2,int y2,int w2,int h2);
 
-	// ReadMouseMessage calls these
 	void			ChangeFPSLock();
 	void			ChangeGrabMode(CMessage *Message);
 	void			ChangeResolution(CMessage *Message,int x,int y);
@@ -49,6 +49,11 @@ private:
 	void			SetTileSelected(int mouseX,int mouseY,CMap *Map);
 	void			SetTileOnMap(int mouseX,int mouseY,CMap *Map);
 	void			InitAllTiles(CMap *Map);
+	bool			StartGame(_logicFlags &logicFlags,_renderFlags &renderFlags,CMap *Map);
+	bool			LoadGame(_logicFlags &logicFlags,_renderFlags &renderFlags,CMap *Map);
+	void			StartMenuOptions(_logicFlags &logicFlags,_renderFlags &renderFlags);
+	void			QuitGame(_logicFlags &logicFlags,_renderFlags &renderFlags);
+	bool			StartMapEditor(_logicFlags &logicFlags,_renderFlags &renderFlags,CMap *Map);
 
 public:
 
@@ -56,6 +61,7 @@ public:
 	void	Clean();
 
 	bool	ReadMouseMessage(CMessage *Message,CMap *Map,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo,_renderFlags &renderFlags);
+	bool	ReadGUIClick(CMap *Map,Action &action,_logicFlags &logicFlags,_renderFlags &renderFlags);
 
 	// grab mode affects camera
 	bool	isCameraEnabled();

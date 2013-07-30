@@ -20,6 +20,7 @@
 #pragma once
 #include <vector>
 #include "dataStructs.h"
+#include "GUI\GUIStructs.h"
 
 class CMap;
 class CMovement;
@@ -40,6 +41,7 @@ private:
 	CMovement		*m_pMovement;
 	CCollision		*m_pCollision;
 	CAction			*m_pAction;
+	Action			m_action; // GUI sets it, CAction reads it
 
 	_lockFlags		m_lockFlags;
 	_logicFlags		m_logicFlags;

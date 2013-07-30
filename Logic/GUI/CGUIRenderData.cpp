@@ -17,9 +17,5 @@
     along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "CGUIRenderData.h"
 
-extern bool g_grabMode;
-extern bool	g_FPSLimit;
-extern int  g_windowX;
-extern int  g_windowY;

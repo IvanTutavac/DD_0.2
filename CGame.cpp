@@ -187,12 +187,15 @@ bool	CGame::Render(double deltaTime)
 	if (m_pLogic->m_renderFlags.state == RS_renderMainMenu)
 	{
 		m_pRender->VClearWindow();
-		m_pRender->RenderMainMenu(m_pLogic->m_pGUI->m_pMainMenu->m_renderData);
+		m_pRender->RenderButtons(m_pLogic->m_pGUI->m_pMainMenu->m_renderData);
+		//m_pRender->RenderMainMenu();
 	}
 	else if (m_pLogic->m_renderFlags.state == RS_renderOptions)
 	{
 		m_pRender->VClearWindow();
-		m_pRender->VRenderOptions();
+		m_pRender->RenderButtons(m_pLogic->m_pGUI->m_pOptions->m_renderData);
+		m_pRender->RenderStringData(m_pLogic->m_pGUI->m_pOptions->m_renderData);
+		//m_pRender->RenderOptions();
 	}
 	else if (m_pLogic->m_renderFlags.state == RS_renderMap)
 	{

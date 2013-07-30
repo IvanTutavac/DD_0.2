@@ -126,30 +126,6 @@ void	CSDLRender::VUpdateWindow()
 	//SDL_Flip(m_pWindow);
 }
 
-void	CSDLRender::VRenderOptions()
-{
-	VRenderButton("Grab mode:",32,32,25,25,112);
-
-	if (g_grabMode == true)
-		VRenderText("Yes",230,57,25,25,112);
-	else
-		VRenderText("No",230,57,25,25,112);
-
-	VRenderButton("Limit FPS:",32,96,25,25,112);
-
-	if (g_FPSLimit)
-		VRenderText("Yes",230,121,25,25,112);
-	else
-		VRenderText("No",230,121,25,25,112);
-
-	VRenderButton("640 x 480",32,160,25,25,112);
-	VRenderButton("800 x 600",32,224,25,25,112);
-	VRenderButton("1024 x 768",32,288,25,25,112);
-
-	VRenderButton("Return",128,WINDOW_HEIGHT,25,25,112);
-	VRenderButton("Exit",320,WINDOW_HEIGHT,25,25,112);
-}
-
 void	CSDLRender::VRenderImage(int x,int y,int w,int h,const int type,int i)
 {
 	RenderImage(x,y,w,h,m_vImage[type].m_vTexture[i].texture);
@@ -166,7 +142,7 @@ void	CSDLRender::VRenderImage(int x,int y,const int type,int i)
 	//RenderImage(x,y,cutX,cutY,m_VImage[type]->m_imageSurface[i],m_pWindow);
 }*/
 
-void	CSDLRender::VRenderText(char *text,int x,int y,int r,int g,int b)
+void	CSDLRender::VRenderText(const char *text,int x,int y,int r,int g,int b)
 {
 	SDL_Color	fontColor;
 	fontColor.r =  r,fontColor.g = g,fontColor.b = b;

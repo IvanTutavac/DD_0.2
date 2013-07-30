@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <string>
+
 const	int DATA_I = 32;
 
 struct _valueData
@@ -31,6 +33,12 @@ struct _textData
 {
 	char *text;
 	int	x,y,w,h;
+};
+
+struct _stringData
+{
+	std::string *text;
+	int x,y,w,h;
 };
 
 struct _boxData
@@ -49,6 +57,7 @@ public:
 
 	_valueData	m_valueData[DATA_I];
 	_textData	m_textData[DATA_I];
+	_stringData m_stringData[DATA_I];
 	_boxData	m_boxData[DATA_I];
 
 	// upper limit
@@ -57,4 +66,5 @@ public:
 	int			m_valueDataLimit;
 	int			m_textDataLimit;
 	int			m_boxDataLimit;
+	int			m_stringDataLimit;
 };

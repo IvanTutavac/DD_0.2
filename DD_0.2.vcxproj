@@ -91,6 +91,8 @@
     <ClCompile Include="Logic\Entity\CEntityManager.cpp" />
     <ClCompile Include="Logic\GUI\CGUI.cpp" />
     <ClCompile Include="Logic\GUI\CButton.cpp" />
+    <ClCompile Include="Logic\GUI\CGUIRenderData.cpp" />
+    <ClCompile Include="Logic\GUI\CTextBox.cpp" />
     <ClCompile Include="Logic\GUI\CWindow.cpp" />
     <ClCompile Include="Logic\Input\CMouse.cpp" />
     <ClCompile Include="Logic\Map\CCollision.cpp" />
@@ -125,6 +127,7 @@
     <ClInclude Include="Logic\GUI\CGUI.h" />
     <ClInclude Include="Logic\GUI\CButton.h" />
     <ClInclude Include="Logic\GUI\CGUIRenderData.h" />
+    <ClInclude Include="Logic\GUI\CTextBox.h" />
     <ClInclude Include="Logic\GUI\CWindow.h" />
     <ClInclude Include="Logic\GUI\GUIStructs.h" />
     <ClInclude Include="Logic\Input\CMouse.h" />

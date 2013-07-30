@@ -20,20 +20,25 @@
 #include "CWindow.h"
 #include "CGUIRenderData.h"
 #include "..\..\const.h"
+#include "..\..\configuration.h"
 #include "..\..\debug.h"
 
 bool	CWindow::Init(WindowType type)
 {
+	m_type	=	type;
+
 	m_renderData	=	DD_NEW CGUIRenderData; 
 
 	if (type == WindowType::options)
 	{
 		InitOptionsWindow();
+		SetRenderTextData(true);
+		//SetRenderStringData(true); // UpdateData will do this (InitOptionsWindow calls it)...
 	}
 	else if (type == WindowType::mainMenu)
 	{
 		InitMainMenu();
-		SetRenderButtonData();
+		SetRenderTextData(true);
 	}
 
 	return	true;
@@ -68,22 +73,112 @@ bool	CWindow::InitMainMenu()
 
 bool	CWindow::InitOptionsWindow()
 {
+	CTextBox	grabMode("",230,57,32,32);
+	CTextBox	fpsLimit("",230,121,32,32);
+
+	CButton		grab("Grab mode:",32,32,192,64);
+	grab.SetOnReleaseLeft(Action::checkGrabMode);
+
+	CButton		FPS("Limit FPS:",32,96,192,64);
+	FPS.SetOnReleaseLeft(Action::checkFPSLimit);
+
+	CButton		Res1("640 x 480",32,160,192,64);
+	Res1.SetOnReleaseLeft(Action::changeRes640x480);
+
+	CButton		Res2("800 x 600",32,224,192,64);
+	Res2.SetOnReleaseLeft(Action::changeRes800x600);
+
+	CButton		Res3("1024 x 768",32,288,192,64);
+	Res3.SetOnReleaseLeft(Action::changeRes1024x768);
+
+	CButton		Return("Return",128,WINDOW_HEIGHT,192,64);
+	Return.SetOnReleaseLeft(Action::startMainMenu);
+
+	CButton		Exit("Exit",320,WINDOW_HEIGHT,192,64);
+	Exit.SetOnReleaseLeft(Action::quitGame);
+
+	m_button.push_back(grab);
+	m_button.push_back(FPS);
+	m_button.push_back(Res1);
+	m_button.push_back(Res2);
+	m_button.push_back(Res3);
+	m_button.push_back(Return);
+	m_button.push_back(Exit);
+
+	m_textBox.push_back(grabMode);
+	m_textBox.push_back(fpsLimit);
+
+	UpdateOptionsData();
+
 	return	true;
 }
 
-void	CWindow::SetRenderButtonData()
+void	CWindow::UpdateOptionsData()
+{
+	if (g_grabMode == true)
+	{
+		m_textBox[0].SetText("Yes");
+	}
+	else
+	{
+		m_textBox[0].SetText("No");
+	}
+
+	if (g_FPSLimit == true)
+	{
+		m_textBox[1].SetText("Yes");
+	}
+	else
+	{
+		m_textBox[1].SetText("No");
+	}
+
+	SetRenderStringData(true);
+}
+
+void	CWindow::UpdateData(WindowType type)
+{
+	if (type == WindowType::options && type == m_type)
+	{
+		UpdateOptionsData();
+	}
+}
+
+void	CWindow::SetRenderTextData(bool button)
 {
 	m_renderData->m_textDataLimit = 0;
 
-	for (size_t i = 0; i < m_button.size(); i++)
+	if (button)
 	{
-		m_renderData->m_textData[i].x		=	m_button[i].GetX();
-		m_renderData->m_textData[i].y		=	m_button[i].GetY();
-		m_renderData->m_textData[i].w		=	m_button[i].GetW();
-		m_renderData->m_textData[i].h		=	m_button[i].GetH();
-		m_renderData->m_textData[i].text	=	m_button[i].GetName();
+		for (size_t i = 0; i < m_button.size(); i++)
+		{
+			m_renderData->m_textData[i].x		=	m_button[i].GetX();
+			m_renderData->m_textData[i].y		=	m_button[i].GetY();
+			m_renderData->m_textData[i].w		=	m_button[i].GetW();
+			m_renderData->m_textData[i].h		=	m_button[i].GetH();
+			m_renderData->m_textData[i].text	=	m_button[i].GetName();
 
-		m_renderData->m_textDataLimit++;
+			m_renderData->m_textDataLimit++;
+		}
+	}
+}
+
+void	CWindow::SetRenderStringData(bool textBox)
+{
+	m_renderData->m_stringDataLimit  = 0;
+
+	if (textBox)
+	{
+		for (size_t i = 0; i < m_textBox.size(); i++)
+		{
+			m_renderData->m_stringData[i].x		=	m_textBox[i].GetX();
+			m_renderData->m_stringData[i].y		=	m_textBox[i].GetY();
+			m_renderData->m_stringData[i].w		=	m_textBox[i].GetW();
+			m_renderData->m_stringData[i].h		=	m_textBox[i].GetH();
+			m_renderData->m_stringData[i].text	=	m_textBox[i].GetText();
+			
+			m_renderData->m_stringDataLimit++;
+		}
 	}
 }
 

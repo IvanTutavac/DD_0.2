@@ -74,8 +74,7 @@ public:
 
 	void	VUpdateWindow() override;
 	
-	void	VRenderOptions() override;
-	void	VRenderText(char *text,int x,int y,int r,int g,int b) override;
+	void	VRenderText(const char *text,int x,int y,int r,int g,int b) override;
 	void	VRenderValue(int value,int x,int y,int r,int g,int b) override;
 	void	VRenderButton(char *text,int x,int y,int r,int g,int b) override;
 	
