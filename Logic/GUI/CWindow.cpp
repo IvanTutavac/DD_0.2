@@ -33,7 +33,8 @@ bool	CWindow::Init(WindowType type)
 	{
 		InitOptionsWindow();
 		SetRenderTextData(true);
-		//SetRenderStringData(true); // UpdateData will do this (InitOptionsWindow calls it)...
+		SetRenderStringData(true); 
+		UpdateOptionsData();
 	}
 	else if (type == WindowType::mainMenu)
 	{
@@ -108,9 +109,6 @@ bool	CWindow::InitOptionsWindow()
 	m_textBox.push_back(grabMode);
 	m_textBox.push_back(fpsLimit);
 
-	UpdateOptionsData();
-	SetRenderTextData(true);
-
 	return	true;
 }
 
@@ -170,15 +168,15 @@ void	CWindow::UpdateMenuResData()
 	m_renderData->m_textData[1].x = m_button[1].GetX();
 	m_renderData->m_textData[1].y = m_button[1].GetY();
 
-	m_button[1].SetX(WINDOW_WIDTH/2-96);
-	m_button[1].SetY(WINDOW_HEIGHT-144-64);
-	m_renderData->m_textData[1].x = m_button[1].GetX();
-	m_renderData->m_textData[1].y = m_button[1].GetY();
+	m_button[2].SetX(WINDOW_WIDTH/2-96);
+	m_button[2].SetY(WINDOW_HEIGHT-144-64);
+	m_renderData->m_textData[2].x = m_button[2].GetX();
+	m_renderData->m_textData[2].y = m_button[2].GetY();
 
-	m_button[1].SetX(WINDOW_WIDTH/2-96);
-	m_button[1].SetY(WINDOW_HEIGHT-144);
-	m_renderData->m_textData[1].x = m_button[1].GetX();
-	m_renderData->m_textData[1].y = m_button[1].GetY();
+	m_button[3].SetX(WINDOW_WIDTH/2-96);
+	m_button[3].SetY(WINDOW_HEIGHT-144);
+	m_renderData->m_textData[3].x = m_button[3].GetX();
+	m_renderData->m_textData[3].y = m_button[3].GetY();
 }
 
 void	CWindow::UpdateOptionsResData()
@@ -188,7 +186,7 @@ void	CWindow::UpdateOptionsResData()
 		if (!strcmp(m_button[i].GetName(),"Return") || !(strcmp(m_button[i].GetName(),"Exit")))
 		{
 			m_button[i].SetY(WINDOW_HEIGHT);
-			m_renderData->m_textData[i].x = m_button[i].GetY();
+			m_renderData->m_textData[i].y = m_button[i].GetY();
 		}
 	}
 }
