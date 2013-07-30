@@ -128,3 +128,13 @@ char*	CButton::GetName()
 {
 	return	m_name;
 }
+
+void	CButton::SetX(int x_)
+{
+	m_x = x_;
+}
+
+void	CButton::SetY(int y_)
+{
+	m_y = y_;
+}

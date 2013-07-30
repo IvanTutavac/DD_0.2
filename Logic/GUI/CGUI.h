@@ -36,5 +36,7 @@ public:
 
 	bool	Init();
 	void	Clean();
+
+	void	UpdateResData();
 	
 };

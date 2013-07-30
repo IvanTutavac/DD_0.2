@@ -92,7 +92,7 @@ bool	CWindow::InitOptionsWindow()
 	Res3.SetOnReleaseLeft(Action::changeRes1024x768);
 
 	CButton		Return("Return",128,WINDOW_HEIGHT,192,64);
-	Return.SetOnReleaseLeft(Action::startMainMenu);
+	Return.SetOnReleaseLeft(Action::returnFromOptions);
 
 	CButton		Exit("Exit",320,WINDOW_HEIGHT,192,64);
 	Exit.SetOnReleaseLeft(Action::quitGame);
@@ -109,6 +109,7 @@ bool	CWindow::InitOptionsWindow()
 	m_textBox.push_back(fpsLimit);
 
 	UpdateOptionsData();
+	SetRenderTextData(true);
 
 	return	true;
 }
@@ -118,29 +119,77 @@ void	CWindow::UpdateOptionsData()
 	if (g_grabMode == true)
 	{
 		m_textBox[0].SetText("Yes");
+		m_renderData->m_stringData[0].text = m_textBox[0].GetText();
 	}
 	else
 	{
 		m_textBox[0].SetText("No");
+		m_renderData->m_stringData[0].text = m_textBox[0].GetText();
 	}
 
 	if (g_FPSLimit == true)
 	{
 		m_textBox[1].SetText("Yes");
+		m_renderData->m_stringData[1].text = m_textBox[1].GetText();
 	}
 	else
 	{
 		m_textBox[1].SetText("No");
+		m_renderData->m_stringData[1].text = m_textBox[1].GetText();
 	}
-
-	SetRenderStringData(true);
 }
 
 void	CWindow::UpdateData(WindowType type)
 {
 	if (type == WindowType::options && type == m_type)
-	{
+	{	
 		UpdateOptionsData();
+	}
+}
+
+void	CWindow::UpdateResData()
+{
+	if (WindowType::options == m_type)
+	{	
+		UpdateOptionsResData();
+	}
+	else if (WindowType::mainMenu == m_type)
+	{
+		UpdateMenuResData();
+	}
+}
+void	CWindow::UpdateMenuResData()
+{
+	m_button[0].SetX(WINDOW_WIDTH/2-96);
+	m_button[0].SetY(WINDOW_HEIGHT-144-64*3);
+	m_renderData->m_textData[0].x = m_button[0].GetX();
+	m_renderData->m_textData[0].y = m_button[0].GetY();
+
+	m_button[1].SetX(WINDOW_WIDTH/2-96);
+	m_button[1].SetY(WINDOW_HEIGHT-144-64*2);
+	m_renderData->m_textData[1].x = m_button[1].GetX();
+	m_renderData->m_textData[1].y = m_button[1].GetY();
+
+	m_button[1].SetX(WINDOW_WIDTH/2-96);
+	m_button[1].SetY(WINDOW_HEIGHT-144-64);
+	m_renderData->m_textData[1].x = m_button[1].GetX();
+	m_renderData->m_textData[1].y = m_button[1].GetY();
+
+	m_button[1].SetX(WINDOW_WIDTH/2-96);
+	m_button[1].SetY(WINDOW_HEIGHT-144);
+	m_renderData->m_textData[1].x = m_button[1].GetX();
+	m_renderData->m_textData[1].y = m_button[1].GetY();
+}
+
+void	CWindow::UpdateOptionsResData()
+{
+	for (size_t i = 0; i < m_button.size(); i++)
+	{
+		if (!strcmp(m_button[i].GetName(),"Return") || !(strcmp(m_button[i].GetName(),"Exit")))
+		{
+			m_button[i].SetY(WINDOW_HEIGHT);
+			m_renderData->m_textData[i].x = m_button[i].GetY();
+		}
 	}
 }
 
@@ -182,16 +231,17 @@ void	CWindow::SetRenderStringData(bool textBox)
 	}
 }
 
-void	CWindow::CheckClick(int mouseX,int mouseY,ClickType clickType)
+bool	CWindow::CheckClick(int mouseX,int mouseY,ClickType clickType)
 {
 	for (size_t i = 0; i < m_button.size(); i++)
 	{
 		if (m_button[i].CheckIfClicked(mouseX,mouseY,clickType))
 		{
 			m_action = m_button[i].m_action;
-			return;
+			return true;
 		}
 	}
 
 	// for (int i = 0; i < .... next widgets...
+	return	false;
 }

@@ -23,6 +23,8 @@ bool	CMessage::Init()
 {
 	m_mouseMessage	= MouseMessage::nothing;
 	m_renderMessage = RenderMessage::nothing;
+	m_messageToGUI	= MessageToGUI::nothing;
+
 	x = 0, y = 0;
 
 	return	true;

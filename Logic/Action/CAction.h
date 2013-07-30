@@ -39,7 +39,7 @@ private:
 
 	bool			CheckClick(int x1,int y1,int x2,int y2,int w2,int h2);
 
-	void			ChangeFPSLock();
+	void			ChangeFPSLock(CMessage *Message);
 	void			ChangeGrabMode(CMessage *Message);
 	void			ChangeResolution(CMessage *Message,int x,int y);
 	void			TextQuestSelection(int mouseX,int mouseY,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo);
@@ -54,6 +54,8 @@ private:
 	void			StartMenuOptions(_logicFlags &logicFlags,_renderFlags &renderFlags);
 	void			QuitGame(_logicFlags &logicFlags,_renderFlags &renderFlags);
 	bool			StartMapEditor(_logicFlags &logicFlags,_renderFlags &renderFlags,CMap *Map);
+	void			StartMainMenu(_logicFlags &logicFlags,_renderFlags &renderFlags);
+	void			ResumeInGame(_logicFlags &logicFlags,_renderFlags &renderFlags);
 
 public:
 
@@ -61,7 +63,7 @@ public:
 	void	Clean();
 
 	bool	ReadMouseMessage(CMessage *Message,CMap *Map,CQuestManager *Quest,CEntityManager *Entity,_TextRenderInfo &textRenderInfo,_renderFlags &renderFlags);
-	bool	ReadGUIClick(CMap *Map,Action &action,_logicFlags &logicFlags,_renderFlags &renderFlags);
+	bool	ReadGUIClick(CMap *Map,CMessage *Message,Action &action,_logicFlags &logicFlags,_renderFlags &renderFlags);
 
 	// grab mode affects camera
 	bool	isCameraEnabled();

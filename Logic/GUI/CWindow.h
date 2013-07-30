@@ -34,6 +34,8 @@ private:
 
 	bool	InitOptionsWindow();
 	void	UpdateOptionsData();
+	void	UpdateOptionsResData();
+	void	UpdateMenuResData();
 	bool	InitMainMenu();
 
 	void	SetRenderTextData(bool button);
@@ -45,8 +47,9 @@ public:
 	Action	m_action; // check click sets it
 
 	void	UpdateData(WindowType type);
+	void	UpdateResData();
 	bool	Init(WindowType type);
 	void	Clean();
 
-	void	CheckClick(int mouseX,int mouseY,ClickType clickType);
+	bool	CheckClick(int mouseX,int mouseY,ClickType clickType);
 };

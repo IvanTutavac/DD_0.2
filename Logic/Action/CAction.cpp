@@ -62,7 +62,7 @@ bool	CAction::ReadMouseMessage(CMessage *Message,CMap *Map,CQuestManager *Quest,
 		}
 		else if (Message->m_mouseMessage == MouseMessage::changeFPSLock)
 		{
-			ChangeFPSLock();
+			ChangeFPSLock(Message);
 		}
 		else if (Message->m_mouseMessage == MouseMessage::changeGrabMode)
 		{
@@ -116,7 +116,7 @@ bool	CAction::ReadMouseMessage(CMessage *Message,CMap *Map,CQuestManager *Quest,
 	return	returnValue;
 }
 
-bool	CAction::ReadGUIClick(CMap *Map,Action &action,_logicFlags &logicFlags,_renderFlags &renderFlags)
+bool	CAction::ReadGUIClick(CMap *Map,CMessage *Message,Action &action,_logicFlags &logicFlags,_renderFlags &renderFlags)
 {
 	if (action == Action::startGame)
 	{
@@ -140,6 +140,37 @@ bool	CAction::ReadGUIClick(CMap *Map,Action &action,_logicFlags &logicFlags,_ren
 	{
 		if (!StartMapEditor(logicFlags,renderFlags,Map))
 			return	false;
+	}
+	else if (action == Action::returnFromOptions)
+	{
+		if (logicFlags.state == LGS_mainOptions)
+		{
+			StartMainMenu(logicFlags,renderFlags);
+		}
+		else if (logicFlags.state == LGS_options)
+		{
+			ResumeInGame(logicFlags,renderFlags);
+		}
+	}
+	else if (action == Action::changeRes1024x768)
+	{
+		ChangeResolution(Message,1024,768);
+	}
+	else if (action == Action::changeRes640x480)
+	{
+		ChangeResolution(Message,640,480);
+	}
+	else if (action == Action::changeRes800x600)
+	{
+		ChangeResolution(Message,800,600);
+	}
+	else if (action == Action::checkFPSLimit)
+	{
+		ChangeFPSLock(Message);
+	}
+	else if (action == Action::checkGrabMode)
+	{
+		ChangeGrabMode(Message);
 	}
 
 	action = Action::nothing;
@@ -181,10 +212,11 @@ void	CAction::ChangeGrabMode(CMessage *Message)
 	}
 
 	Message->m_renderMessage = RenderMessage::changeGrabMode;
+	Message->m_messageToGUI	=	MessageToGUI::updateOptionsData;
 	//SDL_SetWindowGrab(g_grabMode);
 }
 
-void	CAction::ChangeFPSLock()
+void	CAction::ChangeFPSLock(CMessage *Message)
 {
 	if (g_FPSLimit)
 	{
@@ -194,6 +226,8 @@ void	CAction::ChangeFPSLock()
 	{
 		g_FPSLimit = true;
 	}
+
+	Message->m_messageToGUI	=	MessageToGUI::updateOptionsData;
 }
 
 void	CAction::ChangeResolution(CMessage *Message,int x,int y)
@@ -206,7 +240,8 @@ void	CAction::ChangeResolution(CMessage *Message,int x,int y)
 	WINDOW_WIDTH = x;
 	WINDOW_HEIGHT = y;
 
-	Message->m_renderMessage = RenderMessage::resizeWindow;
+	Message->m_renderMessage	=	RenderMessage::resizeWindow;
+	Message->m_messageToGUI		=	MessageToGUI::updateResData;
 }
 
 bool	CAction::isCameraEnabled()
@@ -313,12 +348,24 @@ void	CAction::InitAllTiles(CMap *Map)
 
 bool	CAction::StartGame(_logicFlags &logicFlags,_renderFlags &renderFlags,CMap *Map)
 {
-	logicFlags.state	=	LGS_inGame;
-	renderFlags.state	=	RS_renderMap;
+	ResumeInGame(logicFlags,renderFlags);
 
 	if (!InitMap(Map))
 		return	false;
+
 	return	true;
+}
+
+void	CAction::ResumeInGame(_logicFlags &logicFlags,_renderFlags &renderFlags)
+{
+	logicFlags.state	=	LGS_inGame;
+	renderFlags.state	=	RS_renderMap;
+}
+
+void	CAction::StartMainMenu(_logicFlags &logicFlags,_renderFlags &renderFlags)
+{
+	logicFlags.state	=	LGS_mainMenu;
+	renderFlags.state	=	RS_renderMainMenu;
 }
 
 bool	CAction::StartMapEditor(_logicFlags &logicFlags,_renderFlags &renderFlags,CMap *Map)

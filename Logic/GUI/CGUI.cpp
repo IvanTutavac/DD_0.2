@@ -50,5 +50,9 @@ void	CGUI::Clean()
 	DD_DELETE(m_pInGame);
 }
 
-
+void	CGUI::UpdateResData()
+{
+	m_pMainMenu->UpdateResData();
+	m_pOptions->UpdateResData();
+}
 

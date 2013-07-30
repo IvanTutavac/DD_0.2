@@ -53,5 +53,7 @@ public:
 	int		GetY();
 	int		GetW();
 	int		GetH();
+	void	SetX(int x_);
+	void	SetY(int y_);
 	char*	GetName();
 };

@@ -30,6 +30,7 @@ along with DD 0.2.  If not, see <http://www.gnu.org/licenses/>.
 #include "Entity\CEnemy.h"
 #include "Entity\CNPC.h"
 #include "Input\CMouse.h"
+#include "Message\CMessage.h"
 #include "Action\CAction.h"
 #include "GUI\CGUI.h"
 #include "GUI\CWindow.h"
@@ -214,6 +215,18 @@ void	CLogic::UpdateObjects()
 	// implementirati pretragu koja svrstava blizu neprijatelje u VCloseEnemy vektor, ako se udalje izbaci ih
 	// kako ne bi trebali stalno letjeti kroz listu
 
+	if (m_pMouse->m_pMessage->m_messageToGUI == MessageToGUI::updateOptionsData)
+	{
+		m_pGUI->m_pOptions->UpdateData(WindowType::options);
+
+		m_pMouse->m_pMessage->m_messageToGUI = MessageToGUI::nothing;
+	}
+	else if (m_pMouse->m_pMessage->m_messageToGUI == MessageToGUI::updateResData)
+	{
+		m_pGUI->UpdateResData();
+		m_pMouse->m_pMessage->m_messageToGUI = MessageToGUI::nothing;
+	}
+
 	m_pEntity->m_pPlayer->UpdateSpellDuration(deltaTime);
 
 	for (size_t i = 0; i < m_pEntity->m_VCloseEnemy.size(); i++)
@@ -303,9 +316,6 @@ void	CLogic::Collision()
 	m_pCollision->SpellCollision(m_pMap,m_pEntity,m_pSpell);
 }
 
-// delete it later !!!!!!!!!!!
-#include "Message\CMessage.h"
-
 bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
 {
 	if (m_logicFlags.state == LGS_intro)
@@ -316,7 +326,7 @@ bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
 		if (EventMessage->m_Event.Event == AE_ReleasedLeftClick)
 		{
 			//m_pMouse->MenuCLick(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
-			m_pGUI->m_pMainMenu->CheckClick(EventMessage->m_Event.x,EventMessage->m_Event.y,ClickType::releasedLeft);
+			if(m_pGUI->m_pMainMenu->CheckClick(EventMessage->m_Event.x,EventMessage->m_Event.y,ClickType::releasedLeft))
 			{
 				m_action	=	m_pGUI->m_pMainMenu->m_action;
 			}
@@ -326,7 +336,11 @@ bool	CLogic::CheckMouseClick(const CEventMessage *EventMessage)
 	{
 		if (EventMessage->m_Event.Event == AE_ReleasedLeftClick)
 		{
-			m_pMouse->OptionsClick(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
+			//m_pMouse->OptionsClick(EventMessage->m_Event.x,EventMessage->m_Event.y,m_logicFlags,m_renderFlags);
+			if (m_pGUI->m_pOptions->CheckClick(EventMessage->m_Event.x,EventMessage->m_Event.y,ClickType::releasedLeft))
+			{
+				m_action	=	m_pGUI->m_pOptions->m_action;
+			}
 		}
 	}
 	else if (m_logicFlags.state == LGS_inGame)
@@ -375,7 +389,7 @@ void	CLogic::CheckPlayerInput(const CEventMessage *EventMessage)
 
 bool	CLogic::Action()
 {
-	if (!m_pAction->ReadGUIClick(m_pMap,m_action,m_logicFlags,m_renderFlags))
+	if (!m_pAction->ReadGUIClick(m_pMap,m_pMouse->m_pMessage,m_action,m_logicFlags,m_renderFlags))
 	{
 		return	false;
 	}

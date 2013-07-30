@@ -40,7 +40,7 @@ enum class Action
 	changeRes640x480,
 	changeRes800x600,
 	changeRes1024x768,
-	startMainMenu
+	returnFromOptions
 };
 
 enum class WindowType

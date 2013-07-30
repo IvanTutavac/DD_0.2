@@ -45,6 +45,13 @@ enum class RenderMessage
 	changeGrabMode
 };
 
+enum class MessageToGUI
+{
+	nothing,
+	updateOptionsData,
+	updateResData
+};
+
 class CMessage
 {
 
@@ -54,6 +61,7 @@ public:
 
 	MouseMessage	m_mouseMessage;
 	RenderMessage	m_renderMessage;
+	MessageToGUI	m_messageToGUI;
 	
 	int	x,y;
 
